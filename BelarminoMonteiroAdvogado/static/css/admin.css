@@ -1,0 +1,452 @@
+/* ==========================================================================
+   ADMIN DASHBOARD STYLES (COMMAND CENTER)
+   ==========================================================================
+   Estilos exclusivos para a área administrativa logada.
+   Foco: Produtividade, Ergonomia (Dark Mode), Gestão de Conteúdo e Live Preview.
+*/
+
+/* --- 1. VARIÁVEIS DO SISTEMA (Dark Productivity) --- */
+:root {
+    /* Base */
+    --admin-bg: #18191a;         /* Fundo Principal (Near Black) */
+    --admin-surface: #242526;    /* Fundo Cards (Cinza Escuro) */
+    --admin-border: #3a3b3c;     /* Bordas Sutis */
+    
+    /* Tipografia */
+    --admin-text: #e4e6eb;       /* Texto Principal (Off-White) */
+    --admin-text-sec: #b0b3b8;   /* Texto Secundário */
+    --admin-text-title: #ffffff;
+    
+    /* Layout */
+    --sidebar-width: 260px;
+    --sidebar-transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    --admin-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    
+    /* Feedback Semântico */
+    --admin-danger: #e74c3c;
+    --admin-danger-rgb: 231, 76, 60;
+    --admin-success: #2ecc71;
+    --admin-success-rgb: 46, 204, 113;
+}
+
+/* --- 2. ADAPTAÇÃO AO TEMA ATIVO (Admin Accent Color) --- */
+/* O admin muda a cor de destaque (botões/links) baseado no tema do site
+   para que o advogado "sinta" a marca enquanto edita. */
+
+body.option1 { --admin-primary: #b92027; --admin-primary-rgb: 185, 32, 39; --admin-btn-text: #fff; }
+body.option2 { --admin-primary: #00A19C; --admin-primary-rgb: 0, 161, 156; --admin-btn-text: #fff; }
+body.option3 { --admin-primary: #D4AF37; --admin-primary-rgb: 212, 175, 55; --admin-btn-text: #111; }
+body.option4 { --admin-primary: #00A335; --admin-primary-rgb: 0, 163, 53; --admin-btn-text: #fff; }
+
+/* Fallback */
+body:not(.option1):not(.option2):not(.option3):not(.option4) {
+    --admin-primary: #b92027; --admin-primary-rgb: 185, 32, 39; --admin-btn-text: #fff;
+}
+
+/* Variáveis Derivadas */
+:root {
+    --admin-primary-hover: color-mix(in srgb, var(--admin-primary), black 10%);
+}
+
+/* --- 3. LAYOUT GERAL --- */
+body.admin-body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: var(--admin-bg);
+    color: var(--admin-text);
+    margin: 0;
+    line-height: 1.5;
+    overflow-x: hidden;
+}
+
+.admin-wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+.admin-main-content {
+    flex-grow: 1;
+    padding: 2.5rem;
+    margin-left: var(--sidebar-width); /* Espaço fixo da sidebar */
+    transition: margin-left var(--sidebar-transition);
+    position: relative;
+    width: 100%; /* Garante que o conteúdo ocupe o resto */
+}
+
+/* --- 4. SIDEBAR (Navegação Lateral) --- */
+.admin-sidebar {
+    width: var(--sidebar-width);
+    background-color: var(--admin-surface);
+    border-right: 1px solid var(--admin-border);
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    transition: left var(--sidebar-transition), width var(--sidebar-transition);
+    box-shadow: var(--admin-shadow);
+}
+
+/* Header da Sidebar */
+.sidebar-header {
+    padding: 1.5rem;
+    text-align: center;
+    border-bottom: 1px solid var(--admin-border);
+}
+
+.admin-logo {
+    max-width: 140px;
+    height: auto;
+    filter: brightness(0) invert(1); /* Logo branca */
+    opacity: 0.9;
+    margin-bottom: 0.5rem;
+}
+
+.sidebar-header h3 {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--admin-text-sec);
+    margin: 0;
+}
+
+/* Menu de Links */
+.sidebar-menu {
+    list-style: none;
+    padding: 1rem 0;
+    margin: 0;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    margin: 4px 12px;
+    border-radius: 8px;
+    color: var(--admin-text-sec);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+}
+
+.sidebar-link:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--admin-text);
+}
+
+.sidebar-link.active {
+    background-color: var(--admin-primary);
+    color: var(--admin-btn-text) !important;
+    box-shadow: 0 4px 12px rgba(var(--admin-primary-rgb), 0.3);
+}
+
+.sidebar-link i {
+    font-size: 1.1rem;
+    width: 20px;
+    text-align: center;
+}
+
+/* Link de Logout (Rodapé da Sidebar) */
+.sidebar-link.logout-link {
+    margin-top: auto;
+    border-top: 1px solid var(--admin-border);
+    border-radius: 0;
+    margin: 0;
+    padding: 1.5rem 20px;
+}
+.sidebar-link.logout-link:hover {
+    background-color: rgba(var(--admin-danger-rgb), 0.1);
+    color: var(--admin-danger);
+}
+
+/* --- 5. COMPORTAMENTO RETRÁTIL (Collapse Logic) --- */
+.sidebar-toggle {
+    position: absolute;
+    top: 15px;
+    right: -15px; /* Botão flutuante na borda */
+    width: 30px; height: 30px;
+    background: var(--admin-primary);
+    color: var(--admin-btn-text);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 102;
+    transition: transform 0.3s;
+}
+
+.sidebar-show-toggle {
+    display: none; /* Só aparece quando recolhido */
+    position: fixed;
+    top: 20px; left: 20px;
+    z-index: 102;
+    background: var(--admin-surface);
+    border: 1px solid var(--admin-border);
+    color: var(--admin-text);
+    width: 40px; height: 40px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* Estado Recolhido (Adicionado via JS no body) */
+body.sidebar-collapsed .admin-sidebar {
+    left: calc(var(--sidebar-width) * -1); /* Esconde para esquerda */
+}
+body.sidebar-collapsed .admin-main-content {
+    margin-left: 0; /* Conteúdo expande */
+}
+body.sidebar-collapsed .sidebar-show-toggle {
+    display: flex; align-items: center; justify-content: center;
+}
+
+/* --- 6. HEADER DO PAINEL --- */
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--admin-border);
+}
+
+.admin-header h2 {
+    color: var(--admin-text-title);
+    font-size: 1.8rem;
+    margin: 0;
+}
+
+.admin-intro {
+    color: var(--admin-text-sec);
+    margin-top: 5px;
+}
+
+/* --- 7. CARDS & CONTAINERS --- */
+.form-container,
+.service-list-container,
+.add-service-container {
+    background-color: var(--admin-surface);
+    border: 1px solid var(--admin-border);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+}
+
+.service-list-container h4,
+.add-service-container h4 {
+    color: var(--admin-text-title);
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    font-size: 1.2rem;
+    border-left: 4px solid var(--admin-primary);
+    padding-left: 10px;
+}
+
+/* --- 8. LISTAS DE GERENCIAMENTO --- */
+.service-item-admin,
+.nav-item-admin {
+    background-color: var(--admin-bg);
+    border: 1px solid var(--admin-border);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 0.8rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: border-color 0.2s;
+}
+
+.service-item-admin:hover {
+    border-color: var(--admin-primary);
+}
+
+.service-info span {
+    display: block;
+    color: var(--admin-text-title);
+    font-weight: 600;
+}
+.service-info small {
+    color: var(--admin-text-sec);
+}
+
+/* Botões de Ação (Icon Only) */
+.btn-edit, .btn-delete {
+    width: 35px; height: 35px;
+    border-radius: 6px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border: 1px solid var(--admin-border);
+    background: transparent;
+    color: var(--admin-text-sec);
+    transition: 0.2s;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.btn-edit:hover {
+    border-color: var(--admin-primary);
+    color: var(--admin-primary);
+    background: rgba(var(--admin-primary-rgb), 0.1);
+}
+
+.btn-delete:hover {
+    border-color: var(--admin-danger);
+    color: var(--admin-danger);
+    background: rgba(var(--admin-danger-rgb), 0.1);
+}
+
+/* --- 9. FORMULÁRIOS & INPUTS --- */
+.form-group { margin-bottom: 1.5rem; }
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--admin-text);
+    font-weight: 500;
+}
+
+.form-control, .form-select {
+    width: 100%;
+    background-color: var(--admin-bg);
+    border: 1px solid var(--admin-border);
+    border-radius: 8px;
+    padding: 10px 15px;
+    color: var(--admin-text);
+    font-family: inherit;
+    transition: 0.2s;
+}
+
+.form-control:focus, .form-select:focus {
+    outline: none;
+    border-color: var(--admin-primary);
+    box-shadow: 0 0 0 3px rgba(var(--admin-primary-rgb), 0.15);
+}
+
+/* Botões Principais */
+.btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    display: inline-flex; align-items: center; gap: 8px;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.btn-primary {
+    background-color: var(--admin-primary);
+    color: var(--admin-btn-text);
+}
+.btn-primary:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background-color: transparent;
+    border: 1px solid var(--admin-border);
+    color: var(--admin-text);
+}
+.btn-secondary:hover {
+    background-color: rgba(255,255,255,0.05);
+}
+
+/* --- 10. EDITOR DE DESIGN (Live Preview) --- */
+.style-editor-wrapper {
+    display: flex;
+    gap: 20px;
+    height: calc(100vh - 150px); /* Ocupa altura restante */
+    min-height: 600px;
+}
+
+.style-editor-controls {
+    flex: 0 0 350px; /* Largura fixa */
+    background: var(--admin-surface);
+    border: 1px solid var(--admin-border);
+    border-radius: 12px;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.style-editor-preview {
+    flex: 1; /* Ocupa o resto */
+    background: #fff; /* Preview sempre precisa de base neutra */
+    border-radius: 12px;
+    border: 1px solid var(--admin-border);
+    overflow: hidden;
+    display: flex; flex-direction: column;
+}
+
+.preview-toolbar {
+    background: var(--admin-bg);
+    border-bottom: 1px solid var(--admin-border);
+    padding: 10px 20px;
+    display: flex; justify-content: space-between; align-items: center;
+}
+
+#design-preview-frame {
+    flex-grow: 1;
+    width: 100%;
+    border: none;
+}
+
+/* Inputs de Cor */
+.color-picker-wrapper {
+    display: flex; gap: 10px; align-items: center;
+}
+.color-picker-wrapper input[type="color"] {
+    width: 40px; height: 40px; border: none; padding: 0;
+    background: transparent; cursor: pointer;
+}
+
+/* --- 12. TAB CONTENT (Dashboard Sections) --- */
+
+.tab-content {
+
+    display: none; /* Hidden by default */
+
+}
+
+
+
+.tab-content.active {
+
+    display: block; /* Shown when active */
+
+}
+
+
+
+/* --- 11. RESPONSIVIDADE --- */
+
+@media (max-width: 991px) {
+
+    .admin-main-content { margin-left: 0; padding: 1.5rem; }
+
+    .admin-sidebar {
+
+        width: 100%; height: auto; position: relative;
+
+        flex-direction: row; overflow-x: auto;
+
+        border-right: none; border-bottom: 1px solid var(--admin-border);
+
+    }
+
+    .sidebar-header, .sidebar-toggle, .sidebar-link span { display: none; }
+
+    .sidebar-link { padding: 15px; margin: 0; justify-content: center; }
+
+    .sidebar-link i { font-size: 1.4rem; }
+
+    
+
+    .style-editor-wrapper { flex-direction: column; height: auto; }
+
+    .style-editor-preview { height: 500px; }
+
+}

@@ -1,0 +1,266 @@
+{% extends "base.html" %}
+
+{# 
+    TEMPLATE: SERVICE BASE (UNIVERSAL)
+    Layout mestre para serviços específicos.
+    Suporta Temas 1-8 automaticamente.
+#}
+
+{% block title %}{{ titulo | default('Serviço Especializado') }} - Belarmino Monteiro{% endblock %}
+{% block metadescription %}Assessoria jurídica especializada em {{ titulo | default('diversas áreas') }}. Atuação estratégica e foco em resultados.{% endblock %}
+
+{% block content %}
+
+{# Usa a imagem de destaque do serviço se existir, senão usa um padrão #}
+{% with 
+    title=titulo, 
+    subtitle="Especialidade Jurídica", 
+    bg_image=imagem_destaque if imagem_destaque else url_for('static', filename='images/banners/library_bg.jpg') 
+%}
+    {% include '_inner_page_header.html' %}
+{% endwith %}
+
+<div class="service-page-wrapper">
+    <div class="container">
+        <div class="row g-5">
+            
+            {# Coluna Principal (Conteúdo) #}
+            <div class="col-lg-8">
+                <article class="service-content" data-aos="fade-up">
+                    
+                    <div class="service-lead">
+                        <h2 class="content-title">Panorama Geral</h2>
+                        <div class="lead-text">
+                            {{ conteudo_intro | default('<p>Atuamos com profundidade técnica e visão estratégica nesta área, oferecendo soluções que vão além do óbvio para garantir a segurança jurídica e o sucesso de nossos clientes.</p>') | safe }}
+                        </div>
+                    </div>
+
+                    {% if imagem_corpo %}
+                    <div class="service-figure my-5">
+                        <img src="{{ url_for('static', filename=imagem_corpo) }}" alt="{{ titulo }}" class="img-fluid rounded-3 shadow-sm img-cover" style="max-height: 400px;">
+                        <figcaption class="text-muted small mt-2 fst-italic text-center">Excelência e dedicação em cada caso.</figcaption>
+                    </div>
+                    {% endif %}
+
+                    <div class="service-body-text">
+                        {{ conteudo | default('<p>O escritório Belarmino Monteiro possui vasta experiência na condução de casos complexos nesta matéria. Nossa equipe multidisciplinar analisa cada detalhe para construir teses sólidas e eficazes.</p><h3>Nossa Abordagem</h3><p>Trabalhamos de forma preventiva e contenciosa, sempre buscando a resolução mais ágil e econômica para o cliente, sem abrir mão da combatividade necessária.</p>') | safe }}
+                    </div>
+
+                    <div class="service-differentials mt-5">
+                        <h3 class="h4 mb-4 fw-bold font-heading">Por que nos escolher?</h3>
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="diff-card">
+                                    <i class="bi bi-patch-check-fill diff-icon"></i>
+                                    <h5>Especialização</h5>
+                                    <p class="small text-muted mb-0">Equipe dedicada e em constante atualização sobre a jurisprudência desta área.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="diff-card">
+                                    <i class="bi bi-clock-history diff-icon"></i>
+                                    <h5>Agilidade</h5>
+                                    <p class="small text-muted mb-0">Fluxos de trabalho otimizados para garantir respostas rápidas e precisas.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </article>
+            </div>
+
+            {# Sidebar (Lateral) #}
+            <div class="col-lg-4">
+                <aside class="service-sidebar sticky-top" style="top: 120px; z-index: 1;">
+                    
+                    <div class="sidebar-widget widget-nav" data-aos="fade-left" data-aos-delay="100">
+                        <h4 class="widget-title">Áreas de Atuação</h4>
+                        <ul class="widget-list">
+                            <li><a href="{{ url_for('main.todas_areas_atuacao') }}" class="widget-link back-link"><i class="bi bi-grid me-2"></i> Ver Todas</a></li>
+                            
+                            {# Lista dinâmica das top áreas #}
+                            {% if lista_areas_atuacao %}
+                                {% for area in lista_areas_atuacao[:6] %}
+                                <li>
+                                    <a href="{{ url_for('main.pagina_dinamica', slug=area.slug) }}" 
+                                       class="widget-link {% if area.titulo == titulo %}active{% endif %}">
+                                        <i class="bi bi-chevron-right small me-2"></i> {{ area.titulo }}
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            {% endif %}
+                        </ul>
+                    </div>
+
+                    <div class="sidebar-widget widget-contact bg-accent" data-aos="fade-left" data-aos-delay="200">
+                        <div class="text-center text-white">
+                            <i class="bi bi-chat-square-text fs-1 mb-3 d-block opacity-75"></i>
+                            <h4 class="mb-3 text-white">Precisa de ajuda?</h4>
+                            <p class="small opacity-75 mb-4">Nossos especialistas estão prontos para analisar seu caso agora mesmo.</p>
+                            <a href="{{ url_for('main.pagina_contato') }}" class="btn btn-white w-100 fw-bold shadow-sm">
+                                Falar com Especialista
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-widget widget-download" data-aos="fade-left" data-aos-delay="300">
+                        <a href="#" class="d-flex align-items-center text-decoration-none text-reset">
+                            <div class="icon-pdf me-3"><i class="bi bi-file-earmark-pdf-fill"></i></div>
+                            <div>
+                                <h6 class="mb-0 fw-bold">Apresentação Institucional</h6>
+                                <small class="text-muted">Baixar PDF (2.5MB)</small>
+                            </div>
+                        </a>
+                    </div>
+
+                </aside>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% include '_cta_section.html' %}
+
+<style>
+    /* --- VARIÁVEIS LOCAIS (Herdam do Global) --- */
+    .service-page-wrapper {
+        --sp-bg: var(--prm-bg-surface, #fff);
+        --sp-text: var(--prm-text, #333);
+        --sp-text-muted: var(--prm-text-light, #666);
+        --sp-accent: var(--prm-accent-red, #b92027);
+        --sp-border: var(--prm-border, #eee);
+        --sp-sidebar-bg: var(--prm-bg-light, #f8f9fa);
+        --sp-font-serif: var(--font-heading, serif);
+    }
+
+    /* Adaptação Específica para Temas (Overrides) */
+    /* Titan / Option 2 & 6 */
+    body.option2 .service-page-wrapper, body.option6 .service-page-wrapper { 
+        --sp-accent: var(--titan-text-primary, #002F49); 
+    }
+    
+    /* Boutique / Option 3 & 7 */
+    body.option3 .service-page-wrapper, body.option7 .service-page-wrapper { 
+        --sp-accent: var(--btq-gold-main, #D4AF37); 
+        --sp-bg: var(--btq-bg-main, #F9F7F2); 
+        --sp-sidebar-bg: #fff; 
+    }
+    
+    /* Dark Mode Universal */
+    body.dark-mode .service-page-wrapper,
+    [data-theme="dark"] .service-page-wrapper {
+        --sp-bg: transparent;
+        --sp-text: #f1f1f1;
+        --sp-text-muted: #aaa;
+        --sp-border: rgba(255,255,255,0.1);
+        --sp-sidebar-bg: rgba(255,255,255,0.03);
+    }
+
+    /* --- ESTRUTURA --- */
+    .service-page-wrapper {
+        padding: 80px 0;
+        background-color: var(--sp-bg);
+    }
+
+    /* Conteúdo Principal */
+    .content-title {
+        font-family: var(--sp-font-serif);
+        font-size: 2rem; color: var(--sp-text);
+        margin-bottom: 20px; font-weight: 700;
+        position: relative; padding-bottom: 15px;
+    }
+    .content-title::after {
+        content: ''; position: absolute; bottom: 0; left: 0;
+        width: 50px; height: 3px; background-color: var(--sp-accent);
+    }
+
+    .lead-text {
+        font-size: 1.15rem; color: var(--sp-text-muted);
+        line-height: 1.8; margin-bottom: 40px;
+    }
+
+    .service-body-text {
+        font-size: 1rem; color: var(--sp-text); line-height: 1.7;
+    }
+    .service-body-text h3 {
+        font-family: var(--sp-font-serif);
+        margin-top: 40px; margin-bottom: 20px; font-size: 1.5rem;
+        color: var(--sp-text);
+    }
+    .service-body-text ul {
+        padding-left: 20px; margin-bottom: 20px; color: var(--sp-text-muted);
+    }
+    .service-body-text li { margin-bottom: 10px; }
+
+    /* Diferenciais */
+    .diff-card {
+        background: var(--sp-sidebar-bg);
+        padding: 25px; border-radius: 8px; height: 100%;
+        border-left: 3px solid var(--sp-accent);
+        border-top: 1px solid var(--sp-border);
+        border-right: 1px solid var(--sp-border);
+        border-bottom: 1px solid var(--sp-border);
+    }
+    .diff-icon {
+        font-size: 1.5rem; color: var(--sp-accent);
+        margin-bottom: 15px; display: block;
+    }
+
+    /* --- SIDEBAR --- */
+    .sidebar-widget {
+        background: var(--sp-sidebar-bg);
+        border: 1px solid var(--sp-border);
+        border-radius: 8px;
+        padding: 30px;
+        margin-bottom: 30px;
+    }
+
+    .widget-title {
+        font-family: var(--sp-font-serif);
+        font-size: 1.2rem; color: var(--sp-text);
+        margin-bottom: 20px; border-bottom: 1px solid var(--sp-border);
+        padding-bottom: 15px;
+    }
+
+    .widget-list { list-style: none; padding: 0; margin: 0; }
+    .widget-link {
+        display: block; padding: 12px 0;
+        color: var(--sp-text-muted); text-decoration: none;
+        border-bottom: 1px solid var(--sp-border);
+        transition: 0.2s; font-size: 0.95rem;
+    }
+    
+    .widget-link:hover, .widget-link.active {
+        color: var(--sp-accent); padding-left: 5px; font-weight: 600;
+        border-bottom-color: var(--sp-accent);
+    }
+    .back-link { font-weight: 700; color: var(--sp-text); }
+
+    /* Widget Contato */
+    .widget-contact.bg-accent {
+        background-color: var(--sp-accent) !important;
+        border: none;
+        color: #fff;
+    }
+    .btn-white {
+        background: #fff; color: var(--sp-accent);
+        border: none; padding: 12px; border-radius: 4px;
+        transition: 0.3s;
+    }
+    .btn-white:hover {
+        background: #f0f0f0; transform: translateY(-2px);
+    }
+
+    /* Widget Download */
+    .icon-pdf {
+        font-size: 2.5rem; color: #dc3545; /* Cor padrão PDF */
+    }
+
+    @media (max-width: 991px) {
+        .service-page-wrapper { padding: 50px 0; }
+        .service-sidebar { margin-top: 50px; position: static !important; }
+    }
+</style>
+
+{% endblock %}

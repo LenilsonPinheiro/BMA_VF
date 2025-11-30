@@ -1,0 +1,61 @@
+{% extends "base_option8.html" %}
+
+{% block title %}Digital Law - Belarmino Monteiro{% endblock %}
+
+{% block content %}
+<div class="home-wrapper option8-wrapper">
+
+    {# HERO GRID TECH #}
+    {% include 'home/_hero_section.html' %}
+
+    {# BENTO GRID DE SERVIÇOS #}
+    <section class="bento-section">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-end mb-5">
+                <div>
+                    <span class="tech-badge"><span class="pulse-dot"></span> Serviços</span>
+                    <h2 class="display-4 fw-bold">Ecossistema Jurídico</h2>
+                </div>
+                <a href="{{ url_for('main.todas_areas_atuacao') }}" class="btn btn-outline-primary rounded-pill">Ver Todos</a>
+            </div>
+
+            <div class="bento-grid">
+                {% for area in lista_areas_atuacao[:4] %}
+                <div class="bento-card {% if loop.index == 1 %}large{% endif %}">
+                    <div class="bento-icon"><i class="{{ area.icone }}"></i></div>
+                    <div>
+                        <h4 class="bento-title">{{ area.titulo }}</h4>
+                        <p class="bento-desc small">{{ area.descricao[:80] }}...</p>
+                    </div>
+                    <a href="{{ url_for('main.pagina_dinamica', slug=area.slug) }}" class="bento-link">Acessar <i class="bi bi-arrow-right"></i></a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    {# DATA SECTION #}
+    <section class="data-section text-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 stat-item">
+                    <div class="stat-number">98%</div>
+                    <div class="stat-label">Taxa de Sucesso</div>
+                </div>
+                <div class="col-md-4 stat-item">
+                    <div class="stat-number">+500</div>
+                    <div class="stat-label">Casos Digitais</div>
+                </div>
+                <div class="col-md-4 stat-item">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Monitoramento</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {% include 'home/_team_section.html' %}
+    {% include '_cta_section.html' %}
+
+</div>
+{% endblock %}

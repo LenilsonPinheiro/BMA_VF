@@ -1,0 +1,96 @@
+{#-*- coding: utf-8 -*-#}
+{#
+    BelarminoMonteiroAdvogado/templates/_navigation.html: Componente de navegação principal (menu).
+
+    Este template parcial define a barra de navegação superior do site, incluindo:
+    - O logotipo da marca que redireciona para a página inicial.
+    - Um botão de alternância (toggler) para a navegação em dispositivos móveis.
+    - Uma lista de itens de navegação, que podem ser links diretos ou menus suspensos (dropdowns).
+    - Links dinâmicos para áreas de atuação, carregados do banco de dados.
+    - Realça o item de menu ativo com base na rota atual.
+
+    É um componente crucial para a usabilidade e a estrutura do site, permitindo que os usuários
+    naveguem entre as diferentes seções da aplicação de forma intuitiva.
+#}
+{#-*- coding: utf-8 -*-#}
+{#
+    BelarminoMonteiroAdvogado/templates/_navigation.html: Componente de navegação principal (menu).
+
+    Este template parcial define a barra de navegação superior do site, incluindo:
+    - O logotipo da marca que redireciona para a página inicial.
+    - Um botão de alternância (toggler) para a navegação em dispositivos móveis.
+    - Uma lista de itens de navegação, que podem ser links diretos ou menus suspensos (dropdowns).
+    - Links dinâmicos para áreas de atuação, carregados do banco de dados.
+    - Realça o item de menu ativo com base na rota atual.
+
+    É um componente crucial para a usabilidade e a estrutura do site, permitindo que os usuários
+    naveguem entre as diferentes seções da aplicação de forma intuitiva.
+#}
+
+{# Link da marca (logo) que aponta para a página inicial. O logo é carregado dinamicamente das configurações. #}
+<a class="navbar-brand" href="{{ url_for('main.home') }}">
+    <img src="{{ url_for('static', filename=configs.get('logo_principal', 'images/BM.png')) }}" 
+         alt="{{ configs.get('site_titulo', 'Belarmino Monteiro') }}" 
+         class="img-fluid"
+         width="180" height="60"> </a>
+
+{# Botão para alternar a visibilidade do menu de navegação em dispositivos móveis. #}
+<button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbarCollapse" aria-controls="mainNavbarCollapse" aria-expanded="false" aria-label="Abrir navegação">
+    <span class="navbar-toggler-icon"></span>
+</button>
+
+{# Container principal do menu de navegação, que colapsa em telas menores. #}
+<div class="collapse navbar-collapse" id="mainNavbarCollapse">
+    <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center gap-1">
+        
+        {# Item de navegação para a página "Início". O status "active" é definido se a rota atual for 'main.home'. #}
+        <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == 'main.home' %}active{% endif %}" aria-current="page" href="{{ url_for('main.home') }}">
+                Início
+            </a>
+        </li>
+
+        {# Item de navegação para a página "O Escritório" (Sobre Nós). O status "active" é definido se 'sobre' estiver na URL. #}
+        <li class="nav-item">
+            <a class="nav-link {% if 'sobre' in request.path %}active{% endif %}" href="{{ url_for('main.pagina_dinamica', slug='sobre-nos') }}">
+                O Escritório
+            </a>
+        </li>
+
+        {# Menu suspenso (dropdown) para as "Áreas de Atuação". #}
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownAreas" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Atuação
+            </a>
+            {# Lista de itens do dropdown. #}
+            <ul class="dropdown-menu border-0 shadow-lg rounded-0 p-0 mt-2 fade-down" aria-labelledby="navbarDropdownAreas">
+                {# Link para a página que lista todas as áreas de atuação. #}
+                <li>
+                    <a class="dropdown-item py-2 px-4 small text-uppercase fw-bold border-bottom" href="{{ url_for('main.todas_areas_atuacao') }}" style="letter-spacing: 1px;">
+                        Ver Todas as Áreas
+                    </a>
+                </li>
+                
+                {# Loop Jinja2 para exibir as primeiras 6 áreas de atuação dinamicamente do banco de dados. #}
+                {% if lista_areas_atuacao %}
+                    {% for area in lista_areas_atuacao[:6] %}
+                    <li>
+                        {# Link para a página de detalhes de cada área de atuação, usando a rota dinâmica. #}
+                        <a class="dropdown-item py-2 px-4 small" href="{{ url_for('main.pagina_dinamica', slug=area.slug) }}">
+                            {{ area.titulo }}
+                        </a>
+                    </li>
+                    {% endfor %}
+                {% endif %}
+            </ul>
+        </li>
+
+        {# Item de navegação para a página de "Contato". #}
+        <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == 'main.pagina_contato' %}active{% endif %}" href="{{ url_for('main.pagina_contato') }}">
+                Contato
+            </a>
+        </li>
+
+        </ul>
+</div>

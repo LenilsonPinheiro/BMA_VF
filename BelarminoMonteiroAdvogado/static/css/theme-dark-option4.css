@@ -1,0 +1,160 @@
+/* ==========================================================================
+   THEME OPTION 4: DARK MODE (FUTURE TECH / CYBER NIGHT)
+   ==========================================================================
+   Define a variação escura para o layout "Future Tech".
+   Foco: Deep Space (Slate Escuro), Neon Glows, Vidro Fumê e Alto Contraste.
+*/
+
+body.option4.dark-mode,
+[data-theme="dark"] body.option4 {
+
+    /* --- 1. FUNDOS & ESTRUTURA (Deep Space) --- */
+    --tech-bg-main: #020617;         /* Slate 950 - Fundo Infinito */
+    --tech-bg-surface: #0f172a;      /* Slate 900 - Cards Base */
+    --tech-bg-subtle: #1e293b;       /* Slate 800 - Elementos Elevados */
+    
+    /* --- 2. TEXTOS & CONTRASTE (Holographic) --- */
+    --tech-text-primary: #f8fafc;    /* Slate 50 - Títulos (Branco Brilhante) */
+    --tech-text-secondary: #cbd5e1;  /* Slate 300 - Leitura Confortável */
+    --tech-text-muted: #64748b;      /* Slate 500 - Detalhes Apagados */
+    
+    /* --- 3. BORDAS & SEPARADORES (Laser Lines) --- */
+    --tech-border: rgba(255, 255, 255, 0.08); /* Linhas Sutis */
+    --tech-border-hover: rgba(255, 255, 255, 0.2);
+
+    /* --- 4. CORES DE DESTAQUE (Neon Pulse) --- */
+    /* Glow Vermelho Cyber (Marca) ou Ciano/Verde se quiser mudar a vibe */
+    --tech-glow-color: rgba(220, 38, 38, 0.25); 
+    
+    /* --- 5. SOMBRAS (Light Emission) --- */
+    /* No escuro, sombras projetam brilho, não escuridão */
+    --tech-shadow-card: 0 4px 20px -5px rgba(0, 0, 0, 0.5);
+    --tech-shadow-hover: 0 0 25px var(--tech-glow-color), 0 0 10px rgba(255,255,255,0.05);
+
+    /* --- 6. GLASSMORPHISM (Stealth Glass) --- */
+    --glass-nav: rgba(15, 23, 42, 0.85);
+    --glass-card: rgba(30, 41, 59, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+/* ==========================================================================
+   OVERRIDES ESPECÍFICOS (Aplica as variáveis ao Dark Mode Tech)
+   ========================================================================== */
+
+/* Navbar Tech (Dark) */
+body.option4.dark-mode .navbar-tech {
+    background: var(--glass-nav);
+    border-color: var(--glass-border);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+/* Links de Navegação */
+body.option4.dark-mode .nav-link {
+    color: var(--tech-text-secondary) !important;
+}
+body.option4.dark-mode .nav-link:hover,
+body.option4.dark-mode .nav-link.active {
+    color: #fff !important;
+    text-shadow: 0 0 10px rgba(255,255,255,0.5);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* Bento Cards (Dark Cyber) */
+body.option4.dark-mode .bento-card {
+    background: var(--tech-bg-surface);
+    border-color: var(--tech-border);
+    color: var(--tech-text-primary);
+}
+
+body.option4.dark-mode .bento-card:hover {
+    border-color: var(--prm-accent-red);
+    box-shadow: var(--tech-shadow-hover);
+    z-index: 1; /* Traz para frente ao brilhar */
+}
+
+body.option4.dark-mode .bento-title { color: var(--tech-text-primary); }
+body.option4.dark-mode .bento-desc { color: var(--tech-text-secondary); }
+
+/* Ícones nos Cards (Neon) */
+body.option4.dark-mode .bento-icon {
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--prm-accent-red);
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+}
+body.option4.dark-mode .bento-card:hover .bento-icon {
+    background: var(--prm-accent-red);
+    color: #fff;
+    box-shadow: 0 0 15px var(--tech-glow-color);
+}
+
+/* Hero Section (Dark Grid) */
+body.option4.dark-mode .hero-tech {
+    background: radial-gradient(circle at 50% 50%, #1e293b 0%, #020617 100%);
+}
+
+body.option4.dark-mode .hero-bg-grid {
+    background-image: 
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    opacity: 0.4;
+}
+
+body.option4.dark-mode .hero-title {
+    /* Gradiente metálico/neon */
+    background: linear-gradient(135deg, #ffffff 0%, #94a3b8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 30px rgba(255,255,255,0.1);
+}
+
+body.option4.dark-mode .hero-subtitle-tech {
+    color: var(--tech-text-muted);
+}
+
+/* Data/Metrics Section (Darker than Dark) */
+body.option4.dark-mode .data-section {
+    background: #000; /* Preto absoluto para contraste com o Slate */
+    border-top: 1px solid var(--tech-border);
+    border-bottom: 1px solid var(--tech-border);
+}
+
+body.option4.dark-mode .data-section::before {
+    background: linear-gradient(90deg, transparent, var(--prm-accent-red), transparent);
+    opacity: 0.3;
+}
+
+/* Footer Tech (Dark) */
+body.option4.dark-mode .footer-tech {
+    background-color: var(--tech-bg-surface);
+    color: var(--tech-text-muted);
+    border-top: 1px solid var(--tech-border);
+}
+
+body.option4.dark-mode .footer-title { color: #fff; }
+body.option4.dark-mode .footer-link { color: var(--tech-text-muted); }
+body.option4.dark-mode .footer-link:hover { color: #fff; text-shadow: 0 0 5px rgba(255,255,255,0.5); }
+
+body.option4.dark-mode .social-btn {
+    background: rgba(255,255,255,0.03);
+    border-color: var(--tech-border);
+    color: #fff;
+}
+body.option4.dark-mode .social-btn:hover {
+    background: var(--prm-accent-red);
+    box-shadow: 0 0 15px var(--tech-glow-color);
+    border-color: var(--prm-accent-red);
+}
+
+/* Inputs de Formulário (Stealth Mode) */
+body.option4.dark-mode .form-control-custom,
+body.option4.dark-mode .form-control {
+    background: rgba(0, 0, 0, 0.3);
+    border-color: var(--tech-border);
+    color: #fff;
+}
+body.option4.dark-mode .form-control-custom:focus,
+body.option4.dark-mode .form-control:focus {
+    background: rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 0 2px var(--tech-glow-color);
+    border-color: var(--prm-accent-red);
+}

@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{# 
+    INDEX.HTML - MASTER HOME CONTROLLER
+    Este arquivo se adapta ao tema escolhido no base.html.
+    Ele organiza o conteúdo vindo do banco de dados (sections) em um layout fluido.
+#}
+
+{% block title %}Advocacia de Excelência - Belarmino Monteiro{% endblock %}
+{% block metadescription %}Soluções jurídicas estratégicas e personalizadas.{% endblock %}
+
+{% block content %}
+
+<style>
+    /* Ajuste fino para espaçamento entre seções dinâmicas */
+    .home-section-wrapper {
+        position: relative;
+        padding: 100px 0;
+        overflow: hidden;
+    }
+    
+    .home-section-wrapper:nth-child(even) {
+        background-color: var(--prm-light-bg, #f9f9f9);
+    }
+    
+    /* Dark Mode Alternation */
+    body.dark-mode .home-section-wrapper:nth-child(even),
+    [data-theme="dark"] .home-section-wrapper:nth-child(even) {
+        background-color: rgba(255,255,255,0.02);
+    }
+
+    /* Separadores Visuais (Opcional) */
+    .section-divider {
+        height: 1px; width: 100%;
+        background: linear-gradient(90deg, transparent, rgba(0,0,0,0.1), transparent);
+        margin: 0;
+    }
+    body.dark-mode .section-divider { background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent); }
+</style>
+
+<div class="home-page-container">
+
+    {# 
+       1. HERO SECTION 
+       Verifica se o layout base já tem um Hero (como Option 2). 
+       Se não, renderiza o Hero Padrão Universal.
+    #}
+    {% if theme != 'option2' %}
+        {% include 'home/_hero_section.html' %}
+    {% endif %}
+
+    {# 
+       2. SEÇÕES DINÂMICAS (BUILDER)
+       Itera sobre as seções ativas configuradas no painel administrativo.
+    #}
+    {% for home_section in all_home_sections %}
+        
+        <div class="home-section-wrapper section-{{ home_section.section_type if home_section.section_type else 'default' }}" id="{{ home_section.section_type if home_section.section_type else 'section' }}">
+            
+            {% if home_section.section_type == 'services' %}
+                {% include 'home/_services_section.html' %}
+            
+            {% elif home_section.section_type == 'about' %}
+                <div class="container">
+                    <div class="row align-items-center gy-5">
+                        <div class="col-lg-6" data-aos="fade-right">
+                            <h2 class="display-5 fw-bold mb-4">Sobre Nós</h2>
+                            <div class="lead opacity-75">
+                                Excelência jurídica e compromisso com resultados.
+                            </div>
+                            <a href="{{ url_for('main.pagina_dinamica', slug='sobre-nos') }}" class="btn btn-outline-dark rounded-pill px-4 mt-4">
+                                Conheça Nossa História
+                            </a>
+                        </div>
+                        <div class="col-lg-6" data-aos="fade-left">
+                            <div class="ratio ratio-16x9 rounded-4 shadow-lg overflow-hidden">
+                                <img src="{{ url_for('static', filename='images/Escritório.png') }}" class="object-fit-cover" alt="Escritório">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            {% elif home_section.section_type == 'team' %}
+                {% include 'home/_team_section.html' %}
+
+            {% elif home_section.section_type == 'testimonials' %}
+                {% include 'home/_testimonials_section.html' %}
+
+            {% elif home_section.section_type == 'clients' %}
+                {% include 'home/_clients_section.html' %}
+            
+            {% elif home_section.section_type == 'custom' %}
+                <div class="container">
+                    <p>Seção customizada</p>
+                </div>
+
+            {% endif %}
+        </div>
+
+        <div class="section-divider"></div>
+
+    {% endfor %}
+
+    {# 
+       3. MAPA & CTA FINAL
+       Elementos fixos que fecham a página com chave de ouro.
+    #}
+    {% include 'home/_map_section.html' %}
+    
+    {% include '_cta_section.html' %}
+
+</div>
+
+{% endblock %}

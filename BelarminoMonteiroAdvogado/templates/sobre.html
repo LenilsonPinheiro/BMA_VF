@@ -1,0 +1,381 @@
+{% extends "base.html" %}
+{% set disable_scroll_snap = True %}
+
+{% block title %}Sobre Nós - Excelência Jurídica{% endblock %}
+{% block metadescription %}Conheça a trajetória, a missão e a equipe de elite do escritório Belarmino Monteiro.{% endblock %}
+
+{% block preload_links %}
+    {{ super() }}
+    <link rel="preload" href="{{ configs.get('video_institucional', url_for('static', filename='videos/institucional.webm')) }}" as="video" type="video/webm">
+    <link rel="preload" href="{{ url_for('static', filename='images/banners/inner_bg_default.jpg') }}" as="image">
+{% endblock %}
+
+{% block content %}
+
+<style>
+    :root {
+        --hero-height: 60vh;
+        --hero-min-height: 550px;
+        --nav-offset: 100px;
+    }
+
+    .about-hero {
+        position: relative;
+        height: var(--hero-height);
+        min-height: var(--hero-min-height);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-attachment: fixed;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        margin-bottom: 0;
+        padding-top: var(--nav-offset);
+    }
+
+    @media (pointer: coarse) {
+        .about-hero { background-attachment: scroll; }
+    }
+
+    .about-overlay {
+        position: absolute; inset: 0;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.8));
+        z-index: 1;
+    }
+    
+    .about-overlay::after {
+        content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 100px;
+        background: linear-gradient(to top, var(--prm-bg-surface, #fff), transparent);
+        z-index: 2;
+    }
+
+    body.dark-mode .about-overlay::after,
+    [data-theme="dark"] .about-overlay::after {
+        background: linear-gradient(to top, #111, transparent) !important;
+    }
+
+    .about-hero-content {
+        position: relative; z-index: 3;
+        text-align: center; color: white;
+        max-width: 900px; padding: 0 20px;
+    }
+    
+    .hero-title {
+        font-family: var(--font-primary, serif);
+        font-size: clamp(2.5rem, 5vw, 4rem);
+        font-weight: 800;
+        letter-spacing: -1px;
+        margin-bottom: 1.5rem;
+        text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        opacity: 0; animation: fadeUp 1s ease forwards 0.3s;
+    }
+    
+    .hero-subtitle {
+        font-size: clamp(1rem, 2vw, 1.3rem);
+        font-weight: 300; opacity: 0;
+        animation: fadeUp 1s ease forwards 0.6s;
+        text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    }
+
+    @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-adaptive {
+        background-color: #fff;
+        color: #333;
+        padding: 100px 0;
+        position: relative;
+        transition: background 0.3s ease, color 0.3s ease;
+    }
+    
+    .section-adaptive-alt {
+        background-color: #f8f9fa;
+        color: #333;
+        padding: 100px 0;
+    }
+
+    body.dark-mode .section-adaptive, [data-theme="dark"] .section-adaptive {
+        background-color: #111 !important; color: #eee !important;
+    }
+    body.dark-mode .section-adaptive-alt, [data-theme="dark"] .section-adaptive-alt {
+        background-color: #0a0a0a !important; color: #ddd !important;
+        background-image: none !important;
+    }
+
+    .video-vertical-wrapper {
+        position: relative; width: 100%; max-width: 360px;
+        margin: 0 auto; border-radius: 24px; overflow: hidden;
+        box-shadow: 0 25px 60px -10px rgba(0,0,0,0.3);
+        aspect-ratio: 9 / 16; border: 4px solid #fff;
+        transform: rotate(-2deg);
+        transition: transform 0.4s ease;
+        background: #000;
+    }
+    .video-vertical-wrapper:hover { transform: rotate(0deg) scale(1.02); z-index: 5; }
+    
+    body.dark-mode .video-vertical-wrapper, [data-theme="dark"] .video-vertical-wrapper {
+        border-color: #333 !important;
+        box-shadow: 0 25px 60px -10px rgba(0,0,0,0.6);
+    }
+
+    .video-vertical-wrapper video { 
+        width: 100%; 
+        height: 100%; 
+        object-fit: cover; 
+        display: block;
+    }
+
+    .history-img-wrapper { position: relative; padding: 20px; }
+    .history-img-wrapper::before {
+        content: ''; position: absolute; top: 0; left: 0; width: 60%; height: 80%;
+        border: 2px solid var(--prm-accent-red, #b92027); z-index: 0;
+        opacity: 0.3; transition: 0.3s;
+    }
+    .history-img-wrapper:hover::before { top: 10px; left: 10px; opacity: 1; }
+    
+    .history-img {
+        position: relative; z-index: 1; border-radius: 4px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    }
+
+    .values-section {
+        background-image: url('{{ url_for("static", filename="images/banners/texture_bg.png") }}');
+        background-repeat: repeat;
+    }
+    
+    .card-glass {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 1);
+        padding: 3.5rem 2rem; height: 100%;
+        border-radius: 16px;
+        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+    
+    .card-glass:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+        background: #fff;
+    }
+
+    body.dark-mode .card-glass, [data-theme="dark"] .card-glass {
+        background: rgba(30, 30, 30, 0.6) !important;
+        border-color: rgba(255, 255, 255, 0.1) !important;
+        color: #eee !important;
+    }
+    body.dark-mode .card-glass:hover, [data-theme="dark"] .card-glass:hover {
+        background: rgba(40, 40, 40, 0.9) !important;
+    }
+
+    .icon-premium {
+        font-size: 3rem; margin-bottom: 1.5rem;
+        background: -webkit-linear-gradient(45deg, var(--prm-navy, #333), var(--prm-accent-red, #b92027));
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        display: inline-block; transition: 0.3s;
+    }
+    .card-glass:hover .icon-premium { transform: scale(1.1); }
+
+    body.dark-mode .icon-premium, [data-theme="dark"] .icon-premium {
+        background: -webkit-linear-gradient(45deg, #fff, var(--prm-accent-red, #b92027));
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+
+    .section-title {
+        font-size: clamp(2rem, 4vw, 2.8rem);
+        font-weight: 800; margin-bottom: 1.5rem;
+        color: var(--prm-navy, #111);
+        position: relative; display: inline-block;
+    }
+    .section-title::after {
+        content: ''; display: block; width: 40%; height: 4px;
+        background: var(--prm-accent-red, #b92027);
+        margin-top: 10px; border-radius: 2px;
+    }
+    
+    body.dark-mode .section-title, [data-theme="dark"] .section-title {
+        color: #fff !important;
+    }
+
+    .lead-text { font-size: 1.1rem; line-height: 1.8; opacity: 0.85; }
+</style>
+
+<div class="about-page-wrapper">
+
+    <section class="about-hero" style="background-image: url('{{ url_for('static', filename='images/banners/inner_bg_default.jpg') }}');">
+        <div class="about-overlay"></div>
+        <div class="about-hero-content">
+            <h1 class="hero-title">{{ titulo | default('Excelência e Tradição') }}</h1>
+            <p class="hero-subtitle">
+                {{ subtitulo | default('Mais do que advogados, somos parceiros estratégicos na defesa dos seus direitos e na construção do seu futuro.') }}
+            </p>
+        </div>
+    </section>
+
+    <section class="section-adaptive overflow-hidden">
+        <div class="container">
+            <div class="row align-items-center gy-5">
+                <div class="col-lg-7" data-aos="fade-right">
+                    <h2 class="section-title">{{ secao1_titulo | default('Nossa Missão') }}</h2>
+                    <div class="lead-text mt-4">
+                        {{ secao1_conteudo | default('<p>Nossa missão transcende a simples representação legal. Buscamos oferecer uma advocacia de excelência, pautada pela ética inegociável e por um rigor técnico absoluto.</p><p>Compreendemos que por trás de cada processo existe uma vida, uma empresa ou um sonho. Por isso, desenvolvemos soluções jurídicas artesanais, personalizadas para a realidade de cada cliente.</p>') | safe }}
+                    </div>
+                </div>
+                
+                <div class="col-lg-5" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="video-vertical-wrapper">
+                        <video id="institutionalVideo" 
+                               playsinline 
+                               loop 
+                               preload="auto" 
+                               controls 
+                               controlsList="nodownload"
+                               poster="{{ url_for('static', filename='images/vold/Escritório.png') }}"
+                               style="opacity: 0; transition: opacity 0.5s ease;">
+                            <source src="{{ configs.get('video_institucional', url_for('static', filename='videos/institucional.webm')) }}" type="video/webm">
+                            Seu navegador não suporta vídeos HTML5.
+                        </video>
+                    </div>
+                    <div class="text-center mt-3 opacity-50 small fst-italic">
+                        <i class="bi bi-volume-up me-1"></i> Vídeo institucional com áudio
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-adaptive-alt">
+        <div class="container">
+            <div class="row align-items-center gy-5">
+                <div class="col-lg-6 order-2 order-lg-1" data-aos="fade-up">
+                    <div class="history-img-wrapper">
+                        <img src="{{ url_for('static', filename=secao2_media_image | default('images/Belarmino.png')) }}" 
+                             class="img-fluid history-img" 
+                             alt="Dr. Belarmino Monteiro">
+                    </div>
+                </div>
+                
+                <div class="col-lg-6 order-1 order-lg-2 ps-lg-5" data-aos="fade-left">
+                    <h2 class="section-title">{{ secao2_titulo | default('Nossa História') }}</h2>
+                    <div class="lead-text mt-4">
+                        {{ secao2_conteudo | default('<p>Fundado sobre os pilares da tradição jurídica e da inovação tecnológica, o escritório Belarmino Monteiro consolidou-se como referência.</p><p>Nossa trajetória não é medida apenas em anos, mas no sucesso dos casos que defendemos e na confiança duradoura que estabelecemos com nossos parceiros.</p>') | safe }}
+                    </div>
+                    
+                    <div class="mt-5 border-start border-4 border-danger ps-4">
+                        <p class="fs-5 fst-italic mb-0 opacity-75">
+                            "A justiça é o alicerce de uma sociedade livre e próspera."
+                        </p>
+                        <small class="text-uppercase fw-bold mt-2 d-block opacity-50">Belarmino Monteiro</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-adaptive values-section">
+        <div class="container">
+            <div class="text-center mb-5 mx-auto" style="max-width: 700px;" data-aos="fade-up">
+                <h2 class="display-6 fw-bold mb-3">Nossos Pilares</h2>
+                <p class="opacity-75">Os princípios inegociáveis que sustentam nossa reputação e garantem a sua segurança.</p>
+            </div>
+
+            <div class="row g-4 justify-content-center">
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="card-glass text-center">
+                        <div class="icon-premium"><i class="bi bi-shield-check"></i></div>
+                        <h3 class="h4 fw-bold mb-3">Compromisso Total</h3>
+                        <p class="small opacity-75">Tratamos cada caso como se fosse único. Sua causa se torna nossa prioridade absoluta desde o primeiro atendimento.</p>
+                    </div>
+                </div>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="card-glass text-center">
+                        <div class="icon-premium"><i class="bi bi-gem"></i></div>
+                        <h3 class="h4 fw-bold mb-3">Ética & Transparência</h3>
+                        <p class="small opacity-75">Atuação pautada na integridade. Você será informado de cada passo, risco e possibilidade com clareza cristalina.</p>
+                    </div>
+                </div>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="card-glass text-center">
+                        <div class="icon-premium"><i class="bi bi-trophy"></i></div>
+                        <h3 class="h4 fw-bold mb-3">Excelência Técnica</h3>
+                        <p class="small opacity-75">Estudo constante e atualização jurídica. Nosso conhecimento aprofundado é sua maior vantagem estratégica.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {% include '_cta_section.html' %}
+    
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const video = document.getElementById('institutionalVideo');
+    if (!video) return;
+
+    const DELAY_BEFORE_PLAY = 1000;
+    const TARGET_VOLUME = 0.7;
+    const FADE_DURATION = 2000;
+    const FADE_STEPS = 50;
+
+    function fadeInVolume(targetVolume) {
+        const increment = targetVolume / FADE_STEPS;
+        let currentStep = 0;
+        video.volume = 0;
+        video.muted = false;
+
+        const fadeInterval = setInterval(() => {
+            currentStep++;
+            const newVolume = Math.min(increment * currentStep, targetVolume);
+            video.volume = newVolume;
+            console.log(`[Video Player] Fade in: ${Math.round(newVolume * 100)}%`);
+
+            if (currentStep >= FADE_STEPS || newVolume >= targetVolume) {
+                clearInterval(fadeInterval);
+                video.volume = targetVolume;
+                console.log(`[Video Player] Fade in completo: ${Math.round(targetVolume * 100)}%`);
+            }
+        }, FADE_DURATION / FADE_STEPS);
+    }
+
+    function startVideoWithFadeIn() {
+        console.log('[Video Player] Iniciando vídeo após 1 segundo...');
+        video.style.opacity = '1';
+
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+            playPromise.then(() => {
+                console.log('[Video Player] Reprodução iniciada com sucesso');
+                fadeInVolume(TARGET_VOLUME);
+            }).catch(error => {
+                console.warn('[Video Player] Autoplay bloqueado:', error);
+                video.style.opacity = '1';
+            });
+        } else {
+            fadeInVolume(TARGET_VOLUME);
+        }
+    }
+
+    video.addEventListener('canplay', () => {
+        console.log('[Video Player] Vídeo carregado e pronto');
+        setTimeout(() => startVideoWithFadeIn(), DELAY_BEFORE_PLAY);
+    }, { once: true });
+
+    if (video.readyState >= 3) {
+        console.log('[Video Player] Vídeo já carregado');
+        setTimeout(() => startVideoWithFadeIn(), DELAY_BEFORE_PLAY);
+    }
+
+    video.addEventListener('play', () => console.log('[Video Player] ️ Play'));
+    video.addEventListener('pause', () => console.log('[Video Player] ⏸️ Pause'));
+    video.addEventListener('volumechange', () => {
+        console.log(`[Video Player]  Volume: ${Math.round(video.volume * 100)}% | Muted: ${video.muted}`);
+    });
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Erro{% endblock %}
+
+{% block content %}
+<section class="py-5 text-center">
+    <div class="container">
+        <h1 class="display-4 text-danger">Ocorreu um Erro!</h1>
+        <p class="lead">Lamentamos, mas algo deu errado.</p>
+        {% if error %}
+        <p class="text-muted">{{ error }}</p>
+        {% endif %}
+        <a href="{{ url_for('main.home') }}" class="btn btn-primary mt-3">Voltar para a Página Inicial</a>
+    </div>
+</section>
+{% endblock %}

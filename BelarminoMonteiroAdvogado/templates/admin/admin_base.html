@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Painel de Administração - Belarmino Monteiro{% endblock %}</title>
+    
+    {# Meta tags para evitar indexação do admin #}
+    <meta name="robots" content="noindex, nofollow">
+    
+    {# Favicons dinâmicos do banco #}
+    <link rel="shortcut icon" href="{{ url_for('static', filename=configs.get('favicon_ico', 'images/favicons/favicon.ico')) }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename=configs.get('favicon_apple', 'images/favicons/apple-touch-icon.png')) }}">
+
+    {# Fontes do Painel (Inter/Sora para legibilidade) #}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    {# CSS Global do Tema (para herdar variáveis se necessário) #}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
+
+    {# CSS Específico do Painel Admin #}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    {# CSS Aprimorado com Tooltips, Badges e Melhorias de UX #}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin-enhanced.css') }}">
+    {# CSS para componentes reutilizados como o Cookie Consent #}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/cookie_consent.css') }}">
+    
+    {% block head_extra %}
+    {# Lógica para detectar se estamos na Dashboard #}
+    {% if request.endpoint == 'admin.dashboard' %}
+        {% set is_dashboard_page = true %}
+    {% else %}
+        {% set is_dashboard_page = false %}
+    {% endif %}
+    <script>
+        const isDashboardPage = {{ is_dashboard_page|tojson }};
+    </script>
+    {% endblock %}
+</head>
+{# Body recebe a classe do tema ativo para preview, se necessário #}
+<body class="admin-body {{ theme }}" data-theme="{{ theme }}">
+
+    <div class="admin-wrapper">
+        {# --- SIDEBAR DE NAVEGAÇÃO --- #}
+        <nav class="admin-sidebar">
+            <div class="sidebar-header">
+                <a href="{{ url_for('admin.dashboard') }}" title="Painel de Administração" class="sidebar-logo-link">
+                    <img src="{{ url_for('static', filename=configs.get('logo_principal', 'images/BM.png')) }}" alt="Belarmino Monteiro Logo" class="admin-logo">
+                </a>
+                <h3>Admin Panel</h3>
+                <button id="sidebar-toggle" class="sidebar-toggle" title="Recolher menu">
+                    <i class="bi bi-chevron-left"></i>
+                </button>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="{{ url_for('admin.dashboard') }}#Content" class="sidebar-link"><i class="bi bi-pencil-square"></i> <span>Conteúdo Geral</span></a></li>
+                <li><a href="{{ url_for('admin.dashboard') }}#HomeSections" class="sidebar-link"><i class="bi bi-layout-text-window"></i> <span>Home Page</span></a></li>
+                <li><a href="{{ url_for('admin.dashboard') }}#Navigation" class="sidebar-link"><i class="bi bi-list-nested"></i> <span>Navegação</span></a></li>
+                <li><a href="{{ url_for('admin.dashboard') }}#Services" class="sidebar-link"><i class="bi bi-briefcase"></i> <span>Serviços</span></a></li>
+                <li><a href="{{ url_for('admin.dashboard') }}#Team" class="sidebar-link"><i class="bi bi-people"></i> <span>Equipe</span></a></li>
+                <li><a href="{{ url_for('admin.dashboard') }}#Testimonials" class="sidebar-link"><i class="bi bi-chat-quote"></i> <span>Depoimentos</span></a></li>
+                <li><a href="{{ url_for('admin.dashboard') }}#Clients" class="sidebar-link"><i class="bi bi-building"></i> <span>Clientes</span></a></li>
+                <li><a href="{{ url_for('admin.dashboard') }}#EmailSettings" class="sidebar-link"><i class="bi bi-envelope-at"></i> <span>E-mail</span></a></li>
+                <li><a href="{{ url_for('admin.dashboard') }}#Security" class="sidebar-link"><i class="bi bi-shield-lock"></i> <span>Segurança</span></a></li>
+                <li><a href="{{ url_for('admin.dashboard') }}#SEO" class="sidebar-link"><i class="bi bi-search"></i> <span>SEO</span></a></li>
+                <li><a href="{{ url_for('admin.dashboard') }}#Theme" class="sidebar-link"><i class="bi bi-palette"></i> <span>Aparência</span></a></li>
+                <li><a href="{{ url_for('admin.design_editor') }}" class="sidebar-link"><i class="bi bi-paint-bucket"></i> <span>Editor de Design</span></a></li>
+                
+                <li class="mt-auto border-top border-secondary pt-2">
+                    <a href="{{ url_for('main.home') }}" target="_blank" class="sidebar-link site-link"><i class="bi bi-box-arrow-up-right"></i> <span>Ver Site</span></a>
+                </li>
+                <li><a href="{{ url_for('auth.logout') }}" class="sidebar-link logout-link"><i class="bi bi-box-arrow-right"></i> <span>Sair</span></a></li>
+            </ul>
+        </nav>
+
+        {# --- CONTEÚDO PRINCIPAL --- #}
+        <main class="admin-main-content">
+            <button id="sidebar-show-toggle" class="sidebar-show-toggle" title="Mostrar menu">
+                <i class="bi bi-list"></i>
+            </button>
+            
+            {# Mensagens Flash (Sucesso/Erro) #}
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages mb-4">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+    
+    {# --- SCRIPTS GERAIS DO ADMIN --- #}
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const body = document.body;
+        const sidebarToggle = document.getElementById('sidebar-toggle');
+        const sidebarShowToggle = document.getElementById('sidebar-show-toggle');
+        const sidebarStateKey = 'adminSidebarCollapsed';
+
+        // 1. Lógica para Recolher/Mostrar Sidebar (Persistente)
+        const setSidebarState = (collapsed) => {
+            if (collapsed) {
+                body.classList.add('sidebar-collapsed');
+                localStorage.setItem(sidebarStateKey, 'true');
+            } else {
+                body.classList.remove('sidebar-collapsed');
+                localStorage.removeItem(sidebarStateKey);
+            }
+        };
+
+        // Restaura estado salvo
+        if (localStorage.getItem(sidebarStateKey) === 'true') {
+            setSidebarState(true);
+        }
+
+        if (sidebarToggle) sidebarToggle.addEventListener('click', () => setSidebarState(true));
+        if (sidebarShowToggle) sidebarShowToggle.addEventListener('click', () => setSidebarState(false));
+
+        // 2. Lógica de Navegação por Abas (SPA-like para Dashboard)
+        if (isDashboardPage) {
+            const sidebarLinks = document.querySelectorAll('.sidebar-link');
+            const tabContents = document.querySelectorAll('.tab-content');
+            const defaultTab = '#Content';
+
+            const showTab = (hash) => {
+                const targetHash = hash || window.location.hash || localStorage.getItem('adminTabHash') || defaultTab;
+                
+                // Esconde todos os conteúdos de aba
+                tabContents.forEach(tc => {
+                    tc.style.display = 'none';
+                    tc.classList.remove('active');
+                });
+
+                // Remove a classe 'active' de todos os links da sidebar
+                sidebarLinks.forEach(link => {
+                    if (new URL(link.href).hash) {
+                        link.classList.remove('active');
+                    }
+                });
+
+                // Mostra o conteúdo da aba alvo
+                const targetContent = document.getElementById(targetHash.substring(1));
+                if (targetContent) {
+                    targetContent.style.display = 'block';
+                    targetContent.classList.add('active');
+                }
+
+                // Ativa o link correspondente
+                const targetLink = document.querySelector(`.sidebar-link[href$="${targetHash}"]`);
+                if (targetLink) {
+                    targetLink.classList.add('active');
+                }
+                
+                // Guarda a última aba no localStorage
+                if (targetHash) {
+                    localStorage.setItem('adminTabHash', targetHash);
+                }
+            };
+
+            // Adiciona listeners de clique aos links da sidebar que são âncoras na página atual
+            sidebarLinks.forEach(link => {
+                const linkUrl = new URL(link.href, window.location.origin);
+                if (linkUrl.hash && linkUrl.pathname === window.location.pathname) {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        if (window.location.hash !== linkUrl.hash) {
+                            window.location.hash = linkUrl.hash;
+                        } else {
+                            // Se o hash for o mesmo, apenas re-mostra a aba (caso esteja oculta)
+                            showTab(linkUrl.hash);
+                        }
+                    });
+                }
+            });
+
+            // Listener para mudanças no hash (navegação por histórico do browser)
+            window.addEventListener('hashchange', () => showTab(window.location.hash));
+
+            // Mostra a aba inicial ao carregar a página
+            showTab();
+        }
+    });
+    </script>
+    
+    {% block body_extra %}{% endblock %}
+
+    {# Modal de Ícones (Placeholder para funcionalidade futura) #}
+    <div id="icon-picker-modal" class="icon-picker-modal" style="display:none;">
+        </div>
+    
+    {# Carrega script do Cookie Consent apenas para não quebrar estilos se usados #}
+    <script src="{{ url_for('static', filename='js/cookie_consent.js') }}"></script>
+    {# Bootstrap JS Necessário #}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

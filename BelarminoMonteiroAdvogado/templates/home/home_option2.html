@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+
+{% block title %}Belarmino Monteiro - Advocacia Executiva Titan{% endblock %}
+{% block metadescription %}Soluções jurídicas sólidas e de alto contraste para o mundo corporativo.{% endblock %}
+
+{% block content %}
+
+<style>
+    /* VARIÁVEIS LOCAIS SÃO DEFINIDAS EM theme-light-option2.css e theme-dark-option2.css */
+    
+    /* --- 1. HERO TITAN --- */
+    .hero-titan {
+        position: relative;
+        height: 100vh;
+        min-height: 600px;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+        color: #fff;
+        text-align: left;
+    }
+    
+    .hero-titan-overlay {
+        position: absolute; inset: 0;
+        background: linear-gradient(90deg, rgba(0, 47, 73, 0.9) 0%, rgba(0, 47, 73, 0.4) 60%, transparent 100%);
+        z-index: 1;
+    }
+
+    /* FIX CRÍTICO: Garante que os títulos e subtítulos sejam brancos contra o overlay escuro. */
+    .hero-titan .hero-content .hero-pre-title,
+    .hero-titan .hero-content .hero-title,
+    .hero-titan .hero-content .hero-subtitle {
+        color: #fff;
+    }
+    
+    /* Dark Mode Overlay Adjustment */
+    body.dark-mode .hero-titan-overlay, [data-theme="dark"] .hero-titan-overlay {
+        background: linear-gradient(90deg, rgba(10, 14, 20, 0.9) 0%, rgba(10, 14, 20, 0.5) 60%, transparent 100%);
+    }
+
+    .hero-titan-bg {
+        position: absolute; inset: 0;
+        width: 100%; height: 100%;
+        object-fit: cover;
+        z-index: 0;
+    }
+
+    .hero-content {
+        position: relative; z-index: 2;
+        max-width: 600px; padding: 0 20px;
+    }
+
+    .hero-pre-title {
+        font-family: var(--lux-font-sans);
+        text-transform: uppercase; letter-spacing: 4px;
+        font-size: 0.9rem; margin-bottom: 20px;
+        opacity: 0.8; display: block;
+    }
+
+    .hero-title {
+        font-family: var(--lux-font-serif);
+        font-size: clamp(3rem, 7vw, 4.5rem);
+        font-weight: 800; margin-bottom: 20px;
+        line-height: 1.1;
+    }
+
+    .hero-subtitle {
+        font-family: var(--lux-font-sans);
+        font-size: clamp(1rem, 2vw, 1.25rem);
+        font-weight: 300; opacity: 0.9;
+        margin: 0 0 40px 0;
+        line-height: 1.6;
+    }
+
+    /* --- 2. INTRODUÇÃO (Borda de Destaque) --- */
+    .intro-titan {
+        padding: 120px 0;
+        background-color: var(--titan-bg-main);
+    }
+    .intro-box-titan {
+        border-left: 5px solid var(--titan-gold);
+        padding-left: 30px;
+        margin-left: 30px;
+    }
+    
+    /* --- 3. SERVIÇOS (Cards Estruturados) --- */
+    .services-titan {
+        padding: 100px 0;
+        background-color: var(--titan-bg-subtle);
+    }
+
+    .section-header-titan {
+        margin-bottom: 60px; text-align: center;
+    }
+    .section-label {
+        font-family: var(--titan-font-sans);
+        text-transform: uppercase; letter-spacing: 2px;
+        font-size: 0.75rem; color: var(--titan-gold);
+        margin-bottom: 10px; display: block;
+    }
+    
+    /* --- 4. DESTAQUE (Full Width) --- */
+    .feature-titan {
+        padding: 80px 0;
+        background-color: var(--titan-navy);
+        color: #fff;
+        text-align: center;
+    }
+    
+</style>
+
+<div class="option2-wrapper">
+
+    <section class="hero-titan" style="background-image: url('{{ url_for('static', filename='images/banners/titan_bg.jpg') }}');">
+        <div class="hero-titan-overlay"></div>
+        <div class="container position-relative z-2">
+            <div class="hero-content" data-aos="fade-right">
+                <span class="hero-pre-title" data-aos="fade-down" data-aos-delay="200">Titan Executive</span>
+                <h1 class="hero-title" data-aos="fade-up" data-aos-delay="400">
+                    Sua Estratégia Jurídica no Topo.
+                </h1>
+                <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="600">
+                    Soluções B2B de alto impacto, precisão e foco em resultados mensuráveis para sua empresa.
+                </p>
+                <a href="#intro" class="btn btn-primary btn-lg rounded-0" data-aos="fade-up" data-aos-delay="800">
+                    Consultoria Executiva
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="intro" class="intro-titan">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-7" data-aos="fade-right">
+                    <div class="intro-box-titan">
+                        <h2 class="h1 mb-4" style="color: var(--titan-text-primary);">Excelência sem concessões.</h2>
+                        <p class="lead" style="color: var(--titan-text-secondary);">
+                            Somos a extensão jurídica do seu board, oferecendo uma visão estratégica que antecipa riscos e maximiza oportunidades no ambiente regulatório complexo.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-lg-5 text-end" data-aos="fade-left" data-aos-delay="200">
+                    <img src="{{ url_for('static', filename='images/Belarmino_Titan.png') }}" class="img-fluid w-75" alt="Dr. Belarmino - Executivo">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="services-titan">
+        <div class="container">
+            <div class="section-header-titan" data-aos="fade-up">
+                <span class="section-label">O que fazemos de melhor</span>
+                <h2 class="h1">Nossa Estrutura de Serviços</h2>
+            </div>
+            
+            <div class="row g-4">
+                {% for area in lista_areas_atuacao[:4] %}
+                <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
+                    <div class="service-card">
+                        <div class="icon-square"><i class="{{ area.icone if area.icone else 'bi bi-shield-check' }}"></i></div>
+                        <h3 class="h4 mt-3 mb-2">{{ area.titulo }}</h3>
+                        <p class="small opacity-75">{{ area.descricao[:80] }}...</p>
+                        {# CORREÇÃO: Substitui servico_detalhe por pagina_dinamica #}
+                        <a href="{{ url_for('main.pagina_dinamica', slug=area.slug) }}" class="btn btn-sm btn-outline-primary mt-3 rounded-0">Saiba Mais</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    
+    <section class="feature-titan">
+        <div class="container" data-aos="zoom-in">
+            <h2 class="display-5 fw-bold mb-3">Conhecimento Profundo. Estratégia Vencedora.</h2>
+            <p class="lead opacity-75 mb-4">Transformamos desafios legais em vantagens competitivas.</p>
+            <a href="{{ url_for('main.pagina_contato') }}" class="btn btn-lg btn-warning rounded-0 px-5 fw-bold">Fale com um Executivo</a>
+        </div>
+    </section>
+
+    {% include 'home/_map_section.html' %}
+    {% include '_cta_section.html' %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,724 @@
+{% extends "admin/admin_base.html" %}
+
+{% block title %}Painel de Controle{% endblock %}
+
+{% block head_extra %}
+{{ super() }}
+<style>
+    /* Estilos para Drag & Drop */
+    .sortable-list { list-style: none; padding: 0; }
+    .sortable-item {
+        background: #fff; border: 1px solid #ddd; padding: 10px 15px; margin-bottom: 5px;
+        border-radius: 4px; cursor: move; display: flex; align-items: center; justify-content: space-between;
+    }
+    .sortable-item i { margin-right: 10px; color: #888; }
+    .sortable-ghost { opacity: 0.4; background: #f0f0f0; }
+    
+    .dashboard-card { transition: transform 0.2s; }
+    .dashboard-card:hover { transform: translateY(-5px); }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="admin-dashboard-content">
+
+    {# SEÇÃO: Conteúdo Geral #}
+    <section id="Content" class="tab-content active">
+        <h3 class="mb-4">Visão Geral do Painel</h3>
+        
+        {# --- ALERTA DE NOVOS TEMAS (V2.0) --- #}
+        <div class="alert alert-info d-flex align-items-center mb-4 shadow-sm" role="alert">
+            <i class="bi bi-stars fs-3 me-3 text-primary"></i>
+            <div>
+                <strong>Novidade V2.0:</strong> Agora você tem acesso a 4 novos layouts premium (Options 5, 6, 7 e 8).
+                <a href="#Theme" class="alert-link text-decoration-underline">Experimente agora</a> na aba Aparência.
+            </div>
+        </div>
+        {# ---------------------------------------------- #}
+
+        <p class="text-muted">Bem-vindo ao painel de administração. Use o menu lateral para navegar entre as diferentes seções e gerenciar o conteúdo do seu site.</p>
+        
+        <div class="row g-4 mb-4">
+            <div class="col-md-3">
+                <div class="card dashboard-card bg-primary text-white h-100">
+                    <div class="card-body text-center d-flex flex-column justify-content-center">
+                        <i class="bi bi-palette fs-1 mb-2"></i>
+                        <h5 class="card-title">Design & Tema</h5>
+                        <p class="card-text small">Personalize cores e layout.</p>
+                        <a href="{{ url_for('admin.design_editor') }}" class="stretched-link"></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card dashboard-card bg-success text-white h-100">
+                    <div class="card-body text-center d-flex flex-column justify-content-center">
+                        <i class="bi bi-briefcase fs-1 mb-2"></i>
+                        <h5 class="card-title">Áreas de Atuação</h5>
+                        <p class="card-text small">Gerencie serviços e práticas.</p>
+                        <a href="#Services" class="stretched-link"></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card dashboard-card bg-info text-white h-100">
+                    <div class="card-body text-center d-flex flex-column justify-content-center">
+                        <i class="bi bi-people fs-1 mb-2"></i>
+                        <h5 class="card-title">Equipe</h5>
+                        <p class="card-text small">Adicione advogados e sócios.</p>
+                        <a href="#Team" class="stretched-link"></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card dashboard-card bg-warning text-dark h-100">
+                    <div class="card-body text-center d-flex flex-column justify-content-center">
+                        <i class="bi bi-layout-text-window-reverse fs-1 mb-2"></i>
+                        <h5 class="card-title">Seções da Home</h5>
+                        <p class="card-text small">Reordene o conteúdo principal.</p>
+                        <a href="#HomeSections" class="stretched-link"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Formulário de edição de conteúdo geral para páginas #}
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white py-3">
+                <h5 class="mb-0"><i class="bi bi-journal-text me-2"></i>Gerenciar Conteúdo de Páginas</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted small">Edite o conteúdo textual de páginas como "Sobre Nós", "Contato", "Política de Privacidade", etc. Selecione a página e a seção para editar.</p>
+                
+                <form method="POST" action="{{ url_for('admin.update_content') }}" enctype="multipart/form-data">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        <label for="page-selector" class="form-label">Selecionar Página:</label>
+                        <select name="page_identifier" id="page-selector" class="form-select">
+                            {% for page_slug in all_content_pages %}
+                            <option value="{{ page_slug }}" {% if page_slug == selected_page %}selected{% endif %}>{{ page_slug|replace('-', ' ')|title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    {# 
+                       CORREÇÃO CRÍTICA: 
+                       O loop abaixo foi alterado de 'content_item' para 'item'.
+                       Isso é necessário porque o template '_form_field.html' espera uma variável chamada 'item'.
+                    #}
+                    {% for item in content_for_page %}
+                        {% include 'admin/_form_field.html' %}
+                    {% endfor %}
+                    
+                    <button type="submit" class="btn btn-primary mt-3">Salvar Conteúdo da Página</button>
+                </form>
+            </div>
+        </div>
+
+    </section>
+
+    {# SEÇÃO: Home Page #}
+    <section id="HomeSections" class="tab-content">
+        <h3 class="mb-4">Gerenciar Seções da Home Page</h3>
+        <p class="text-muted">Arraste e solte para reordenar as seções da página inicial. Ative ou desative seções conforme necessário.</p>
+        <div class="card shadow-sm">
+            <div class="card-header bg-white py-3">
+                <h5 class="mb-0"><i class="bi bi-layers me-2"></i>Organizar Home Page</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('admin.reorder_home_sections') }}" id="sections-order-form">
+                    {{ form.hidden_tag() }} 
+                    <ul id="sections-list" class="sortable-list">
+                        {% for section in home_sections_list %}
+                        <li class="sortable-item" data-id="{{ section.id }}">
+                            <div>
+                                <i class="bi bi-grip-vertical"></i>
+                                <span class="fw-bold">{{ section.title }}</span>
+                                <span class="badge bg-light text-secondary ms-2">{{ section.section_type }}</span>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <input type="hidden" name="order" value="{{ section.id }}">
+                                
+                                <button type="button" class="btn btn-sm btn-link text-decoration-none toggle-visibility" 
+                                        data-id="{{ section.id }}" 
+                                        data-active="{{ 'true' if section.is_active else 'false' }}">
+                                    <i class="bi {{ 'bi-eye-fill text-success' if section.is_active else 'bi-eye-slash-fill text-muted' }}"></i>
+                                </button>
+
+                                <button type="button" class="btn btn-sm btn-outline-secondary" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#editSectionModal{{ section.id }}">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                            </div>
+                        </li>
+
+                        <div class="modal fade" id="editSectionModal{{ section.id }}" tabindex="-1">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <form method="POST" action="{{ url_for('admin.update_section_text') }}">
+                                        {{ form.hidden_tag() }}
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Editar Seção</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <input type="hidden" name="section_id" value="{{ section.id }}">
+                                            <div class="mb-3">
+                                                <label class="form-label">Título</label>
+                                                <input type="text" class="form-control" name="title" value="{{ section.title }}">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Subtítulo / Descrição</label>
+                                                <textarea class="form-control" name="subtitle" rows="3">{{ section.subtitle }}</textarea>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                            <button type="submit" class="btn btn-primary">Salvar</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </ul>
+                    <button type="submit" class="btn btn-primary w-100 mt-3">Salvar Nova Ordem</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    {# SEÇÃO: Navegação #}
+    <section id="Navigation" class="tab-content">
+        <h3 class="mb-4">Gerenciar Navegação do Site</h3>
+        <p class="text-muted">Organize a ordem dos itens do menu principal. Arraste e solte para alterar a ordem e hierarquia.</p>
+        <div class="card shadow-sm">
+            <div class="card-header bg-white py-3">
+                <h5 class="mb-0"><i class="bi bi-list-nested me-2"></i>Itens do Menu Principal</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('admin.update_nav_order') }}" id="nav-order-form">
+                    {{ form.hidden_tag() }}
+                    <ul id="nav-list" class="sortable-list">
+                        {# Use nav_pages_admin #}
+                        {% for page in nav_pages_admin %}
+                        <li class="sortable-item" data-id="{{ page.id }}">
+                            <div>
+                                <i class="bi bi-grip-vertical"></i>
+                                <span>{{ page.titulo_menu }}</span>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <input type="hidden" name="order" value="{{ page.id }}">
+                                <a href="{{ url_for('admin.toggle_page_status', id=page.id, field='show_in_menu') }}" class="btn btn-sm btn-link text-decoration-none">
+                                    <i class="bi {{ 'bi-eye-fill text-success' if page.show_in_menu else 'bi-eye-slash-fill text-muted' }}"></i>
+                                </a>
+                                <a href="{{ url_for('admin.toggle_page_status', id=page.id, field='ativo') }}" class="btn btn-sm btn-link text-decoration-none">
+                                    <i class="bi {{ 'bi-check-circle-fill text-success' if page.ativo else 'bi-x-circle-fill text-danger' }}"></i>
+                                </a>
+                                {% if page.tipo == 'servico' %}
+                                <a href="{{ url_for('admin.edit_service', slug=page.slug) }}" class="btn btn-sm btn-outline-secondary">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                {% endif %}
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <button type="submit" class="btn btn-primary w-100 mt-3">Salvar Ordem do Menu</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    {# SEÇÃO: Serviços #}
+    <section id="Services" class="tab-content">
+        <h3 class="mb-4">Gerenciar Serviços</h3>
+        <p class="text-muted">Adicione, edite ou remova as áreas de atuação e serviços oferecidos.</p>
+        
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-briefcase me-2"></i>Listar Serviços</h5>
+                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addServiceModal">
+                    <i class="bi bi-plus-lg"></i> Adicionar Serviço
+                </button>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    {% for service in all_services %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="{{ service.icone }} me-2"></i>
+                            <strong>{{ service.titulo }}</strong>
+                            <small class="text-muted ms-2">({{ service.slug }})</small>
+                        </div>
+                        <div>
+                            <a href="{{ url_for('admin.edit_service', slug=service.slug) }}" class="btn btn-sm btn-primary me-2">Editar</a>
+                            <form action="{{ url_for('admin.delete_area_atuacao') }}" method="POST" class="d-inline">
+                                {{ form.hidden_tag() }}
+                                <input type="hidden" name="slug" value="{{ service.slug }}">
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja remover este serviço e sua página?');">Excluir</button>
+                            </form>
+                        </div>
+                    </li>
+                    {% else %}
+                    <li class="list-group-item text-center text-muted">Nenhum serviço cadastrado.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        {# Modal de Adicionar Serviço #}
+        <div class="modal fade" id="addServiceModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form method="POST" action="{{ url_for('admin.add_area_atuacao') }}" enctype="multipart/form-data">
+                        {{ form.hidden_tag() }}
+                        <div class="modal-header">
+                            <h5 class="modal-title">Adicionar Novo Serviço</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="titulo" class="form-label">Título</label>
+                                <input type="text" class="form-control" id="titulo" name="titulo" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="slug" class="form-label">URL (slug)</label>
+                                <input type="text" class="form-control" id="slug" name="slug" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="descricao" class="form-label">Descrição Curta</label>
+                                <textarea class="form-control" id="descricao" name="descricao" rows="3" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="icone" class="form-label">Ícone</label>
+                                <input type="text" class="form-control" id="icone" name="icone" placeholder="Ex: bi-bank" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="foto" class="form-label">Foto de Capa</label>
+                                <input type="file" class="form-control" id="foto" name="foto" accept="image/*">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Salvar Serviço</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {# SEÇÃO: Equipe #}
+    <section id="Team" class="tab-content">
+        <h3 class="mb-4">Gerenciar Equipe</h3>
+        <p class="text-muted">Adicione, edite ou remova membros da equipe.</p>
+        
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-people me-2"></i>Membros da Equipe</h5>
+                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addMemberModal">
+                    <i class="bi bi-plus-lg"></i> Adicionar Membro
+                </button>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    {% for member in all_team %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            {% if member.foto %}
+                                <img src="{{ url_for('static', filename=member.foto) }}" alt="{{ member.nome }}" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
+                            {% else %}
+                                <i class="bi bi-person-circle fs-4 me-2"></i>
+                            {% endif %}
+                            <strong>{{ member.nome }}</strong>
+                            <small class="text-muted ms-2">({{ member.cargo }})</small>
+                        </div>
+                        <div>
+                            <a href="{{ url_for('admin.edit_membro', id=member.id) }}" class="btn btn-sm btn-primary me-2">Editar</a>
+                            <form action="{{ url_for('admin.delete_membro_equipe') }}" method="POST" class="d-inline">
+                                {{ form.hidden_tag() }}
+                                <input type="hidden" name="id" value="{{ member.id }}">
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja remover este membro da equipe?');">Excluir</button>
+                            </form>
+                        </div>
+                    </li>
+                    {% else %}
+                    <li class="list-group-item text-center text-muted">Nenhum membro da equipe cadastrado.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        {# Modal de Adicionar Membro #}
+        <div class="modal fade" id="addMemberModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form method="POST" action="{{ url_for('admin.add_membro_equipe') }}" enctype="multipart/form-data">
+                        {{ form.hidden_tag() }}
+                        <div class="modal-header">
+                            <h5 class="modal-title">Adicionar Novo Membro</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="nome" class="form-label">Nome</label>
+                                <input type="text" class="form-control" id="nome" name="nome" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="cargo" class="form-label">Cargo</label>
+                                <input type="text" class="form-control" id="cargo" name="cargo" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="biografia" class="form-label">Biografia</label>
+                                <textarea class="form-control" id="biografia" name="biografia" rows="5"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="foto" class="form-label">Foto</label>
+                                <input type="file" class="form-control" id="foto" name="foto" accept="image/*">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Salvar Membro</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {# SEÇÃO: Depoimentos #}
+    <section id="Testimonials" class="tab-content">
+        <h3 class="mb-4">Gerenciar Depoimentos</h3>
+        <p class="text-muted">Aprove ou exclua depoimentos enviados pelos clientes.</p>
+        
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-chat-quote me-2"></i>Depoimentos Recebidos</h5>
+                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#generateDepoimentoLinkModal">
+                    <i class="bi bi-link-45deg"></i> Gerar Link de Submissão
+                </button>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    {% for testimonial in all_testimonials %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>{{ testimonial.nome_cliente }}</strong>
+                            <small class="text-muted ms-2">({{ testimonial.data_criacao.strftime('%d/%m/%Y %H:%M') }})</small><br>
+                            <p class="text-muted mb-0">{{ testimonial.texto_depoimento|truncate(100) }}</p>
+                            {% if not testimonial.aprovado %}
+                                <span class="badge bg-warning text-dark">Pendente de Aprovação</span>
+                            {% else %}
+                                <span class="badge bg-success">Aprovado</span>
+                            {% endif %}
+                        </div>
+                        <div>
+                            {% if not testimonial.aprovado %}
+                                <form action="{{ url_for('admin.approve_depoimento', id=testimonial.id) }}" method="POST" class="d-inline">
+                                    {{ form.hidden_tag() }}
+                                    <button type="submit" class="btn btn-sm btn-success me-2">Aprovar</button>
+                                </form>
+                            {% endif %}
+                            <a href="{{ url_for('admin.delete_depoimento', id=testimonial.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja remover este depoimento?');">Excluir</a>
+                        </div>
+                    </li>
+                    {% else %}
+                    <li class="list-group-item text-center text-muted">Nenhum depoimento recebido.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        {# Modal de Gerar Link de Depoimento #}
+        <div class="modal fade" id="generateDepoimentoLinkModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form method="POST" action="{{ url_for('admin.generate_depoimento_link') }}">
+                        {{ form.hidden_tag() }}
+                        <div class="modal-header">
+                            <h5 class="modal-title">Gerar Link para Depoimento</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Clique em "Gerar Link" para criar um link único que você pode compartilhar com seus clientes para que eles enviem um depoimento.</p>
+                            <div class="alert alert-info" role="alert">
+                                O link gerado aparecerá como uma mensagem de sucesso após a submissão.
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Gerar Link</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {# SEÇÃO: Clientes #}
+    <section id="Clients" class="tab-content">
+        <h3 class="mb-4">Gerenciar Clientes e Parceiros</h3>
+        <p class="text-muted">Adicione, edite ou remova logos de clientes e parceiros.</p>
+        
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-building me-2"></i>Listar Clientes/Parceiros</h5>
+                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addClientModal">
+                    <i class="bi bi-plus-lg"></i> Adicionar Cliente/Parceiro
+                </button>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    {% for client in all_clients %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            {% if client.logo_path %}
+                                <img src="{{ url_for('static', filename=client.logo_path) }}" alt="{{ client.nome }}" class="me-2" style="height: 30px; object-fit: contain;">
+                            {% endif %}
+                            <strong>{{ client.nome }}</strong>
+                        </div>
+                        <div>
+                            {# No direct edit for client logos here, usually handled via upload. Add if needed. #}
+                            <form action="{{ url_for('admin.delete_cliente_parceiro') }}" method="POST" class="d-inline">
+                                {{ form.hidden_tag() }}
+                                <input type="hidden" name="id" value="{{ client.id }}">
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja remover este cliente/parceiro?');">Excluir</button>
+                            </form>
+                        </div>
+                    </li>
+                    {% else %}
+                    <li class="list-group-item text-center text-muted">Nenhum cliente/parceiro cadastrado.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        {# Modal de Adicionar Cliente/Parceiro #}
+        <div class="modal fade" id="addClientModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form method="POST" action="{{ url_for('admin.add_cliente_parceiro') }}" enctype="multipart/form-data">
+                        {{ form.hidden_tag() }}
+                        <div class="modal-header">
+                            <h5 class="modal-title">Adicionar Cliente/Parceiro</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="client_nome" class="form-label">Nome</label>
+                                <input type="text" class="form-control" id="client_nome" name="nome" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="client_logo" class="form-label">Logo</label>
+                                <input type="file" class="form-control" id="client_logo" name="logo" accept="image/*" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Salvar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {# SEÇÃO: E-mail #}
+    <section id="EmailSettings" class="tab-content">
+        <h3 class="mb-4">Configurações de E-mail</h3>
+        <p class="text-muted">Configure o servidor SMTP para envio de e-mails pelo site (formulários de contato, etc.).</p>
+        
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white py-3">
+                <h5 class="mb-0"><i class="bi bi-envelope-at me-2"></i>Credenciais SMTP</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('admin.update_email_settings') }}">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        <label for="smtp_server" class="form-label">Servidor SMTP</label>
+                        <input type="text" class="form-control" id="smtp_server" name="smtp_server" value="{{ email_settings_dict.smtp_server.conteudo if email_settings_dict.smtp_server else '' }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="smtp_port" class="form-label">Porta SMTP</label>
+                        <input type="number" class="form-control" id="smtp_port" name="smtp_port" value="{{ email_settings_dict.smtp_port.conteudo if email_settings_dict.smtp_port else '587' }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="smtp_user" class="form-label">Usuário SMTP</label>
+                        <input type="text" class="form-control" id="smtp_user" name="smtp_user" value="{{ email_settings_dict.smtp_user.conteudo if email_settings_dict.smtp_user else '' }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="smtp_pass" class="form-label">Senha SMTP (deixe em branco para não alterar)</label>
+                        <input type="password" class="form-control" id="smtp_pass" name="smtp_pass" value="">
+                    </div>
+                    <div class="mb-3">
+                        <label for="email_to" class="form-label">Receber E-mails em</label>
+                        <input type="email" class="form-control" id="email_to" name="email_to" value="{{ email_settings_dict.email_to.conteudo if email_settings_dict.email_to else '' }}">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Salvar Configurações de E-mail</button>
+                    <button type="button" class="btn btn-info ms-2" id="test-email-btn">Testar Envio</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    {# SEÇÃO: Segurança #}
+    <section id="Security" class="tab-content">
+        <h3 class="mb-4">Configurações de Segurança</h3>
+        <p class="text-muted">Altere a sua senha de administrador.</p>
+        
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white py-3">
+                <h5 class="mb-0"><i class="bi bi-shield-lock me-2"></i>Alterar Senha de Administrador</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('admin.change_password') }}">
+                    {{ password_form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ password_form.current_password.label(class="form-label") }}
+                        {{ password_form.current_password(class="form-control") }}
+                        {% for error in password_form.current_password.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="mb-3">
+                        {{ password_form.new_password.label(class="form-label") }}
+                        {{ password_form.new_password(class="form-control") }}
+                        {% for error in password_form.new_password.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="mb-3">
+                        {{ password_form.confirm_password.label(class="form-label") }}
+                        {{ password_form.confirm_password(class="form-control") }}
+                        {% for error in password_form.confirm_password.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Alterar Senha</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    {# SEÇÃO: SEO #}
+    <section id="SEO" class="tab-content">
+        <h3 class="mb-4">Otimização para Buscadores (SEO)</h3>
+        <p class="text-muted">Gerencie meta tags, scripts e verificação de site para melhorar a visibilidade nos mecanismos de busca.</p>
+        
+        {# Content here would typically involve forms for meta descriptions, keywords, Google Analytics IDs, etc. #}
+        <div class="card shadow-sm">
+            <div class="card-header bg-white py-3">
+                <h5 class="mb-0"><i class="bi bi-search me-2"></i>Configurações Gerais de SEO</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-info">Conteúdo para SEO aqui (ex: meta tags globais, scripts de analytics, verificação de propriedade do site).</p>
+                {# Example: Form for global SEO settings #}
+                <form method="POST" action="{{ url_for('admin.update_content') }}"> {# Reusing update_content route for simplicity #}
+                    {{ form.hidden_tag() }}
+                    <input type="hidden" name="page_identifier" value="configuracoes_seo">
+                    <div class="mb-3">
+                        <label for="seo_meta_title_sufixo" class="form-label">Sufixo do Título (SEO)</label>
+                        <input type="text" class="form-control" id="seo_meta_title_sufixo" name="content-seo_meta_title_sufixo" 
+                               value="{{ (all_content | selectattr('pagina', 'equalto', 'configuracoes_seo') | selectattr('secao', 'equalto', 'seo_meta_title_sufixo') | first).conteudo if (all_content | selectattr('pagina', 'equalto', 'configuracoes_seo') | selectattr('secao', 'equalto', 'seo_meta_title_sufixo') | first) else '' }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="google_site_verification" class="form-label">Google Site Verification ID</label>
+                        <input type="text" class="form-control" id="google_site_verification" name="content-seo_google_site_verification" 
+                               value="{{ (all_content | selectattr('pagina', 'equalto', 'configuracoes_seo') | selectattr('secao', 'equalto', 'seo_google_site_verification') | first).conteudo if (all_content | selectattr('pagina', 'equalto', 'configuracoes_seo') | selectattr('secao', 'equalto', 'seo_google_site_verification') | first) else '' }}">
+                    </div>
+                     <div class="mb-3">
+                        <label for="seo_head_scripts" class="form-label">Scripts no Head (&lt;head&gt;)</label>
+                        <textarea class="form-control" id="seo_head_scripts" name="content-seo_head_scripts" rows="5">{{ (all_content | selectattr('pagina', 'equalto', 'configuracoes_seo') | selectattr('secao', 'equalto', 'seo_head_scripts') | first).conteudo if (all_content | selectattr('pagina', 'equalto', 'configuracoes_seo') | selectattr('secao', 'equalto', 'seo_head_scripts') | first) else '' }}</textarea>
+                    </div>
+                     <div class="mb-3">
+                        <label for="seo_body_scripts" class="form-label">Scripts no Body (antes de &lt;/body&gt;)</label>
+                        <textarea class="form-control" id="seo_body_scripts" name="content-seo_body_scripts" rows="5">{{ (all_content | selectattr('pagina', 'equalto', 'configuracoes_seo') | selectattr('secao', 'equalto', 'seo_body_scripts') | first).conteudo if (all_content | selectattr('pagina', 'equalto', 'configuracoes_seo') | selectattr('secao', 'equalto', 'seo_body_scripts') | first) else '' }}</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-3">Salvar Configurações de SEO</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    {# SEÇÃO: Aparência/Tema #}
+    <section id="Theme" class="tab-content">
+        <h3 class="mb-4">Configurações de Aparência</h3>
+        <p class="text-muted">Selecione o tema principal do site ou acesse o editor de design para personalização avançada.</p>
+        
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white py-3">
+                <h5 class="mb-0"><i class="bi bi-palette me-2"></i>Selecionar Tema Base</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('admin.select_theme') }}">
+                    {{ theme_form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ theme_form.theme.label(class="form-label") }}
+                        {{ theme_form.theme(class="form-select") }}
+                        {% for error in theme_form.theme.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Salvar Tema</button>
+                </form>
+                <hr>
+                <p class="text-muted mt-3">Para personalizar cores, fontes e outros elementos visuais, use o editor de design:</p>
+                <a href="{{ url_for('admin.design_editor') }}" class="btn btn-secondary">
+                    <i class="bi bi-paint-bucket me-2"></i>Abrir Editor de Design
+                </a>
+            </div>
+        </div>
+    </section>
+
+</div> {# end .admin-dashboard-content #}
+{% endblock %}
+
+
+{% block body_extra %}
+<script>
+    // Inicializa SortableJS para Seções da Home
+    new Sortable(document.getElementById('sections-list'), {
+        animation: 150,
+        ghostClass: 'sortable-ghost',
+        handle: '.bi-grip-vertical' // Arrastar apenas pelo ícone
+    });
+
+    // Inicializa SortableJS para Menu
+    new Sortable(document.getElementById('nav-list'), {
+        animation: 150,
+        ghostClass: 'sortable-ghost',
+        handle: '.bi-grip-vertical'
+    });
+
+    // Lógica para Toggle de Visibilidade (AJAX)
+    document.querySelectorAll('.toggle-visibility').forEach(btn => {
+        btn.addEventListener('click', async function() {
+            const sectionId = this.dataset.id;
+            const icon = this.querySelector('i');
+            
+            try {
+                const response = await fetch(`/admin/secoes/toggle/${sectionId}`);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    if (data.is_active) {
+                        icon.className = 'bi bi-eye-fill text-success';
+                    } else {
+                        icon.className = 'bi bi-eye-slash-fill text-muted';
+                    }
+                }
+            } catch (error) {
+                console.error('Erro ao alternar visibilidade:', error);
+                alert('Erro de conexão.');
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,230 @@
+{% if testimonials %}
+<section class="testimonials-universal-wrapper" data-aos="fade-up">
+    <div class="container">
+        
+        <div class="section-header text-center mb-5">
+            <span class="section-badge">
+                O que dizem nossos parceiros
+            </span>
+            <h2 class="section-title">
+                Excelência Reconhecida
+            </h2>
+            <div class="section-line mx-auto mt-3"></div>
+        </div>
+        
+        <div class="swiper testimonial-swiper pb-5">
+            <div class="swiper-wrapper">
+                
+                {% for t in testimonials %}
+                <div class="swiper-slide h-auto">
+                    <div class="testimonial-card">
+                        
+                        <div class="quote-icon">
+                            <i class="bi bi-quote"></i>
+                        </div>
+
+                        <div class="testimonial-body">
+                            <p class="testimonial-text">
+                                "{{ t.texto_depoimento }}"
+                            </p>
+                        </div>
+
+                        <div class="testimonial-footer">
+                            <div class="client-avatar">
+                                {% if t.logo_cliente %}
+                                    <img src="{{ url_for('static', filename=t.logo_cliente) }}" alt="{{ t.nome_cliente }}" loading="lazy">
+                                {% else %}
+                                    <div class="avatar-placeholder">
+                                        {{ t.nome_cliente[0] | upper }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="client-info">
+                                <h5 class="client-name">{{ t.nome_cliente }}</h5>
+                                <span class="client-role">Cliente Parceiro</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                {% endfor %}
+
+            </div>
+            
+            <div class="swiper-pagination testimonial-pagination"></div>
+        </div>
+
+    </div>
+</section>
+
+<style>
+    /* --- VARIÁVEIS LOCAIS (Adaptive System) --- */
+    .testimonials-universal-wrapper {
+        --ts-bg: var(--prm-bg-surface, #fff); /* Fundo da Seção */
+        --ts-card-bg: #fdfdfd;                 /* Fundo do Card */
+        --ts-card-border: rgba(0,0,0,0.05);
+        --ts-accent: var(--prm-accent-red, #b92027);
+        --ts-text: #333;
+        --ts-text-muted: #666;
+        --ts-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        --ts-radius: 16px;
+    }
+
+    /* Tema 2 (Corporativo) */
+    body.option2 .testimonials-universal-wrapper {
+        --ts-card-bg: #fff;
+        --ts-card-border: #e0e0e0;
+        --ts-accent: #002F49; /* Navy */
+        --ts-radius: 4px; /* Mais quadrado */
+    }
+
+    /* Tema 3 (Boutique) */
+    body.option3 .testimonials-universal-wrapper {
+        --ts-bg: #F9F7F2;
+        --ts-card-bg: #fff;
+        --ts-accent: #D4AF37; /* Gold */
+        --ts-shadow: 0 15px 40px rgba(212, 175, 55, 0.1);
+    }
+
+    /* Tema 4 (Tech) & Dark Mode Global */
+    body.option4 .testimonials-universal-wrapper,
+    body.dark-mode .testimonials-universal-wrapper,
+    [data-theme="dark"] .testimonials-universal-wrapper {
+        --ts-bg: transparent;
+        --ts-card-bg: rgba(255, 255, 255, 0.03);
+        --ts-card-border: rgba(255, 255, 255, 0.1);
+        --ts-text: #f1f1f1;
+        --ts-text-muted: #aaa;
+        --ts-accent: var(--prm-accent-red, #b92027);
+        --ts-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    /* --- ESTRUTURA GERAL --- */
+    .testimonials-universal-wrapper {
+        padding: 80px 0;
+        background-color: var(--ts-bg);
+        position: relative;
+    }
+
+    .section-header .section-badge {
+        display: block; font-size: 0.85rem; text-transform: uppercase;
+        letter-spacing: 2px; color: var(--ts-accent); margin-bottom: 10px;
+        font-weight: 700;
+    }
+    .section-header .section-title {
+        font-family: var(--font-heading, serif);
+        font-size: 2.5rem; color: var(--ts-text); margin: 0;
+    }
+    .section-line {
+        width: 60px; height: 3px; background-color: var(--ts-accent);
+        border-radius: 2px;
+    }
+
+    /* --- CARD DEPOIMENTO --- */
+    .testimonial-card {
+        background: var(--ts-card-bg);
+        border: 1px solid var(--ts-card-border);
+        border-radius: var(--ts-radius);
+        padding: 40px 30px;
+        height: 100%;
+        display: flex; flex-direction: column;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: var(--ts-shadow);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .testimonial-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.1); /* Sombra elevada */
+    }
+    
+    /* Aspas Gigantes de Fundo */
+    .quote-icon {
+        position: absolute; top: 20px; right: 20px;
+        font-size: 4rem; color: var(--ts-accent);
+        opacity: 0.1; line-height: 1; font-family: serif;
+    }
+
+    .testimonial-body {
+        flex: 1; margin-bottom: 30px; position: relative; z-index: 2;
+    }
+    .testimonial-text {
+        font-size: 1.05rem; line-height: 1.6;
+        color: var(--ts-text); font-style: italic;
+        opacity: 0.9;
+    }
+
+    /* Rodapé do Card (Autor) */
+    .testimonial-footer {
+        display: flex; align-items: center; gap: 15px;
+        border-top: 1px solid var(--ts-card-border);
+        padding-top: 20px;
+    }
+
+    .client-avatar {
+        width: 50px; height: 50px; flex-shrink: 0;
+    }
+    .client-avatar img {
+        width: 100%; height: 100%; object-fit: cover;
+        border-radius: 50%; border: 2px solid var(--ts-accent);
+    }
+    .avatar-placeholder {
+        width: 100%; height: 100%; border-radius: 50%;
+        background: var(--ts-accent); color: #fff;
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 700; font-size: 1.2rem;
+    }
+
+    .client-info h5 {
+        font-size: 1rem; margin: 0; font-weight: 700; color: var(--ts-text);
+    }
+    .client-role {
+        font-size: 0.8rem; color: var(--ts-text-muted); text-transform: uppercase; letter-spacing: 0.5px;
+    }
+
+    /* --- SWIPER CUSTOMIZATION --- */
+    .testimonial-pagination .swiper-pagination-bullet {
+        background: var(--ts-text-muted); opacity: 0.3;
+        width: 10px; height: 10px; transition: 0.3s;
+    }
+    .testimonial-pagination .swiper-pagination-bullet-active {
+        background: var(--ts-accent); opacity: 1; width: 25px; border-radius: 5px;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+        .section-header .section-title { font-size: 2rem; }
+        .testimonial-card { padding: 30px 20px; }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Inicializa apenas se o elemento existir e o Swiper estiver carregado
+        if (document.querySelector('.testimonial-swiper') && typeof Swiper !== 'undefined') {
+            new Swiper('.testimonial-swiper', {
+                slidesPerView: 1,
+                spaceBetween: 30,
+                loop: true,
+                autoplay: {
+                    delay: 5000,
+                    disableOnInteraction: false,
+                },
+                pagination: {
+                    el: '.testimonial-pagination',
+                    clickable: true,
+                },
+                breakpoints: {
+                    768: {
+                        slidesPerView: 2, // 2 cards em tablets
+                    },
+                    1200: {
+                        slidesPerView: 3, // 3 cards em desktop largo
+                    }
+                }
+            });
+        }
+    });
+</script>
+{% endif %}

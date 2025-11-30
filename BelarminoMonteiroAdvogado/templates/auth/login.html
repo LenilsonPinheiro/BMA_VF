@@ -1,0 +1,245 @@
+{# -*- coding: utf-8 -*- #}
+{#
+    BelarminoMonteiroAdvogado/templates/auth/login.html: Template da página de login para o painel administrativo.
+
+    Este template apresenta a interface para os usuários administrativos fazerem login na aplicação.
+    Ele é projetado com um estilo visual distinto para diferenciar o ambiente administrativo do site público.
+
+    Características principais:
+    - Layout focado na segurança e autenticação.
+    - Estilo visual "Fortaleza Digital" com fundo escuro e grade de segurança.
+    - Exibição de mensagens flash para feedback do usuário (sucesso, erro, etc.).
+    - Formulário de login com campos para nome de usuário/e-mail e senha.
+    - Link para retornar à página inicial do site público.
+
+    Atenção: O CSS deste template é embutido (<style> tag) para garantir que o estilo da página
+    de login seja completamente isolado e independente do sistema de temas principal, reforçando
+    a ideia de um ambiente distinto e seguro.
+#}
+{% extends "auth/auth_base.html" %}
+
+{% block title %}Acesso Restrito - Belarmino Monteiro{% endblock %}
+
+{% block auth_content %}
+
+<style>
+    /* --- VARIÁVEIS LOCAIS --- */
+    .login-page-wrapper {
+        --auth-bg: #0f172a;
+        --auth-accent: var(--prm-accent-red, #b92027);
+        --auth-card-bg: rgba(255, 255, 255, 0.05);
+        --auth-text: #fff;
+        --auth-input-bg: rgba(0, 0, 0, 0.2);
+        --auth-border: rgba(255, 255, 255, 0.1);
+    }
+
+    /* --- AMBIENTE --- */
+    .login-page-wrapper {
+        min-height: 100vh;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--auth-bg);
+        background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, #0f172a 70%);
+        position: relative;
+        overflow: hidden;
+        padding: 20px;
+    }
+
+    /* Efeito de "Grade de Segurança" no fundo */
+    .login-bg-grid {
+        position: absolute; inset: 0;
+        background-image: 
+            linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+        background-size: 40px 40px;
+        mask-image: radial-gradient(circle at center, black 40%, transparent 90%);
+        -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 90%);
+        pointer-events: none;
+    }
+
+    /* --- CARD DE LOGIN --- */
+    .login-card {
+        width: 100%;
+        max-width: 420px;
+        background: var(--auth-card-bg);
+        backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+        border: 1px solid var(--auth-border);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+        position: relative;
+        z-index: 10;
+        animation: cardEntry 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    @keyframes cardEntry {
+        from { opacity: 0; transform: translateY(30px) scale(0.95); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Topo do Card */
+    .login-header {
+        text-align: center;
+        margin-bottom: 35px;
+    }
+    .brand-logo {
+        width: 140px;
+        margin-bottom: 25px;
+        filter: brightness(0) invert(1); /* Logo branca */
+        opacity: 0.9;
+    }
+    .login-title {
+        font-family: 'Playfair Display', serif; /* Mantém a elegância */
+        color: var(--auth-text);
+        font-size: 1.8rem; margin-bottom: 5px;
+    }
+    .login-subtitle {
+        color: rgba(255,255,255,0.5);
+        font-size: 0.9rem;
+    }
+
+    /* --- INPUTS --- */
+    .form-group-auth {
+        margin-bottom: 25px;
+        position: relative;
+    }
+
+    .form-control-auth {
+        width: 100%;
+        background: var(--auth-input-bg);
+        border: 1px solid var(--auth-border);
+        border-radius: 8px;
+        padding: 16px 16px 16px 45px; /* Espaço para ícone */
+        color: #fff;
+        font-size: 1rem;
+        transition: 0.3s;
+    }
+    .form-control-auth::placeholder { color: rgba(255,255,255,0.3); }
+    
+    .form-control-auth:focus {
+        outline: none;
+        border-color: var(--auth-accent);
+        background: rgba(0,0,0,0.4);
+        box-shadow: 0 0 0 4px rgba(185, 32, 39, 0.1);
+    }
+
+    /* Ícones dos Campos */
+    .input-icon {
+        position: absolute;
+        left: 15px; top: 50%; transform: translateY(-50%);
+        color: rgba(255,255,255,0.4);
+        font-size: 1.2rem;
+        transition: 0.3s;
+        pointer-events: none;
+    }
+    .form-control-auth:focus ~ .input-icon { color: var(--auth-accent); }
+
+    /* Botão */
+    .btn-auth {
+        width: 100%;
+        padding: 16px;
+        background: var(--auth-accent);
+        color: #fff;
+        border: none; border-radius: 8px;
+        font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+        font-size: 0.9rem; cursor: pointer;
+        transition: 0.3s;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    }
+    .btn-auth:hover {
+        background: #fff; color: #000;
+        transform: translateY(-2px);
+    }
+
+    /* Links de Rodapé */
+    .login-footer {
+        text-align: center;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid var(--auth-border);
+    }
+    .back-link {
+        color: rgba(255,255,255,0.4);
+        font-size: 0.85rem; text-decoration: none;
+        display: inline-flex; align-items: center; gap: 5px;
+        transition: 0.3s;
+    }
+    .back-link:hover { color: #fff; }
+
+</style>
+
+{#
+    login-page-wrapper: Contêiner principal para a página de login.
+    Define o ambiente visual único para o acesso restrito.
+#}
+<div class="login-page-wrapper">
+    
+    {# Efeito visual de "Grade de Segurança" para o fundo da página de login. #}
+    <div class="login-bg-grid"></div>
+
+    {# login-card: O card central que contém o formulário de login e cabeçalho. #}
+    <div class="login-card">
+        
+        {# login-header: Seção superior do card de login com logo, título e subtítulo. #}
+        <div class="login-header">
+            {# Logo do escritório, configurado para aparecer em branco no tema escuro. #}
+            <img src="{{ url_for('static', filename='images/BM.png') }}" alt="Belarmino Monteiro" class="brand-logo">
+            
+            <h2 class="login-title">Acesso Restrito</h2>
+            <p class="login-subtitle">Painel Administrativo & Gestão</p>
+        </div>
+
+        {#
+            Exibição de mensagens flash (flashed messages):
+            Loop Jinja2 para iterar sobre as mensagens armazenadas na sessão (ex: mensagens de sucesso, erro).
+            As mensagens são exibidas em um formato de alerta com base em sua categoria.
+        #}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="mb-4">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} bg-transparent text-white border-{{ category }} small py-2 px-3 rounded-2 d-flex align-items-center gap-2">
+                        <i class="bi bi-info-circle"></i> {{ message }}
+                    </div>
+                {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {# Formulário de login: utiliza o método POST para submissão segura. #}
+        <form method="POST" action="{{ url_for('auth.login') }}">
+            {# Campo oculto gerado pelo Flask-WTF para proteção CSRF. #}
+            {{ form.hidden_tag() }}
+            
+            {# Campo de nome de usuário/e-mail. #}
+            <div class="form-group-auth">
+                {{ form.username(class="form-control-auth", placeholder="Usuário ou Email") }}
+                <i class="bi bi-person input-icon"></i> {# Ícone decorativo para o campo de usuário. #}
+            </div>
+
+            {# Campo de senha. #}
+            <div class="form-group-auth">
+                {{ form.password(class="form-control-auth", placeholder="Senha de Acesso") }}
+                <i class="bi bi-lock input-icon"></i> {# Ícone decorativo para o campo de senha. #}
+            </div>
+
+            {# Botão de submissão do formulário. #}
+            <button type="submit" class="btn-auth">
+                <i class="bi bi-shield-lock-fill me-2"></i> Autenticar
+            </button>
+        </form>
+
+        {# login-footer: Seção de rodapé do card de login. #}
+        <div class="login-footer">
+            {# Link para voltar à página inicial do site público. #}
+            <a href="{{ url_for('main.home') }}" class="back-link">
+                <i class="bi bi-arrow-left"></i> Voltar ao Site
+            </a>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

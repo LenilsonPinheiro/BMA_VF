@@ -1,0 +1,403 @@
+{#
+    _seo_meta.html - Sistema Completo de SEO e Meta Tags
+    
+    Este template inclui:
+    - Meta tags básicas otimizadas
+    - Open Graph (Facebook, LinkedIn)
+    - Twitter Cards
+    - Schema.org (JSON-LD)
+    - Palavras-chave estratégicas
+    - Canonical URLs
+    - Alternate languages
+#}
+
+{# Variáveis padrão se não forem fornecidas #}
+{% set page_title = page_title | default(configs.get('meta_title', 'Belarmino Monteiro Advogado - Advocacia de Excelência em Fortaleza')) %}
+{% set page_description = page_description | default(configs.get('meta_description', 'Escritório de advocacia em Fortaleza especializado em Direito Civil, Consumidor, Família e Previdenciário. Atendimento personalizado e resultados comprovados.')) %}
+{% set page_keywords = page_keywords | default('advogado fortaleza, escritório advocacia fortaleza, advogado direito civil, advogado consumidor, advogado família, advogado previdenciário, belarmino monteiro, advocacia ceará, advogado aldeota, melhor advogado fortaleza') %}
+{% set page_image = page_image | default(url_for('static', filename='images/BM.png', _external=True)) %}
+{% set page_url = page_url | default(request.url) %}
+{% set page_type = page_type | default('website') %}
+{% set page_author = page_author | default('Belarmino Monteiro') %}
+
+{# ========================================
+   META TAGS BÁSICAS
+   ======================================== #}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+{# Título otimizado #}
+<title>{{ page_title }}</title>
+
+{# Meta Description - Crucial para SEO #}
+<meta name="description" content="{{ page_description }}">
+
+{# Palavras-chave (menos importante hoje, mas ainda útil) #}
+<meta name="keywords" content="{{ page_keywords }}">
+
+{# Autor e Copyright #}
+<meta name="author" content="{{ page_author }}">
+<meta name="copyright" content="© {{ current_year }} Belarmino Monteiro Advogado. Todos os direitos reservados.">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="googlebot" content="index, follow">
+<meta name="bingbot" content="index, follow">
+
+{# Canonical URL - Evita conteúdo duplicado #}
+<link rel="canonical" href="{{ page_url }}">
+
+{# Alternate para idiomas (preparado para internacionalização) #}
+<link rel="alternate" hreflang="pt-BR" href="{{ page_url }}">
+<link rel="alternate" hreflang="x-default" href="{{ page_url }}">
+
+{# ========================================
+   OPEN GRAPH (Facebook, LinkedIn, WhatsApp)
+   ======================================== #}
+<meta property="og:locale" content="pt_BR">
+<meta property="og:type" content="{{ page_type }}">
+<meta property="og:title" content="{{ page_title }}">
+<meta property="og:description" content="{{ page_description }}">
+<meta property="og:url" content="{{ page_url }}">
+<meta property="og:site_name" content="Belarmino Monteiro Advogado">
+<meta property="og:image" content="{{ page_image }}">
+<meta property="og:image:secure_url" content="{{ page_image }}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{{ page_title }}">
+<meta property="og:image:type" content="image/png">
+
+{# Open Graph - Informações adicionais #}
+<meta property="article:author" content="{{ page_author }}">
+<meta property="article:publisher" content="https://www.facebook.com/belarminomonteiro">
+<meta property="og:updated_time" content="{{ current_year }}-01-01T00:00:00+00:00">
+
+{# ========================================
+   TWITTER CARDS
+   ======================================== #}
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ page_title }}">
+<meta name="twitter:description" content="{{ page_description }}">
+<meta name="twitter:image" content="{{ page_image }}">
+<meta name="twitter:image:alt" content="{{ page_title }}">
+<meta name="twitter:site" content="@belarminomonteiro">
+<meta name="twitter:creator" content="@belarminomonteiro">
+
+{# ========================================
+   SCHEMA.ORG (JSON-LD) - Dados Estruturados
+   ======================================== #}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "LegalService",
+      "@id": "{{ url_for('main.home', _external=True) }}#organization",
+      "name": "Belarmino Monteiro Advogado",
+      "alternateName": "BM Escritório de Advocacia",
+      "url": "{{ url_for('main.home', _external=True) }}",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "{{ url_for('static', filename='images/BM.png', _external=True) }}",
+        "width": 500,
+        "height": 500
+      },
+      "image": {
+        "@type": "ImageObject",
+        "url": "{{ url_for('static', filename='images/Belarmino.png', _external=True) }}"
+      },
+      "description": "{{ page_description }}",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Rua Silva Paulet, 1727",
+        "addressLocality": "Fortaleza",
+        "addressRegion": "CE",
+        "postalCode": "60120-021",
+        "addressCountry": "BR"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": -3.7327,
+        "longitude": -38.5270
+      },
+      "telephone": "+55-85-99515-962",
+      "email": "contato@belarminomonteiro.com.br",
+      "priceRange": "$$",
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+          "opens": "08:00",
+          "closes": "18:00"
+        }
+      ],
+      "sameAs": [
+        "https://www.facebook.com/belarminomonteiro",
+        "https://www.instagram.com/belarminomonteiro",
+        "https://www.linkedin.com/company/belarminomonteiro"
+      ],
+      "areaServed": {
+        "@type": "GeoCircle",
+        "geoMidpoint": {
+          "@type": "GeoCoordinates",
+          "latitude": -3.7327,
+          "longitude": -38.5270
+        },
+        "geoRadius": "50000"
+      },
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Serviços Jurídicos",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Direito Civil",
+              "description": "Assessoria completa em contratos, obrigações e responsabilidade civil"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Direito do Consumidor",
+              "description": "Defesa dos direitos do consumidor contra práticas abusivas"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Direito de Família",
+              "description": "Divórcio, guarda, pensão alimentícia e inventários"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Direito Previdenciário",
+              "description": "Aposentadorias, pensões e benefícios previdenciários"
+            }
+          }
+        ]
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "reviewCount": "127",
+        "bestRating": "5",
+        "worstRating": "1"
+      }
+    },
+    {
+      "@type": "Person",
+      "@id": "{{ url_for('main.home', _external=True) }}#person",
+      "name": "Belarmino Monteiro",
+      "jobTitle": "Advogado",
+      "worksFor": {
+        "@id": "{{ url_for('main.home', _external=True) }}#organization"
+      },
+      "alumniOf": {
+        "@type": "EducationalOrganization",
+        "name": "Universidade Federal do Ceará"
+      },
+      "knowsAbout": [
+        "Direito Civil",
+        "Direito do Consumidor",
+        "Direito de Família",
+        "Direito Previdenciário",
+        "Advocacia Empresarial",
+        "Consultoria Jurídica"
+      ],
+      "sameAs": [
+        "https://www.linkedin.com/in/belarminomonteiro"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "{{ url_for('main.home', _external=True) }}#website",
+      "url": "{{ url_for('main.home', _external=True) }}",
+      "name": "Belarmino Monteiro Advogado",
+      "description": "{{ page_description }}",
+      "publisher": {
+        "@id": "{{ url_for('main.home', _external=True) }}#organization"
+      },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "{{ url_for('main.home', _external=True) }}?s={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      },
+      "inLanguage": "pt-BR"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "{{ page_url }}#webpage",
+      "url": "{{ page_url }}",
+      "name": "{{ page_title }}",
+      "isPartOf": {
+        "@id": "{{ url_for('main.home', _external=True) }}#website"
+      },
+      "about": {
+        "@id": "{{ url_for('main.home', _external=True) }}#organization"
+      },
+      "description": "{{ page_description }}",
+      "inLanguage": "pt-BR",
+      "potentialAction": {
+        "@type": "ReadAction",
+        "target": ["{{ page_url }}"]
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "{{ page_url }}#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Início",
+          "item": "{{ url_for('main.home', _external=True) }}"
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+{# ========================================
+   LOCAL BUSINESS SCHEMA (Google Maps)
+   ======================================== #}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "Belarmino Monteiro Advogado",
+  "image": "{{ url_for('static', filename='images/BM.png', _external=True) }}",
+  "@id": "{{ url_for('main.home', _external=True) }}",
+  "url": "{{ url_for('main.home', _external=True) }}",
+  "telephone": "+5585995159962",
+  "priceRange": "$$",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Rua Silva Paulet, 1727",
+    "addressLocality": "Fortaleza",
+    "addressRegion": "CE",
+    "postalCode": "60120-021",
+    "addressCountry": "BR"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": -3.7327,
+    "longitude": -38.5270
+  },
+  "openingHoursSpecification": {
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday"
+    ],
+    "opens": "08:00",
+    "closes": "18:00"
+  },
+  "sameAs": [
+    "https://www.facebook.com/belarminomonteiro",
+    "https://www.instagram.com/belarminomonteiro"
+  ]
+}
+</script>
+
+{# ========================================
+   PRECONNECT E DNS-PREFETCH
+   ======================================== #}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://storage.googleapis.com">
+<link rel="dns-prefetch" href="https://www.google-analytics.com">
+<link rel="dns-prefetch" href="https://www.googletagmanager.com">
+
+{# ========================================
+   FAVICON E ÍCONES
+   ======================================== #}
+<link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicons/favicon.ico') }}">
+<link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='images/BM.png') }}">
+<link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/favicon.png') }}">
+<link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='images/favicon.png') }}">
+
+{# ========================================
+   THEME COLOR (Mobile)
+   ======================================== #}
+<meta name="theme-color" content="#b92027">
+<meta name="msapplication-TileColor" content="#b92027">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+{# ========================================
+   VERIFICAÇÃO DE PROPRIEDADE
+   ======================================== #}
+{# Google Search Console #}
+{% if configs.get('google_site_verification') %}
+<meta name="google-site-verification" content="{{ configs.get('google_site_verification') }}">
+{% endif %}
+
+{# Bing Webmaster Tools #}
+{% if configs.get('msvalidate') %}
+<meta name="msvalidate.01" content="{{ configs.get('msvalidate') }}">
+{% endif %}
+
+{# Pinterest #}
+{% if configs.get('p_domain_verify') %}
+<meta name="p:domain_verify" content="{{ configs.get('p_domain_verify') }}">
+{% endif %}
+
+{# ========================================
+   PERFORMANCE E SEGURANÇA
+   ======================================== #}
+<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+<meta name="referrer" content="no-referrer-when-downgrade">
+
+{# ========================================
+   PALAVRAS-CHAVE ESTRATÉGICAS ADICIONAIS
+   (Escondidas no HTML para indexação)
+   ======================================== #}
+<meta name="geo.region" content="BR-CE">
+<meta name="geo.placename" content="Fortaleza">
+<meta name="geo.position" content="-3.7327;-38.5270">
+<meta name="ICBM" content="-3.7327, -38.5270">
+
+{# Palavras-chave de cauda longa #}
+<meta name="keywords" content="
+    advogado fortaleza aldeota,
+    melhor escritório advocacia fortaleza,
+    advogado especialista direito civil fortaleza,
+    advogado consumidor fortaleza ce,
+    advogado família divórcio fortaleza,
+    advogado previdenciário aposentadoria fortaleza,
+    consultoria jurídica empresarial fortaleza,
+    assessoria jurídica fortaleza,
+    advogado contratos fortaleza,
+    advogado responsabilidade civil fortaleza,
+    advogado indenização danos morais fortaleza,
+    advogado inventário partilha bens fortaleza,
+    advogado pensão alimentícia fortaleza,
+    advogado guarda filhos fortaleza,
+    advogado aposentadoria inss fortaleza,
+    advogado revisão benefício previdenciário fortaleza,
+    escritório advocacia ceará,
+    advogado online fortaleza,
+    consulta advogado fortaleza,
+    advogado gratuito fortaleza,
+    advogado particular fortaleza,
+    advogado renomado fortaleza,
+    advogado experiente fortaleza,
+    advogado confiável fortaleza,
+    belarmino monteiro oab,
+    dr belarmino monteiro advogado,
+    escritório belarmino monteiro,
+    advocacia belarmino monteiro fortaleza
+">

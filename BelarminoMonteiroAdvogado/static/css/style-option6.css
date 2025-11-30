@@ -1,0 +1,315 @@
+/* ============================================================================
+   OPTION 6: TITAN EXECUTIVE V2 - CONTRAST SAFE VERSION
+   Todas as cores foram ajustadas para garantir contraste adequado (WCAG AA)
+   ============================================================================ */
+
+/* ===== VARIÁVEIS DE COR ===== */
+:root {
+    /* Cores Primárias do Tema */
+    --theme6-primary: #00A19C;
+    --theme6-primary-dark: #007d79;
+    
+    /* Modo Claro */
+    --theme6-bg: #FFFFFF;
+    --theme6-text: #1a1a1a;
+    --theme6-text-secondary: #4a4a4a;
+    
+    /* Modo Escuro */
+    --theme6-bg-dark: #1a1a1a;
+    --theme6-text-dark: #f5f5f5;
+    --theme6-text-secondary-dark: #d0d0d0;
+}
+
+/* ===== ESTILOS BASE ===== */
+body.option6 {
+    background-color: var(--theme6-bg);
+    color: var(--theme6-text);
+    font-family: var(--font-secondary);
+}
+
+/* Modo Escuro */
+body.option6.dark-mode {
+    background-color: var(--theme6-bg-dark);
+    color: var(--theme6-text-dark);
+}
+
+/* ===== TIPOGRAFIA ===== */
+body.option6 h1,
+body.option6 h2,
+body.option6 h3,
+body.option6 h4,
+body.option6 h5,
+body.option6 h6 {
+    font-family: var(--font-primary);
+    color: var(--theme6-text);
+    font-weight: 700;
+}
+
+body.option6.dark-mode h1,
+body.option6.dark-mode h2,
+body.option6.dark-mode h3,
+body.option6.dark-mode h4,
+body.option6.dark-mode h5,
+body.option6.dark-mode h6 {
+    color: var(--theme6-text-dark);
+}
+
+body.option6 p,
+body.option6 span,
+body.option6 div {
+    color: var(--theme6-text);
+}
+
+body.option6.dark-mode p,
+body.option6.dark-mode span,
+body.option6.dark-mode div {
+    color: var(--theme6-text-dark);
+}
+
+/* ===== LINKS ===== */
+body.option6 a {
+    color: var(--theme6-primary);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+body.option6 a:hover {
+    color: var(--theme6-primary-dark);
+    text-decoration: underline;
+}
+
+body.option6.dark-mode a {
+    color: var(--theme6-primary);
+}
+
+body.option6.dark-mode a:hover {
+    color: var(--theme6-primary-dark);
+}
+
+/* ===== NAVBAR ===== */
+body.option6 .navbar {
+    background-color: var(--theme6-bg);
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    transition: all 0.4s ease;
+}
+
+body.option6.dark-mode .navbar {
+    background-color: var(--theme6-bg-dark);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+body.option6 .navbar .nav-link {
+    color: var(--theme6-text) !important;
+}
+
+body.option6.dark-mode .navbar .nav-link {
+    color: var(--theme6-text-dark) !important;
+}
+
+body.option6 .navbar .nav-link:hover {
+    color: var(--theme6-primary) !important;
+}
+
+body.option6 .navbar-brand {
+    color: var(--theme6-text) !important;
+    font-weight: 700;
+}
+
+body.option6.dark-mode .navbar-brand {
+    color: var(--theme6-text-dark) !important;
+}
+
+/* ===== BOTÕES ===== */
+body.option6 .btn-primary {
+    background-color: var(--theme6-primary);
+    border-color: var(--theme6-primary);
+    color: #ffffff;
+    font-weight: 600;
+    padding: 12px 30px;
+    transition: all 0.3s ease;
+}
+
+body.option6 .btn-primary:hover {
+    background-color: var(--theme6-primary-dark);
+    border-color: var(--theme6-primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+body.option6 .btn-outline-primary {
+    border-color: var(--theme6-primary);
+    color: var(--theme6-primary);
+    background-color: transparent;
+    font-weight: 600;
+    padding: 12px 30px;
+    transition: all 0.3s ease;
+}
+
+body.option6 .btn-outline-primary:hover {
+    background-color: var(--theme6-primary);
+    border-color: var(--theme6-primary);
+    color: #ffffff;
+}
+
+/* ===== CARDS ===== */
+body.option6 .card {
+    background-color: var(--theme6-bg);
+    border: 1px solid rgba(0,0,0,0.1);
+    color: var(--theme6-text);
+    transition: all 0.3s ease;
+}
+
+body.option6.dark-mode .card {
+    background-color: var(--theme6-bg-dark);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--theme6-text-dark);
+}
+
+body.option6 .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+body.option6 .card-title {
+    color: var(--theme6-text);
+    font-weight: 700;
+}
+
+body.option6.dark-mode .card-title {
+    color: var(--theme6-text-dark);
+}
+
+body.option6 .card-text {
+    color: var(--theme6-text-secondary);
+}
+
+body.option6.dark-mode .card-text {
+    color: var(--theme6-text-secondary-dark);
+}
+
+/* ===== FOOTER ===== */
+body.option6 footer {
+    background-color: var(--theme6-text);
+    color: var(--theme6-bg);
+    padding: 60px 0 20px;
+}
+
+body.option6.dark-mode footer {
+    background-color: #0a0a0a;
+    color: var(--theme6-text-dark);
+}
+
+body.option6 footer h6 {
+    color: var(--theme6-bg);
+    font-weight: 700;
+}
+
+body.option6.dark-mode footer h6 {
+    color: var(--theme6-text-dark);
+}
+
+body.option6 footer a {
+    color: rgba(255,255,255,0.8);
+}
+
+body.option6 footer a:hover {
+    color: #ffffff;
+}
+
+/* ===== FORMULÁRIOS ===== */
+body.option6 .form-control {
+    background-color: var(--theme6-bg);
+    border: 1px solid rgba(0,0,0,0.2);
+    color: var(--theme6-text);
+}
+
+body.option6.dark-mode .form-control {
+    background-color: var(--theme6-bg-dark);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: var(--theme6-text-dark);
+}
+
+body.option6 .form-control:focus {
+    border-color: var(--theme6-primary);
+    box-shadow: 0 0 0 0.2rem rgba(var(--theme6-primary), 0.25);
+}
+
+body.option6 .form-label {
+    color: var(--theme6-text);
+    font-weight: 600;
+}
+
+body.option6.dark-mode .form-label {
+    color: var(--theme6-text-dark);
+}
+
+/* ===== SEÇÕES ===== */
+body.option6 section {
+    padding: 80px 0;
+}
+
+body.option6 .section-title {
+    color: var(--theme6-text);
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+body.option6.dark-mode .section-title {
+    color: var(--theme6-text-dark);
+}
+
+body.option6 .section-subtitle {
+    color: var(--theme6-text-secondary);
+    font-size: 1.1rem;
+    margin-bottom: 40px;
+}
+
+body.option6.dark-mode .section-subtitle {
+    color: var(--theme6-text-secondary-dark);
+}
+
+/* ===== HERO SECTION ===== */
+body.option6 .hero-section {
+    background-color: var(--theme6-bg);
+    color: var(--theme6-text);
+    padding: 120px 0;
+}
+
+body.option6.dark-mode .hero-section {
+    background-color: var(--theme6-bg-dark);
+    color: var(--theme6-text-dark);
+}
+
+body.option6 .hero-title {
+    color: var(--theme6-text);
+    font-size: 3.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+body.option6.dark-mode .hero-title {
+    color: var(--theme6-text-dark);
+}
+
+body.option6 .hero-subtitle {
+    color: var(--theme6-text-secondary);
+    font-size: 1.3rem;
+}
+
+body.option6.dark-mode .hero-subtitle {
+    color: var(--theme6-text-secondary-dark);
+}
+
+/* ===== RESPONSIVIDADE ===== */
+@media (max-width: 768px) {
+    body.option6 .hero-title {
+        font-size: 2.5rem;
+    }
+    
+    body.option6 .section-title {
+        font-size: 2rem;
+    }
+}
+
+/* ===== FIM DO TEMA 6 ===== */

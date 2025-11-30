@@ -1,0 +1,82 @@
+{# ========================================
+   CDNs DE JAVASCRIPT
+   ======================================== #}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+{# ========================================
+   SCRIPTS CUSTOMIZADOS
+   ======================================== #}
+<script src="{{ url_for('static', filename='js/aggressive-cache.js') }}?v={{ get_file_mtime('js/aggressive-cache.js') }}"></script>
+<script src="{{ url_for('static', filename='js/cookie_consent.js') }}?v={{ get_file_mtime('js/cookie_consent.js') }}"></script>
+<script src="{{ url_for('static', filename='js/resource-preloader.js') }}?v={{ get_file_mtime('js/resource-preloader.js') }}"></script>
+<script src="{{ url_for('static', filename='js/video-optimizer.js') }}?v={{ get_file_mtime('js/video-optimizer.js') }}"></script>
+
+{# ========================================
+   INICIALIZAÇÃO DE BIBLIOTECAS
+   ======================================== #}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Inicializa a biblioteca de animações AOS
+        if (typeof AOS !== 'undefined') {
+            AOS.init({ 
+                duration: 800, 
+                once: true,
+                offset: 100,
+                easing: 'ease-in-out'
+            });
+        }
+
+        // Log de informações do preloader
+        window.addEventListener('preloadComplete', (event) => {
+            console.log(' Preload concluído:', event.detail);
+        });
+
+        // Adicione outras inicializações globais aqui se necessário
+    });
+</script>
+
+{# ========================================
+   GOOGLE ANALYTICS (se configurado)
+   ======================================== #}
+{% if configs.get('google_analytics_id') %}
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id={{ configs.get('google_analytics_id') }}"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', '{{ configs.get("google_analytics_id") }}');
+</script>
+{% endif %}
+
+{# ========================================
+   FACEBOOK PIXEL (se configurado)
+   ======================================== #}
+{% if configs.get('facebook_pixel_id') %}
+<!-- Facebook Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '{{ configs.get("facebook_pixel_id") }}');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id={{ configs.get('facebook_pixel_id') }}&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Facebook Pixel Code -->
+{% endif %}
+
+{# ========================================
+   SCRIPTS PERSONALIZADOS DO HEAD (Admin)
+   ======================================== #}
+{% if configs.get('seo_body_scripts') %}
+{{ configs.get('seo_body_scripts') | safe }}
+{% endif %}

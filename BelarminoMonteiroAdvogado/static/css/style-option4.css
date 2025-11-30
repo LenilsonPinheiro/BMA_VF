@@ -1,0 +1,277 @@
+/* ==========================================================================
+   STYLE OPTION 4: FUTURE TECH (LAYOUT & STRUCTURE)
+   ==========================================================================
+   Define a estrutura, posicionamento e geometria do tema "Future Tech".
+   As cores são puxadas das variáveis --tech-* definidas nos arquivos de tema.
+*/
+
+/* --- 1. BASE & TIPOGRAFIA (Geometric) --- */
+body.option4 {
+    background-color: var(--tech-bg-main);
+    color: var(--tech-text-secondary);
+    font-family: 'Open Sans', sans-serif; /* Leitura técnica */
+    overflow-x: hidden;
+}
+
+body.option4 h1, 
+body.option4 h2, 
+body.option4 h3, 
+body.option4 h4, 
+body.option4 h5, 
+body.option4 h6 {
+    font-family: 'Montserrat', sans-serif; /* Títulos Geométricos */
+    color: var(--tech-text-primary);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+/* --- 2. HEADER FLUTUANTE (Tech Capsule) --- */
+body.option4 .header-tech {
+    position: fixed;
+    top: 20px;
+    left: 0;
+    width: 100%;
+    z-index: 1030;
+    padding: 0 20px;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+body.option4 .navbar-tech {
+    max-width: 1400px;
+    margin: 0 auto;
+    border-radius: 50px; /* Cápsula Arredondada */
+    padding: 10px 25px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid transparent; /* A cor vem do tema */
+    transition: all 0.3s ease;
+}
+
+/* Estado Scrolled: Fica mais compacto e cola no topo em mobile se quiser */
+body.option4 .header-tech.scrolled {
+    top: 10px;
+}
+body.option4 .header-tech.scrolled .navbar-tech {
+    padding: 8px 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+/* Nav Links Tech */
+body.option4 .nav-link {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-radius: 20px;
+    padding: 8px 16px !important;
+    transition: all 0.2s ease;
+}
+
+/* --- 3. HERO SECTION (Digital Environment) --- */
+body.option4 .hero-tech {
+    position: relative;
+    min-height: 100vh;
+    padding-top: 120px; /* Espaço para o header flutuante */
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* Elementos de Fundo Tech */
+body.option4 .hero-bg-grid {
+    position: absolute; inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    /* O gradiente específico vem do theme-*.css */
+    background-size: 50px 50px;
+}
+
+body.option4 .hero-glow-spot {
+    position: absolute;
+    width: 60vw; height: 60vw;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.4;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* Badges e Títulos */
+body.option4 .tech-badge {
+    display: inline-flex; 
+    align-items: center; 
+    gap: 10px;
+    padding: 6px 16px; 
+    border-radius: 20px;
+    font-size: 0.75rem; 
+    font-weight: 700; 
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: 1px solid transparent; /* Cor vem do tema */
+    margin-bottom: 20px;
+}
+
+body.option4 .pulse-dot {
+    width: 8px; height: 8px; 
+    border-radius: 50%; 
+    animation: tech-pulse 2s infinite;
+}
+
+@keyframes tech-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+    70% { box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+}
+
+/* --- 4. BENTO GRID SYSTEM (Services) --- */
+body.option4 .bento-section {
+    padding: 100px 0;
+    position: relative;
+}
+
+body.option4 .bento-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: minmax(280px, auto);
+    gap: 24px;
+}
+
+/* Variações de Tamanho do Bento */
+body.option4 .bento-card {
+    border-radius: 24px;
+    padding: 35px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: 1px solid transparent;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+body.option4 .bento-card.large { grid-column: span 2; grid-row: span 2; }
+body.option4 .bento-card.wide { grid-column: span 2; }
+body.option4 .bento-card.tall { grid-row: span 2; }
+
+/* Ícones e Conteúdo Bento */
+body.option4 .bento-icon {
+    width: 50px; height: 50px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    transition: transform 0.3s ease;
+}
+
+body.option4 .bento-card:hover .bento-icon {
+    transform: scale(1.1) rotate(5deg);
+}
+
+body.option4 .bento-link {
+    margin-top: auto;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    display: inline-flex; align-items: center; gap: 8px;
+    text-decoration: none;
+}
+
+/* --- 5. DATA / METRICS SECTION --- */
+body.option4 .data-section {
+    padding: 80px 0;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+    position: relative;
+}
+
+body.option4 .stat-item {
+    text-align: center;
+    padding: 20px;
+    transition: transform 0.3s ease;
+}
+body.option4 .stat-item:hover { transform: translateY(-5px); }
+
+body.option4 .stat-number {
+    font-size: 4.5rem;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 10px;
+    font-family: 'Montserrat', sans-serif;
+    letter-spacing: -2px;
+}
+
+body.option4 .stat-label {
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+/* --- 6. FOOTER TECH --- */
+body.option4 .footer-tech {
+    padding: 80px 0 30px;
+    font-size: 0.95rem;
+}
+
+body.option4 .footer-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 25px;
+    font-weight: 700;
+}
+
+body.option4 .footer-link {
+    display: block;
+    margin-bottom: 12px;
+    text-decoration: none;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+body.option4 .footer-link:hover {
+    transform: translateX(5px);
+}
+
+/* --- 7. BUTTONS & INPUTS (Pill Shape) --- */
+body.option4 .btn {
+    border-radius: 50px; /* Tech Standard */
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    padding: 12px 30px;
+}
+
+body.option4 .form-control {
+    border-radius: 12px;
+    padding: 15px 20px;
+    font-size: 0.95rem;
+}
+
+/* --- 8. RESPONSIVIDADE --- */
+@media (max-width: 991px) {
+    /* Header Mobile */
+    body.option4 .header-tech { top: 0; padding: 10px; }
+    body.option4 .navbar-tech { border-radius: 20px; }
+    
+    /* Bento Grid vira coluna única ou dupla */
+    body.option4 .bento-grid {
+        grid-template-columns: 1fr; 
+        grid-auto-rows: auto;
+    }
+    body.option4 .bento-card.large,
+    body.option4 .bento-card.wide,
+    body.option4 .bento-card.tall {
+        grid-column: span 1;
+        grid-row: span 1;
+        min-height: 300px;
+    }
+    
+    /* Hero */
+    body.option4 .hero-tech {
+        padding-top: 100px;
+        text-align: center;
+    }
+    body.option4 .hero-glow-spot {
+        width: 100vw; height: 100vw; opacity: 0.2;
+    }
+}

@@ -1,0 +1,284 @@
+{% extends "base.html" %}
+
+{% block title %}Áreas de Atuação - Belarmino Monteiro{% endblock %}
+{% block metadescription %}Conheça nossa expertise jurídica. Atuamos em diversas áreas do direito com foco em resultados estratégicos.{% endblock %}
+
+{% block content %}
+
+{% with title="Nossas Áreas de Atuação", subtitle="Expertise jurídica abrangente para proteger seus interesses em todas as frentes.", bg_image=url_for('static', filename='images/banners/areas_bg.jpg') %}
+    {% include '_inner_page_header.html' %}
+{% endwith %}
+
+<section class="areas-page-wrapper">
+    <div class="container">
+        
+        {# BARRA DE PESQUISA #}
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-6">
+                <div class="search-wrapper" data-aos="fade-up">
+                    <i class="bi bi-search search-icon"></i>
+                    <input type="text" id="areaSearch" class="search-input" placeholder="Buscar área de atuação (ex: Civil, Tributário...)">
+                </div>
+            </div>
+        </div>
+
+        {# GRID DE ÁREAS #}
+        <div class="row g-4" id="areasGrid">
+            {% for area in areas %}
+            <div class="col-md-6 col-lg-4 area-item" data-title="{{ area.titulo | lower }}" data-desc="{{ area.descricao | lower }}" data-aos="fade-up" data-aos-delay="{{ loop.index * 50 }}">
+                
+                <a href="{{ url_for('main.pagina_dinamica', slug=area.slug) }}" class="area-card">
+                    <div class="card-body">
+                        <div class="area-icon-box">
+                            <i class="{{ area.icone if area.icone else 'bi bi-shield-check' }}"></i>
+                        </div>
+                        
+                        <h3 class="area-title">{{ area.titulo }}</h3>
+                        <p class="area-desc">
+                            {{ area.descricao[:140] }}{% if area.descricao|length > 140 %}...{% endif %}
+                        </p>
+                        
+                        <div class="area-footer">
+                            <span class="learn-more">
+                                Saiba Mais <i class="bi bi-arrow-right"></i>
+                            </span>
+                        </div>
+                    </div>
+                </a>
+
+            </div>
+            {% else %}
+            <div class="col-12 text-center py-5">
+                <div class="empty-state">
+                    <i class="bi bi-inbox display-4 text-muted mb-3 d-block opacity-50"></i>
+                    <p class="text-muted">Nenhuma área de atuação cadastrada no momento.</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {# ESTADO VAZIO (SEM RESULTADOS) #}
+        <div id="noResults" class="text-center py-5 d-none">
+            <i class="bi bi-search display-6 text-muted mb-3 d-block opacity-50"></i>
+            <p class="text-muted">Nenhuma área encontrada para sua busca.</p>
+            <button class="btn btn-sm btn-outline-secondary mt-2 rounded-pill px-4" onclick="clearSearch()">Limpar Filtros</button>
+        </div>
+
+    </div>
+</section>
+
+{% include '_cta_section.html' %}
+
+<style>
+    /* --- VARIÁVEIS LOCAIS ADAPTATIVAS --- */
+    .areas-page-wrapper {
+        --ar-bg: var(--prm-bg-surface, #fff);
+        --ar-card-bg: var(--prm-bg-surface, #ffffff);
+        --ar-card-border: var(--prm-border, rgba(0,0,0,0.08));
+        --ar-accent: var(--prm-accent-red, #b92027);
+        --ar-text: var(--prm-text, #333);
+        --ar-text-muted: var(--prm-text-light, #666);
+        --ar-radius: 12px;
+        --ar-shadow: var(--shadow-sm, 0 4px 6px rgba(0,0,0,0.05));
+        --ar-hover-lift: -8px;
+    }
+
+    /* Option 2/6 (Corporativo) */
+    body.option2 .areas-page-wrapper, body.option6 .areas-page-wrapper {
+        --ar-bg: var(--titan-bg-main, #f8f9fa);
+        --ar-accent: var(--titan-text-primary, #002F49);
+        --ar-radius: 4px;
+    }
+
+    /* Option 3/7 (Boutique) */
+    body.option3 .areas-page-wrapper, body.option7 .areas-page-wrapper {
+        --ar-bg: var(--btq-bg-main, #F9F7F2);
+        --ar-accent: var(--btq-gold-main, #D4AF37);
+    }
+
+    /* Option 4/8 (Tech) & Dark Mode */
+    body.option4 .areas-page-wrapper, body.option8 .areas-page-wrapper,
+    body.dark-mode .areas-page-wrapper,
+    [data-theme="dark"] .areas-page-wrapper {
+        --ar-bg: transparent;
+        --ar-card-bg: rgba(255, 255, 255, 0.03);
+        --ar-card-border: rgba(255, 255, 255, 0.1);
+        --ar-text: #f1f1f1;
+        --ar-text-muted: #aaa;
+        --ar-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    /* --- ESTRUTURA --- */
+    .areas-page-wrapper {
+        padding: 80px 0;
+        background-color: var(--ar-bg);
+        min-height: 60vh;
+    }
+
+    /* --- SEARCH BAR --- */
+    .search-wrapper {
+        position: relative;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .search-input {
+        width: 100%;
+        padding: 15px 15px 15px 50px;
+        border-radius: 50px;
+        border: 2px solid var(--ar-card-border);
+        background: var(--ar-card-bg);
+        color: var(--ar-text);
+        font-size: 1rem;
+        transition: 0.3s;
+        box-shadow: var(--ar-shadow);
+    }
+    
+    .search-input:focus {
+        outline: none;
+        border-color: var(--ar-accent);
+        box-shadow: 0 0 0 4px rgba(var(--ar-accent), 0.1);
+    }
+    
+    .search-icon {
+        position: absolute;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--ar-text-muted);
+        font-size: 1.2rem;
+        pointer-events: none;
+    }
+
+    /* --- CARD ÁREA --- */
+    .area-card {
+        display: block;
+        background: var(--ar-card-bg);
+        border: 1px solid var(--ar-card-border);
+        border-radius: var(--ar-radius);
+        height: 100%;
+        text-decoration: none;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        overflow: hidden;
+        position: relative;
+    }
+
+    .area-card:hover {
+        transform: translateY(var(--ar-hover-lift));
+        box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+        border-color: var(--ar-accent);
+    }
+
+    /* Dark Mode Hover Glow */
+    body.dark-mode .area-card:hover, body.option4 .area-card:hover, body.option8 .area-card:hover {
+        box-shadow: 0 0 30px rgba(255,255,255,0.05), inset 0 0 0 1px var(--ar-accent);
+        border-color: transparent;
+    }
+
+    .card-body {
+        padding: 40px 30px;
+        display: flex; flex-direction: column; height: 100%;
+    }
+
+    /* Ícone */
+    .area-icon-box {
+        width: 60px; height: 60px;
+        background: rgba(var(--prm-accent-red-rgb), 0.04);
+        background: rgba(185, 32, 39, 0.04);
+        border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.8rem;
+        color: var(--ar-accent);
+        margin-bottom: 25px;
+        transition: 0.3s;
+    }
+    
+    body.dark-mode .area-icon-box, body.option4 .area-icon-box { background: rgba(255,255,255,0.1); }
+
+    .area-card:hover .area-icon-box {
+        background: var(--ar-accent); color: #fff;
+        transform: rotateY(180deg);
+    }
+
+    /* Texto */
+    .area-title {
+        font-family: var(--font-heading, serif);
+        font-size: 1.4rem; color: var(--ar-text);
+        margin-bottom: 15px; font-weight: 700;
+        transition: 0.3s;
+    }
+    
+    .area-desc {
+        font-size: 0.95rem; color: var(--ar-text-muted);
+        line-height: 1.6; margin-bottom: 30px; flex: 1;
+    }
+
+    /* Footer / Link */
+    .area-footer {
+        border-top: 1px solid var(--ar-card-border);
+        padding-top: 20px;
+        margin-top: auto;
+    }
+    
+    .learn-more {
+        font-size: 0.85rem; font-weight: 700; text-transform: uppercase;
+        letter-spacing: 1px; color: var(--ar-text);
+        display: flex; align-items: center; gap: 8px;
+        transition: 0.3s;
+    }
+    
+    .area-card:hover .learn-more {
+        color: var(--ar-accent);
+        gap: 15px; /* Seta se afasta */
+    }
+
+    /* Ajuste Option 2 (Barra lateral) */
+    body.option2 .area-card, body.option6 .area-card {
+        border-left: 4px solid transparent;
+    }
+    body.option2 .area-card:hover, body.option6 .area-card:hover {
+        border-left-color: var(--ar-accent);
+    }
+
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('areaSearch');
+        const items = document.querySelectorAll('.area-item');
+        const noResults = document.getElementById('noResults');
+
+        if(searchInput) {
+            searchInput.addEventListener('keyup', function(e) {
+                const term = e.target.value.toLowerCase().trim();
+                let visibleCount = 0;
+
+                items.forEach(item => {
+                    const title = item.getAttribute('data-title');
+                    const desc = item.getAttribute('data-desc');
+                    
+                    if (title.includes(term) || desc.includes(term)) {
+                        item.classList.remove('d-none');
+                        visibleCount++;
+                    } else {
+                        item.classList.add('d-none');
+                    }
+                });
+
+                if (visibleCount === 0) {
+                    noResults.classList.remove('d-none');
+                } else {
+                    noResults.classList.add('d-none');
+                }
+            });
+        }
+    });
+
+    function clearSearch() {
+        const input = document.getElementById('areaSearch');
+        input.value = '';
+        input.dispatchEvent(new Event('keyup'));
+    }
+</script>
+
+{% endblock %}

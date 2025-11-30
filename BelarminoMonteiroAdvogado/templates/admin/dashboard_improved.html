@@ -1,0 +1,650 @@
+{% extends "admin/admin_base.html" %}
+
+{% block title %}Painel de Controle{% endblock %}
+
+{% block head_extra %}
+{{ super() }}
+<style>
+    /* Estilos para Drag & Drop */
+    .sortable-list { list-style: none; padding: 0; }
+    .sortable-item {
+        background: var(--admin-bg);
+        border: 1px solid var(--admin-border);
+        padding: 12px 16px;
+        margin-bottom: 8px;
+        border-radius: 8px;
+        cursor: move;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition: all 0.2s;
+    }
+    .sortable-item:hover {
+        border-color: var(--admin-primary);
+        transform: translateX(4px);
+    }
+    .sortable-item i.bi-grip-vertical { 
+        margin-right: 12px; 
+        color: var(--admin-text-sec);
+        cursor: grab;
+    }
+    .sortable-item i.bi-grip-vertical:active {
+        cursor: grabbing;
+    }
+    .sortable-ghost { 
+        opacity: 0.4; 
+        background: var(--admin-surface);
+        border-style: dashed;
+    }
+    
+    .dashboard-card { 
+        transition: transform 0.3s, box-shadow 0.3s;
+        cursor: pointer;
+    }
+    .dashboard-card:hover { 
+        transform: translateY(-8px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+    }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="admin-dashboard-content">
+
+    {# BREADCRUMB #}
+    <nav class="breadcrumb-enhanced mb-4">
+        <a href="{{ url_for('admin.dashboard') }}" class="breadcrumb-item">
+            <i class="bi bi-house-door"></i>
+            Dashboard
+        </a>
+        <span class="breadcrumb-separator">/</span>
+        <span class="breadcrumb-item active">Visão Geral</span>
+    </nav>
+
+    {# SEÇÃO: Visão Geral #}
+    <section id="Content" class="tab-content active fade-in">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h3 class="mb-2">
+                    <i class="bi bi-speedometer2 text-primary me-2"></i>
+                    Visão Geral do Painel
+                </h3>
+                <p class="text-muted-enhanced mb-0">Bem-vindo ao centro de controle do seu site</p>
+            </div>
+            <div>
+                <span class="badge-status active">
+                    <i class="bi bi-circle-fill"></i>
+                    Sistema Online
+                </span>
+            </div>
+        </div>
+        
+        {# ALERTA DE NOVOS TEMAS #}
+        <div class="hint-box hint-success mb-4">
+            <i class="bi bi-stars"></i>
+            <div>
+                <strong>Novidade V2.0:</strong> Agora você tem acesso a 4 novos layouts premium (Options 5, 6, 7 e 8).
+                <a href="#Theme" class="text-primary-enhanced text-decoration-underline">Experimente agora</a> na aba Aparência.
+            </div>
+        </div>
+
+        {# CARDS DE ACESSO RÁPIDO #}
+        <div class="row g-4 mb-5">
+            <div class="col-md-3">
+                <div class="dashboard-card-enhanced" onclick="window.location.href='{{ url_for('admin.design_editor') }}'">
+                    <div class="card-header-enhanced">
+                        <div class="card-title-enhanced">
+                            <i class="bi bi-palette"></i>
+                            Design
+                        </div>
+                        <span class="counter-badge" data-tooltip="Temas disponíveis">8</span>
+                    </div>
+                    <div class="card-stat">
+                        <span class="card-stat-label">Tema Ativo</span>
+                        <span class="card-stat-value">{{ theme|upper }}</span>
+                    </div>
+                    <div class="mt-3">
+                        <small class="text-muted-enhanced">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Personalize cores e layout
+                        </small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="dashboard-card-enhanced" onclick="location.hash='#Services'">
+                    <div class="card-header-enhanced">
+                        <div class="card-title-enhanced">
+                            <i class="bi bi-briefcase"></i>
+                            Serviços
+                        </div>
+                        <span class="counter-badge" data-tooltip="Total de serviços">{{ all_services|length }}</span>
+                    </div>
+                    <div class="card-stat">
+                        <span class="card-stat-label">Ativos</span>
+                        <span class="card-stat-value">{{ all_services|length }}</span>
+                    </div>
+                    <div class="mt-3">
+                        <small class="text-muted-enhanced">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Gerencie áreas de atuação
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="dashboard-card-enhanced" onclick="location.hash='#Team'">
+                    <div class="card-header-enhanced">
+                        <div class="card-title-enhanced">
+                            <i class="bi bi-people"></i>
+                            Equipe
+                        </div>
+                        <span class="counter-badge" data-tooltip="Membros cadastrados">{{ all_team|length }}</span>
+                    </div>
+                    <div class="card-stat">
+                        <span class="card-stat-label">Advogados</span>
+                        <span class="card-stat-value">{{ all_team|length }}</span>
+                    </div>
+                    <div class="mt-3">
+                        <small class="text-muted-enhanced">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Adicione profissionais
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="dashboard-card-enhanced" onclick="location.hash='#HomeSections'">
+                    <div class="card-header-enhanced">
+                        <div class="card-title-enhanced">
+                            <i class="bi bi-layout-text-window-reverse"></i>
+                            Home
+                        </div>
+                        <span class="counter-badge" data-tooltip="Seções da homepage">{{ home_sections_list|length }}</span>
+                    </div>
+                    <div class="card-stat">
+                        <span class="card-stat-label">Seções</span>
+                        <span class="card-stat-value">{{ home_sections_list|length }}</span>
+                    </div>
+                    <div class="mt-3">
+                        <small class="text-muted-enhanced">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Organize o conteúdo
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# GERENCIAR CONTEÚDO DE PÁGINAS #}
+        <div class="dashboard-card-enhanced mb-4">
+            <div class="card-header-enhanced">
+                <h5 class="card-title-enhanced mb-0">
+                    <i class="bi bi-journal-text"></i>
+                    Gerenciar Conteúdo de Páginas
+                </h5>
+                <button type="button" class="btn btn-sm btn-secondary" data-tooltip="Ajuda sobre edição de conteúdo">
+                    <i class="bi bi-question-circle"></i>
+                </button>
+            </div>
+            
+            <div class="hint-box mb-3">
+                <i class="bi bi-lightbulb"></i>
+                <div>
+                    <strong>Dica:</strong> Edite o conteúdo textual de páginas como "Sobre Nós", "Contato", "Política de Privacidade", etc. 
+                    Selecione a página e a seção para editar.
+                </div>
+            </div>
+            
+            <form method="POST" action="{{ url_for('admin.update_content') }}" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+                <div class="form-group-enhanced">
+                    <label for="page-selector" class="form-label-enhanced">
+                        <i class="bi bi-file-earmark-text"></i>
+                        Selecionar Página
+                    </label>
+                    <select name="page_identifier" id="page-selector" class="form-control-enhanced">
+                        {% for page_slug in all_content_pages %}
+                        <option value="{{ page_slug }}" {% if page_slug == selected_page %}selected{% endif %}>
+                            {{ page_slug|replace('-', ' ')|title }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                {% for item in content_for_page %}
+                    {% include 'admin/_form_field.html' %}
+                {% endfor %}
+                
+                <button type="submit" class="btn btn-primary" data-tooltip="Salvar todas as alterações">
+                    <i class="bi bi-save"></i>
+                    Salvar Conteúdo da Página
+                </button>
+            </form>
+        </div>
+
+    </section>
+
+    {# SEÇÃO: Home Page #}
+    <section id="HomeSections" class="tab-content">
+        <nav class="breadcrumb-enhanced mb-4">
+            <a href="#Content" class="breadcrumb-item">
+                <i class="bi bi-house-door"></i>
+                Dashboard
+            </a>
+            <span class="breadcrumb-separator">/</span>
+            <span class="breadcrumb-item active">Seções da Home</span>
+        </nav>
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h3 class="mb-2">
+                    <i class="bi bi-layout-text-window-reverse text-primary me-2"></i>
+                    Gerenciar Seções da Home Page
+                </h3>
+                <p class="text-muted-enhanced mb-0">Arraste para reordenar • Clique no olho para ativar/desativar</p>
+            </div>
+            <span class="badge-status active">
+                <i class="bi bi-check-circle"></i>
+                {{ home_sections_list|selectattr('is_active')|list|length }} Ativas
+            </span>
+        </div>
+
+        <div class="hint-box hint-warning mb-4">
+            <i class="bi bi-exclamation-triangle"></i>
+            <div>
+                <strong>Atenção:</strong> A ordem das seções afeta diretamente a experiência do visitante. 
+                Recomendamos manter "Hero" no topo e "CTA" próximo ao final.
+            </div>
+        </div>
+
+        <div class="dashboard-card-enhanced">
+            <form method="POST" action="{{ url_for('admin.reorder_home_sections') }}" id="sections-order-form">
+                {{ form.hidden_tag() }}
+                <ul id="sections-list" class="sortable-list">
+                    {% for section in home_sections_list %}
+                    <li class="sortable-item" data-id="{{ section.id }}">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="bi bi-grip-vertical"></i>
+                            <span class="fw-bold">{{ section.title }}</span>
+                            <span class="badge-status {{ 'active' if section.is_active else 'inactive' }}">
+                                {{ section.section_type }}
+                            </span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <input type="hidden" name="order" value="{{ section.id }}">
+                            
+                            <button type="button" 
+                                    class="btn btn-sm btn-link text-decoration-none toggle-visibility" 
+                                    data-id="{{ section.id }}" 
+                                    data-active="{{ 'true' if section.is_active else 'false' }}"
+                                    data-tooltip="{{ 'Desativar seção' if section.is_active else 'Ativar seção' }}">
+                                <i class="bi {{ 'bi-eye-fill text-success' if section.is_active else 'bi-eye-slash-fill text-muted' }}"></i>
+                            </button>
+
+                            <button type="button" 
+                                    class="btn btn-sm btn-outline-secondary" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#editSectionModal{{ section.id }}"
+                                    data-tooltip="Editar conteúdo da seção">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                        </div>
+                    </li>
+
+                    {# Modal de Edição #}
+                    <div class="modal fade modal-enhanced" id="editSectionModal{{ section.id }}" tabindex="-1">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <form method="POST" action="{{ url_for('admin.update_section_text') }}">
+                                    {{ form.hidden_tag() }}
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">
+                                            <i class="bi bi-pencil-square"></i>
+                                            Editar Seção: {{ section.title }}
+                                        </h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <input type="hidden" name="section_id" value="{{ section.id }}">
+                                        
+                                        <div class="form-group-enhanced">
+                                            <label class="form-label-enhanced form-label-required">
+                                                <i class="bi bi-type"></i>
+                                                Título
+                                            </label>
+                                            <input type="text" class="form-control-enhanced" name="title" value="{{ section.title }}" required>
+                                        </div>
+                                        
+                                        <div class="form-group-enhanced">
+                                            <label class="form-label-enhanced">
+                                                <i class="bi bi-text-paragraph"></i>
+                                                Subtítulo / Descrição
+                                            </label>
+                                            <textarea class="form-control-enhanced" name="subtitle" rows="3">{{ section.subtitle }}</textarea>
+                                            <div class="form-feedback">
+                                                <i class="bi bi-info-circle"></i>
+                                                Opcional - Aparece abaixo do título
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                            <i class="bi bi-x-lg"></i>
+                                            Cancelar
+                                        </button>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="bi bi-check-lg"></i>
+                                            Salvar Alterações
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </ul>
+                
+                <div class="hint-box mt-3">
+                    <i class="bi bi-info-circle"></i>
+                    <div>
+                        Arraste as seções para reorganizar. Clique em <i class="bi bi-eye-fill"></i> para ativar/desativar.
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary w-100 mt-3" data-tooltip="Aplicar nova ordem das seções">
+                    <i class="bi bi-save"></i>
+                    Salvar Nova Ordem
+                </button>
+            </form>
+        </div>
+    </section>
+
+    {# SEÇÃO: Navegação #}
+    <section id="Navigation" class="tab-content">
+        <nav class="breadcrumb-enhanced mb-4">
+            <a href="#Content" class="breadcrumb-item">
+                <i class="bi bi-house-door"></i>
+                Dashboard
+            </a>
+            <span class="breadcrumb-separator">/</span>
+            <span class="breadcrumb-item active">Navegação</span>
+        </nav>
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h3 class="mb-2">
+                    <i class="bi bi-list-nested text-primary me-2"></i>
+                    Gerenciar Navegação do Site
+                </h3>
+                <p class="text-muted-enhanced mb-0">Organize a ordem dos itens do menu principal</p>
+            </div>
+        </div>
+
+        <div class="dashboard-card-enhanced">
+            <div class="hint-box mb-3">
+                <i class="bi bi-lightbulb"></i>
+                <div>
+                    <strong>Dica:</strong> Arraste os itens para reorganizar o menu. 
+                    Use <i class="bi bi-eye-fill"></i> para mostrar/ocultar no menu e <i class="bi bi-check-circle-fill"></i> para ativar/desativar a página.
+                </div>
+            </div>
+
+            <form method="POST" action="{{ url_for('admin.update_nav_order') }}" id="nav-order-form">
+                {{ form.hidden_tag() }}
+                <ul id="nav-list" class="sortable-list">
+                    {% for page in nav_pages_admin %}
+                    <li class="sortable-item" data-id="{{ page.id }}">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="bi bi-grip-vertical"></i>
+                            <span class="fw-bold">{{ page.titulo_menu }}</span>
+                            {% if page.show_in_menu %}
+                                <span class="badge-status active">
+                                    <i class="bi bi-eye"></i>
+                                    Visível
+                                </span>
+                            {% else %}
+                                <span class="badge-status inactive">
+                                    <i class="bi bi-eye-slash"></i>
+                                    Oculto
+                                </span>
+                            {% endif %}
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <input type="hidden" name="order" value="{{ page.id }}">
+                            
+                            <a href="{{ url_for('admin.toggle_page_status', id=page.id, field='show_in_menu') }}" 
+                               class="btn btn-sm btn-link text-decoration-none"
+                               data-tooltip="Mostrar/ocultar no menu">
+                                <i class="bi {{ 'bi-eye-fill text-success' if page.show_in_menu else 'bi-eye-slash-fill text-muted' }}"></i>
+                            </a>
+                            
+                            <a href="{{ url_for('admin.toggle_page_status', id=page.id, field='ativo') }}" 
+                               class="btn btn-sm btn-link text-decoration-none"
+                               data-tooltip="Ativar/desativar página">
+                                <i class="bi {{ 'bi-check-circle-fill text-success' if page.ativo else 'bi-x-circle-fill text-danger' }}"></i>
+                            </a>
+                            
+                            {% if page.tipo == 'servico' %}
+                            <a href="{{ url_for('admin.edit_service', slug=page.slug) }}" 
+                               class="btn btn-sm btn-outline-secondary"
+                               data-tooltip="Editar serviço">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <button type="submit" class="btn btn-primary w-100 mt-3">
+                    <i class="bi bi-save"></i>
+                    Salvar Ordem do Menu
+                </button>
+            </form>
+        </div>
+    </section>
+
+    {# SEÇÃO: Serviços #}
+    <section id="Services" class="tab-content">
+        <nav class="breadcrumb-enhanced mb-4">
+            <a href="#Content" class="breadcrumb-item">
+                <i class="bi bi-house-door"></i>
+                Dashboard
+            </a>
+            <span class="breadcrumb-separator">/</span>
+            <span class="breadcrumb-item active">Serviços</span>
+        </nav>
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h3 class="mb-2">
+                    <i class="bi bi-briefcase text-primary me-2"></i>
+                    Gerenciar Serviços
+                </h3>
+                <p class="text-muted-enhanced mb-0">Adicione, edite ou remova as áreas de atuação</p>
+            </div>
+            <button type="button" 
+                    class="btn btn-primary" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#addServiceModal"
+                    data-tooltip="Criar novo serviço">
+                <i class="bi bi-plus-lg"></i>
+                Adicionar Serviço
+            </button>
+        </div>
+        
+        <div class="dashboard-card-enhanced">
+            <div class="hint-box mb-3">
+                <i class="bi bi-info-circle"></i>
+                <div>
+                    Cada serviço criado gera automaticamente uma página dedicada com URL personalizada.
+                </div>
+            </div>
+
+            <ul class="list-group">
+                {% for service in all_services %}
+                <li class="list-group-item d-flex justify-content-between align-items-center" style="background: var(--admin-bg); border-color: var(--admin-border); color: var(--admin-text);">
+                    <div class="d-flex align-items-center gap-3">
+                        <i class="{{ service.icone }} fs-4 text-primary-enhanced"></i>
+                        <div>
+                            <strong>{{ service.titulo }}</strong>
+                            <br>
+                            <small class="text-muted-enhanced">
+                                <i class="bi bi-link-45deg"></i>
+                                /{{ service.slug }}
+                            </small>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="{{ url_for('admin.edit_service', slug=service.slug) }}" 
+                           class="btn btn-sm btn-primary"
+                           data-tooltip="Editar serviço">
+                            <i class="bi bi-pencil"></i>
+                            Editar
+                        </a>
+                        <form action="{{ url_for('admin.delete_area_atuacao') }}" method="POST" class="d-inline">
+                            {{ form.hidden_tag() }}
+                            <input type="hidden" name="slug" value="{{ service.slug }}">
+                            <button type="submit" 
+                                    class="btn btn-sm btn-danger" 
+                                    onclick="return confirm(' Tem certeza? Isso removerá o serviço e sua página permanentemente.');"
+                                    data-tooltip="Excluir serviço">
+                                <i class="bi bi-trash"></i>
+                                Excluir
+                            </button>
+                        </form>
+                    </div>
+                </li>
+                {% else %}
+                <li class="list-group-item text-center" style="background: var(--admin-bg); border-color: var(--admin-border);">
+                    <i class="bi bi-inbox fs-1 text-muted-enhanced d-block mb-2"></i>
+                    <span class="text-muted-enhanced">Nenhum serviço cadastrado</span>
+                    <br>
+                    <button type="button" class="btn btn-sm btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#addServiceModal">
+                        <i class="bi bi-plus-lg"></i>
+                        Adicionar Primeiro Serviço
+                    </button>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        {# Modal de Adicionar Serviço #}
+        <div class="modal fade modal-enhanced" id="addServiceModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <form method="POST" action="{{ url_for('admin.add_area_atuacao') }}" enctype="multipart/form-data">
+                        {{ form.hidden_tag() }}
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                <i class="bi bi-plus-circle"></i>
+                                Adicionar Novo Serviço
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group-enhanced">
+                                        <label for="titulo" class="form-label-enhanced form-label-required">
+                                            <i class="bi bi-type"></i>
+                                            Título
+                                        </label>
+                                        <input type="text" class="form-control-enhanced" id="titulo" name="titulo" required placeholder="Ex: Direito Civil">
+                                        <div class="form-feedback">
+                                            <i class="bi bi-info-circle"></i>
+                                            Nome que aparecerá no site
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group-enhanced">
+                                        <label for="slug" class="form-label-enhanced form-label-required">
+                                            <i class="bi bi-link-45deg"></i>
+                                            URL (slug)
+                                        </label>
+                                        <input type="text" class="form-control-enhanced" id="slug" name="slug" required placeholder="direito-civil">
+                                        <div class="form-feedback">
+                                            <i class="bi bi-info-circle"></i>
+                                            Apenas letras minúsculas e hífens
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group-enhanced">
+                                <label for="descricao" class="form-label-enhanced form-label-required">
+                                    <i class="bi bi-text-paragraph"></i>
+                                    Descrição Curta
+                                </label>
+                                <textarea class="form-control-enhanced" id="descricao" name="descricao" rows="3" required placeholder="Breve descrição do serviço..."></textarea>
+                                <div class="form-feedback">
+                                    <i class="bi bi-info-circle"></i>
+                                    Aparece nos cards da homepage
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group-enhanced">
+                                        <label for="icone" class="form-label-enhanced form-label-required">
+                                            <i class="bi bi-emoji-smile"></i>
+                                            Ícone
+                                        </label>
+                                        <input type="text" class="form-control-enhanced" id="icone" name="icone" placeholder="bi-bank" required>
+                                        <div class="form-feedback">
+                                            <i class="bi bi-info-circle"></i>
+                                            Use ícones do <a href="https://icons.getbootstrap.com/" target="_blank" class="text-primary-enhanced">Bootstrap Icons</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group-enhanced">
+                                        <label for="foto" class="form-label-enhanced">
+                                            <i class="bi bi-image"></i>
+                                            Foto de Capa
+                                        </label>
+                                        <input type="file" class="form-control-enhanced" id="foto" name="foto" accept="image/*">
+                                        <div class="form-feedback">
+                                            <i class="bi bi-info-circle"></i>
+                                            Opcional - Imagem da página do serviço
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                <i class="bi bi-x-lg"></i>
+                                Cancelar
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-lg"></i>
+                                Criar Serviço
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {# SEÇÃO: Equipe #}
+    <section id="Team" class="tab-content">
+        <nav class="breadcrumb-enhanced mb-4">
+            <a href="#Content" class="breadcrumb-item">
+                <i class="bi bi-house-door"></i>
+                Dashboard
+            </a>
+            <span class="breadcrumb-separator">/</span>
+            <span class="breadcrumb-item active">Equipe</span>
+        </nav>
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h3 class="mb-2">
+                    <i class="bi bi-people text-primary me-2"></i>

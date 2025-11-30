@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+
+{% block title %}Belarmino Monteiro - Boutique Jurídica & Golden Balance{% endblock %}
+{% block metadescription %}Advocacia de alto padrão, estilo boutique e elegância clássica em cada detalhe.{% endblock %}
+
+{% block content %}
+
+<style>
+    /* VARIÁVEIS LOCAIS SÃO DEFINIDAS EM theme-light-option3.css e theme-dark-option3.css */
+    
+    /* --- 1. HERO BOUTIQUE --- */
+    .hero-boutique {
+        position: relative;
+        height: 100vh;
+        min-height: 600px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        color: #fff;
+        text-align: center;
+        background-color: var(--btq-bg-main);
+        padding-top: 100px;
+    }
+    
+    .hero-decor-line {
+        position: absolute; top: 0; left: 0; width: 100%; height: 5px;
+        background-color: var(--btq-gold-main);
+        z-index: 10;
+    }
+
+    .hero-title {
+        font-family: var(--font-primary);
+        font-size: clamp(3rem, 7vw, 5rem);
+        font-weight: 400; margin-bottom: 20px;
+        line-height: 1.1;
+    }
+    .hero-subtitle {
+        font-family: var(--font-secondary);
+        font-size: clamp(1rem, 2vw, 1.25rem);
+        font-weight: 300; opacity: 0.9;
+        max-width: 600px; margin: 0 auto 40px;
+        line-height: 1.6;
+    }
+
+    /* FIX CRÍTICO: Garante que os títulos e subtítulos sejam brancos no Hero */
+    .hero-boutique .hero-title, 
+    .hero-boutique .hero-subtitle,
+    .hero-boutique .hero-pre-title {
+        color: #fff !important; 
+    }
+
+    /* Dark Mode adjustments for visual clarity */
+    body.dark-mode .hero-boutique, [data-theme="dark"] .hero-boutique {
+        background-color: var(--btq-bg-main);
+    }
+
+
+    /* --- 2. INTRODUÇÃO (Quote Dourado) --- */
+    .intro-boutique {
+        padding: 120px 0;
+        background-color: var(--btq-bg-surface);
+    }
+    .intro-quote-boutique {
+        font-family: var(--font-primary);
+        font-size: clamp(2rem, 3vw, 3rem);
+        line-height: 1.5; color: var(--btq-text-primary);
+        text-align: center; max-width: 900px; margin: 0 auto;
+        font-style: italic;
+    }
+    .quote-highlight { color: var(--btq-gold-main); }
+    
+    /* --- 3. SERVIÇOS (Lista Elegante) --- */
+    .services-boutique {
+        padding: 100px 0;
+        background-color: var(--btq-bg-main);
+    }
+
+    .service-row {
+        padding: 30px 0;
+        border-bottom: 1px solid var(--btq-border);
+        transition: all 0.3s ease;
+    }
+
+    .service-num {
+        font-family: var(--font-primary);
+        font-size: 2.5rem; color: var(--btq-gold-dark);
+        opacity: 0.8;
+    }
+
+    .service-title {
+        font-family: var(--font-secondary);
+        font-size: 1.4rem; color: var(--btq-text-primary);
+        font-weight: 700;
+    }
+
+    /* --- 4. DESTAQUE COM MÍDIA --- */
+    .media-boutique {
+        padding: 100px 0;
+        background-color: var(--btq-bg-surface);
+    }
+
+    .media-caption {
+        border-left: 3px solid var(--btq-gold-main);
+        padding-left: 20px;
+    }
+</style>
+
+<div class="option3-wrapper">
+
+    <section class="hero-boutique" style="background-image: url('{{ url_for('static', filename='images/Escolhidas Escritorio/3S5A1373.jpg') }}');">
+        <div class="hero-decor-line"></div>
+        <div class="hero-boutique-overlay"></div>
+        <div class="container position-relative z-2">
+            <div class="hero-content">
+                <span class="hero-pre-title text-white-50" data-aos="fade-down" data-aos-delay="200">Golden Balance</span>
+                <h1 class="hero-title" data-aos="fade-up" data-aos-delay="400">
+                    A Advocacia com Arte e Requinte.
+                </h1>
+                <p class="hero-subtitle text-white-75" data-aos="fade-up" data-aos-delay="600">
+                    Onde a precisão legal encontra a elegância da tradição.
+                </p>
+                <a href="#intro" class="btn btn-warning btn-lg px-5" data-aos="fade-up" data-aos-delay="800">
+                    Descubra
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="intro" class="intro-boutique">
+        <div class="container" data-aos="fade-up">
+            <p class="intro-quote-boutique">
+                "Não vendemos serviços, estabelecemos parcerias onde o <span class="quote-highlight">resultado</span> é uma obra de arte jurídica."
+            </p>
+        </div>
+    </section>
+
+    <section class="services-boutique">
+        <div class="container">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <span class="section-label">Nossa Expertise</span>
+                <h2 class="h1">Áreas de Prática</h2>
+            </div>
+
+            {% for area in lista_areas_atuacao %}
+            <div class="service-row row align-items-center" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
+                <div class="col-1 col-md-1">
+                    <span class="service-num">{{ loop.index }}</span>
+                </div>
+                <div class="col-8 col-md-7">
+                    <h3 class="service-title">{{ area.titulo }}</h3>
+                    <p class="small opacity-75">{{ area.descricao[:100] }}...</p>
+                </div>
+                <div class="col-3 col-md-4 text-end">
+                    {# CORREÇÃO: Substitui servico_detalhe por pagina_dinamica #}
+                    <a href="{{ url_for('main.pagina_dinamica', slug=area.slug) }}" class="btn btn-sm btn-outline-dark rounded-0 px-4">Detalhes</a>
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+    </section>
+
+    <section class="media-boutique">
+        <div class="container">
+            <div class="row align-items-center gy-5">
+                <div class="col-lg-6" data-aos="fade-right">
+                    <div class="media-caption">
+                        <span class="section-label">Tradição</span>
+                        <h2 class="h1 mb-4">A Liderança que Inspira Confiança.</h2>
+                        <p class="lead opacity-75">
+                            O Dr. Belarmino Monteiro é reconhecido por sua abordagem meticulosa e estratégica, que garante aos clientes não apenas a defesa de seus direitos, mas a consolidação de seu patrimônio e legado.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-lg-6" data-aos="fade-left" data-aos-delay="200">
+                    <img src="{{ url_for('static', filename='images/Belarmino.png') }}" class="img-fluid rounded-4 shadow-lg" alt="Líder do Escritório">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {% include 'home/_map_section.html' %}
+    {% include '_cta_section.html' %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,141 @@
+{% if all_clients %}
+<section class="clients-universal-wrapper" data-aos="fade-up">
+    <div class="container">
+        
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-8 text-center">
+                <p class="section-badge-text">
+                    A confiança de grandes marcas
+                </p>
+                <div class="divider-small mx-auto"></div>
+            </div>
+        </div>
+
+        <div class="clients-grid">
+            {% for client in all_clients %}
+            <div class="client-item" data-aos="fade-up" data-aos-delay="{{ loop.index * 50 }}">
+                <div class="logo-box" title="{{ client.nome }}">
+                    <img src="{{ url_for('static', filename=client.logo) }}" 
+                         alt="Logo {{ client.nome }}" 
+                         class="client-logo img-fluid"
+                         loading="lazy">
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+</section>
+
+<style>
+    /* --- VARIÁVEIS LOCAIS --- */
+    .clients-universal-wrapper {
+        --cl-bg: var(--prm-bg-surface, #fff);
+        --cl-accent: var(--prm-accent-red, #b92027);
+        --cl-border: rgba(0,0,0,0.05);
+        --cl-logo-filter: grayscale(100%) opacity(0.6);
+        --cl-logo-hover: grayscale(0%) opacity(1);
+        --cl-grid-gap: 20px;
+        --cl-box-bg: #fdfdfd;
+    }
+
+    /* Option 2 (Corporativo - Fundo Cinza Claro) */
+    body.option2 .clients-universal-wrapper {
+        --cl-bg: #f8f9fa;
+        --cl-box-bg: #fff;
+    }
+
+    /* Option 3 (Boutique - Tom Quente) */
+    body.option3 .clients-universal-wrapper {
+        --cl-bg: #F9F7F2;
+        --cl-box-bg: #fff;
+        --cl-accent: #D4AF37;
+        --cl-logo-filter: sepia(100%) opacity(0.5); /* Efeito Sépia Elegante */
+        --cl-logo-hover: sepia(0%) opacity(1);
+    }
+
+    /* Option 4 (Tech - Dark) & Dark Mode Global */
+    body.option4 .clients-universal-wrapper,
+    body.dark-mode .clients-universal-wrapper,
+    [data-theme="dark"] .clients-universal-wrapper {
+        --cl-bg: transparent;
+        --cl-box-bg: rgba(255, 255, 255, 0.02);
+        --cl-border: rgba(255, 255, 255, 0.1);
+        --cl-logo-filter: brightness(0) invert(1) opacity(0.4); /* Branco Sólido */
+        --cl-logo-hover: brightness(1) invert(0) opacity(1); /* Cor Original */
+        --cl-accent: var(--prm-accent-red, #b92027);
+    }
+
+    /* --- ESTRUTURA --- */
+    .clients-universal-wrapper {
+        padding: 60px 0;
+        background-color: var(--cl-bg);
+        border-top: 1px solid var(--cl-border);
+    }
+
+    .section-badge-text {
+        font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px;
+        color: #888; margin-bottom: 15px; font-weight: 600;
+        font-family: var(--font-secondary, sans-serif);
+    }
+    
+    .divider-small {
+        width: 40px; height: 2px; background-color: var(--cl-accent);
+        opacity: 0.5;
+    }
+
+    /* --- GRID RESPONSIVO (Auto-Fit) --- */
+    .clients-grid {
+        display: grid;
+        /* Cria colunas automaticamente baseada na largura mínima do card */
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: var(--cl-grid-gap);
+        align-items: center;
+        margin-top: 30px;
+    }
+
+    /* --- ITEM / CARD --- */
+    .client-item {
+        display: flex; justify-content: center;
+    }
+
+    .logo-box {
+        width: 100%;
+        height: 100px; /* Altura fixa para alinhamento */
+        background: var(--cl-box-bg);
+        border: 1px solid var(--cl-border);
+        border-radius: 8px;
+        display: flex; align-items: center; justify-content: center;
+        padding: 20px;
+        transition: all 0.3s ease;
+    }
+
+    .logo-box:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        border-color: var(--cl-accent);
+    }
+
+    /* --- LOGO IMAGE --- */
+    .client-logo {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        filter: var(--cl-logo-filter);
+        transition: filter 0.4s ease, transform 0.4s ease;
+    }
+
+    .logo-box:hover .client-logo {
+        filter: var(--cl-logo-hover);
+        transform: scale(1.05);
+    }
+
+    /* RESPONSIVIDADE */
+    @media (max-width: 768px) {
+        .clients-grid {
+            grid-template-columns: repeat(2, 1fr); /* 2 por linha no mobile */
+        }
+        .logo-box { height: 80px; padding: 15px; }
+    }
+</style>
+{% endif %}

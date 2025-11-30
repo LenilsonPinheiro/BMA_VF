@@ -1,0 +1,34 @@
+# Virtual environment
+venv/
+.env
+
+# Database
+instance/*.db
+instance/*.db-journal
+instance/*.db-wal
+instance/backups/
+
+# Python artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+.ipynb_checkpoints
+
+# IDE and editor files
+.vscode/
+
+# Logs
+*.log
+run_log.txt
+
+# Flask-Migrate generated files
+migrations/versions/
+
+# Pytest cache
+.pytest_cache/
+
+# Operating System files
+.DS_Store
+Thumbs.db

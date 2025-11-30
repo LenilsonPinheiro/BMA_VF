@@ -1,0 +1,387 @@
+<section class="hero-universal-wrapper {{ theme }}" data-aos="fade">
+    
+    {% if theme == 'option1' or theme == 'default' or not theme %}
+        
+        <div class="hero-video-container">
+            <video autoplay muted loop playsinline class="hero-video" poster="{{ url_for('static', filename='images/Escolhidas Escritorio/3S5A1373.jpg') }}">
+                <source src="{{ url_for('static', filename='videos/maior-1.webm') }}" type="video/webm">
+                <source src="{{ url_for('static', filename='videos/maior-1.mp4') }}" type="video/mp4">
+            </video>
+            <div class="hero-overlay-cinema"></div>
+        </div>
+
+        <div class="container position-relative z-2 text-center">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <span class="hero-pre-tag" data-aos="fade-down">Sociedade de Advogados</span>
+                    
+                    <h1 class="hero-title-cinema" data-aos="zoom-in" data-aos-delay="200">
+                        {{ home_section.title | default('Excelência e Tradição') }}
+                    </h1>
+                    
+                    <p class="hero-subtitle-cinema" data-aos="fade-up" data-aos-delay="400">
+                        {{ home_section.subtitle | default('Compromisso absoluto com a ética e resultados que constroem legados.') }}
+                    </p>
+                    
+                    <div class="d-flex justify-content-center gap-3 mt-5" data-aos="fade-up" data-aos-delay="600">
+                        <a href="{{ url_for('main.pagina_dinamica', slug='sobre-nos') }}" class="btn-hero-cinema">Conheça o Escritório</a>
+                        <a href="{{ url_for('main.pagina_contato') }}" class="btn-hero-cinema-outline">Agendar Reunião</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <a href="#services" class="scroll-indicator">
+            <span class="mouse-wheel"></span>
+        </a>
+
+
+    {% elif theme == 'option3' %}
+        
+        <div class="boutique-circle"></div>
+        <div class="boutique-texture"></div>
+
+        <div class="container h-100">
+            <div class="row h-100 align-items-center">
+                
+                <div class="col-lg-6 order-2 order-lg-1 py-5" data-aos="fade-right">
+                    <div class="hero-decor-line mb-4"></div>
+                    
+                    <h1 class="hero-title-boutique">
+                        {{ home_section.title | default('Advocacia Artesanal & Estratégica') }}
+                    </h1>
+                    
+                    <p class="hero-subtitle-boutique">
+                        {{ home_section.subtitle | default('Não oferecemos fórmulas prontas. Desenvolvemos estratégias sob medida com a discrição que seu patrimônio exige.') }}
+                    </p>
+                    
+                    <a href="{{ url_for('main.pagina_contato') }}" class="btn-hero-boutique mt-4">
+                        Solicitar Atendimento <i class="bi bi-arrow-right ms-2"></i>
+                    </a>
+                </div>
+
+                <div class="col-lg-6 order-1 order-lg-2 h-100 d-flex align-items-end justify-content-center position-relative" data-aos="fade-left">
+                    <div class="hero-img-frame">
+                        <img src="{{ url_for('static', filename='images/Belarmino.png') }}" 
+                             alt="Dr. Belarmino Monteiro" 
+                             class="hero-person-img">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+    {% elif theme == 'option4' %}
+        
+        <div class="hero-grid-bg"></div>
+        <div class="hero-glow-spot"></div>
+
+        <div class="container position-relative z-2">
+            <div class="row align-items-center">
+                <div class="col-lg-8" data-aos="fade-up">
+                    
+                    <div class="tech-badge mb-3">
+                        <span class="pulse-dot"></span> Direito Digital & Inovação
+                    </div>
+
+                    <h1 class="hero-title-tech">
+                        Conectando o Direito<br>
+                        ao <span class="text-gradient-tech">Futuro</span> dos Negócios.
+                    </h1>
+                    
+                    <p class="hero-subtitle-tech">
+                        {{ home_section.subtitle | default('Combinamos inteligência jurídica e tecnologia para entregar soluções ágeis e orientadas a dados.') }}
+                    </p>
+                    
+                    <div class="d-flex flex-wrap gap-3 mt-5">
+                        <a href="{{ url_for('main.pagina_contato') }}" class="btn-hero-tech">
+                            Iniciar Projeto
+                        </a>
+                        <a href="#services" class="btn-hero-tech-ghost">
+                            Explorar Soluções
+                        </a>
+                    </div>
+
+                    <div class="tech-stats-row mt-5 pt-4 border-top border-secondary border-opacity-25">
+                        <div class="d-flex gap-5">
+                            <div>
+                                <span class="d-block fw-bold text-white fs-4">24/7</span>
+                                <span class="small text-white-50 text-uppercase ls-1">Monitoramento</span>
+                            </div>
+                            <div>
+                                <span class="d-block fw-bold text-white fs-4">+15</span>
+                                <span class="small text-white-50 text-uppercase ls-1">Anos Exp.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    {% elif theme == 'option5' or theme == 'option6' or theme == 'option7' or theme == 'option8' %}
+        {# TEMAS V2 (Options 5-8) - Usa o mesmo estilo do Option 1 (Cinematic) como base #}
+        
+        <div class="hero-video-container">
+            <video autoplay muted loop playsinline class="hero-video" poster="{{ url_for('static', filename='images/Escolhidas Escritorio/3S5A1373.jpg') }}">
+                <source src="{{ url_for('static', filename='videos/maior-1.webm') }}" type="video/webm">
+                <source src="{{ url_for('static', filename='videos/maior-1.mp4') }}" type="video/mp4">
+            </video>
+            <div class="hero-overlay-cinema"></div>
+        </div>
+
+        <div class="container position-relative z-2 text-center">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <span class="hero-pre-tag" data-aos="fade-down">Sociedade de Advogados</span>
+                    
+                    <h1 class="hero-title-cinema" data-aos="zoom-in" data-aos-delay="200">
+                        {{ home_section.title | default('Excelência e Tradição') }}
+                    </h1>
+                    
+                    <p class="hero-subtitle-cinema" data-aos="fade-up" data-aos-delay="400">
+                        {{ home_section.subtitle | default('Compromisso absoluto com a ética e resultados que constroem legados.') }}
+                    </p>
+                    
+                    <div class="d-flex justify-content-center gap-3 mt-5" data-aos="fade-up" data-aos-delay="600">
+                        <a href="{{ url_for('main.pagina_dinamica', slug='sobre-nos') }}" class="btn-hero-cinema">Conheça o Escritório</a>
+                        <a href="{{ url_for('main.pagina_contato') }}" class="btn-hero-cinema-outline">Agendar Reunião</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <a href="#services" class="scroll-indicator">
+            <span class="mouse-wheel"></span>
+        </a>
+
+    {% endif %}
+
+</section>
+
+<style>
+    /* --- ESTRUTURA GERAL --- */
+    .hero-universal-wrapper {
+        position: relative;
+        min-height: 85vh; /* Altura Padrão */
+        width: 100%;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        /* Padding top dinâmico para compensar navbar fixa */
+        padding-top: var(--nav-height, 100px); 
+    }
+
+    /* -------------------------------------------
+       ESTILOS OPTION 1 (CINEMATIC) + V2 THEMES (5-8)
+       ------------------------------------------- */
+    .hero-universal-wrapper.option1, 
+    .hero-universal-wrapper.default,
+    .hero-universal-wrapper.option5,
+    .hero-universal-wrapper.option6,
+    .hero-universal-wrapper.option7,
+    .hero-universal-wrapper.option8 {
+        background-color: #000;
+        color: #fff;
+    }
+
+    .hero-video-container {
+        position: absolute; inset: 0; z-index: 0;
+    }
+    .hero-video {
+        width: 100%; height: 100%; object-fit: cover;
+    }
+    .hero-overlay-cinema {
+        position: absolute; inset: 0;
+        background: rgba(0,0,0,0.5); /* Escurece vídeo */
+        background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7));
+    }
+
+    .hero-pre-tag {
+        display: block; text-transform: uppercase; letter-spacing: 4px;
+        font-size: 0.9rem; margin-bottom: 20px; opacity: 0.9; font-family: 'Open Sans', sans-serif;
+    }
+    .hero-title-cinema {
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(3rem, 6vw, 5rem);
+        font-weight: 700; line-height: 1.1; margin-bottom: 25px;
+    }
+    .hero-subtitle-cinema {
+        font-family: 'Open Sans', sans-serif;
+        font-size: 1.25rem; font-weight: 300; opacity: 0.9;
+        max-width: 800px; margin: 0 auto;
+    }
+
+    .btn-hero-cinema {
+        background: #fff; color: #000; padding: 15px 35px;
+        text-transform: uppercase; letter-spacing: 1px; font-weight: 700; font-size: 0.85rem;
+        border: 2px solid #fff; transition: 0.3s; text-decoration: none;
+    }
+    .btn-hero-cinema:hover { background: transparent; color: #fff; }
+
+    .btn-hero-cinema-outline {
+        background: transparent; color: #fff; padding: 15px 35px;
+        text-transform: uppercase; letter-spacing: 1px; font-weight: 700; font-size: 0.85rem;
+        border: 2px solid rgba(255,255,255,0.5); transition: 0.3s; text-decoration: none;
+    }
+    .btn-hero-cinema-outline:hover { border-color: #fff; background: rgba(255,255,255,0.1); }
+
+    /* Scroll Mouse */
+    .scroll-indicator {
+        position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+        width: 30px; height: 50px; border: 2px solid rgba(255,255,255,0.5);
+        border-radius: 20px; z-index: 5;
+    }
+    .mouse-wheel {
+        display: block; width: 4px; height: 8px; background: #fff;
+        margin: 8px auto; border-radius: 4px;
+        animation: scrollWheel 2s infinite;
+    }
+    @keyframes scrollWheel {
+        0% { transform: translateY(0); opacity: 1; }
+        100% { transform: translateY(15px); opacity: 0; }
+    }
+
+    /* -------------------------------------------
+       ESTILOS OPTION 3 (BOUTIQUE)
+       ------------------------------------------- */
+    .hero-universal-wrapper.option3 {
+        background-color: #F9F7F2; /* Creme */
+        color: #2C2C2C;
+    }
+    /* Dark Mode Override para Boutique */
+    body.dark-mode .hero-universal-wrapper.option3,
+    [data-theme="dark"] .hero-universal-wrapper.option3 {
+        background-color: #1a1a1a; color: #F9F7F2;
+    }
+
+    .boutique-texture {
+        position: absolute; inset: 0; opacity: 0.05;
+        background-image: url('{{ url_for("static", filename="images/banners/texture_bg.png") }}');
+        pointer-events: none;
+    }
+    .boutique-circle {
+        position: absolute; right: -10%; top: 20%;
+        width: 60vh; height: 60vh;
+        border: 1px solid #D4AF37; border-radius: 50%;
+        opacity: 0.2; pointer-events: none;
+    }
+
+    .hero-title-boutique {
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(2.8rem, 5vw, 4.2rem);
+        color: inherit; line-height: 1.15; margin-bottom: 25px;
+    }
+    .hero-subtitle-boutique {
+        font-family: 'Lato', sans-serif;
+        font-size: 1.1rem; color: inherit; opacity: 0.7;
+        line-height: 1.8; max-width: 550px;
+    }
+    .hero-decor-line {
+        width: 70px; height: 3px; background-color: #D4AF37;
+    }
+
+    .btn-hero-boutique {
+        display: inline-flex; align-items: center;
+        background: transparent; color: inherit;
+        border: 1px solid currentColor;
+        padding: 14px 30px; text-transform: uppercase; letter-spacing: 2px;
+        font-size: 0.8rem; font-weight: 600; text-decoration: none;
+        transition: 0.4s;
+    }
+    .btn-hero-boutique:hover {
+        background: #D4AF37; border-color: #D4AF37; color: #fff;
+    }
+
+    .hero-person-img {
+        max-height: 85vh; width: auto;
+        filter: drop-shadow(10px 10px 30px rgba(0,0,0,0.1));
+        position: relative; z-index: 2;
+        /* Alinhamento base */
+        mask-image: linear-gradient(to top, transparent 0%, black 10%);
+        -webkit-mask-image: linear-gradient(to top, transparent 0%, black 10%);
+    }
+
+    /* -------------------------------------------
+       ESTILOS OPTION 4 (TECH)
+       ------------------------------------------- */
+    .hero-universal-wrapper.option4 {
+        background-color: #0f172a; /* Slate 900 */
+        color: #fff;
+    }
+
+    .hero-grid-bg {
+        position: absolute; inset: 0;
+        background-image: 
+            linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+        background-size: 50px 50px;
+        mask-image: radial-gradient(circle at center, black, transparent 80%);
+    }
+    .hero-glow-spot {
+        position: absolute; top: -20%; right: -10%;
+        width: 800px; height: 800px;
+        background: radial-gradient(circle, rgba(185,32,39,0.15), transparent 70%);
+        pointer-events: none;
+    }
+
+    .tech-badge {
+        display: inline-flex; align-items: center; gap: 8px;
+        padding: 6px 12px; background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1); border-radius: 20px;
+        font-size: 0.8rem; font-family: 'Montserrat', sans-serif; text-transform: uppercase;
+    }
+    .pulse-dot {
+        width: 8px; height: 8px; background: #22c55e; border-radius: 50%;
+        box-shadow: 0 0 10px #22c55e;
+    }
+
+    .hero-title-tech {
+        font-family: 'Montserrat', sans-serif;
+        font-size: clamp(3rem, 5.5vw, 5rem);
+        font-weight: 800; line-height: 1.1; margin-bottom: 20px;
+    }
+    .text-gradient-tech {
+        background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle-tech {
+        font-family: 'Open Sans', sans-serif;
+        font-size: 1.2rem; color: #94a3b8; max-width: 600px; line-height: 1.6;
+    }
+
+    .btn-hero-tech {
+        background: var(--prm-accent-red, #b92027); color: #fff;
+        padding: 16px 40px; border-radius: 50px; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem;
+        box-shadow: 0 0 20px rgba(185,32,39,0.4); text-decoration: none;
+        transition: 0.3s;
+    }
+    .btn-hero-tech:hover {
+        background: #fff; color: #000; box-shadow: 0 0 30px rgba(255,255,255,0.5);
+    }
+
+    .btn-hero-tech-ghost {
+        background: transparent; color: #fff;
+        padding: 16px 40px; border-radius: 50px; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem;
+        border: 1px solid rgba(255,255,255,0.2); text-decoration: none;
+        transition: 0.3s;
+    }
+    .btn-hero-tech-ghost:hover {
+        border-color: #fff; background: rgba(255,255,255,0.05);
+    }
+
+    /* RESPONSIVIDADE */
+    @media (max-width: 991px) {
+        .hero-universal-wrapper { min-height: auto; padding-bottom: 60px; }
+        .hero-title-cinema, .hero-title-boutique, .hero-title-tech { font-size: 2.5rem; }
+        
+        /* Ajuste Boutique Mobile */
+        .hero-universal-wrapper.option3 { text-align: center; }
+        .hero-person-img { max-height: 50vh; margin-top: 30px; }
+        .hero-decor-line { margin: 0 auto 20px; }
+    }
+</style>

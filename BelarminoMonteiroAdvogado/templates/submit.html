@@ -1,0 +1,303 @@
+{% extends "base.html" %}
+
+{% block title %}Enviar Depoimento - Belarmino Monteiro{% endblock %}
+{% block metadescription %}Compartilhe sua experiência com o escritório Belarmino Monteiro Advogado.{% endblock %}
+
+{% block content %}
+
+<style>
+    /* --- VARIÁVEIS ADAPTATIVAS (HERDAM DO TEMA ATIVO) --- */
+    :root {
+        /* Fallback para variáveis globais se não definidas */
+        --glass-bg: var(--prm-bg-surface, rgba(255, 255, 255, 0.95)); 
+        --glass-border: var(--prm-border, rgba(0,0,0,0.1));
+        --input-bg: var(--prm-bg-light, rgba(245, 247, 250, 0.7));
+        --text-color: var(--prm-text, #333);
+        --accent-color: var(--prm-accent-red, #b92027);
+        
+        /* Ajuste de espaçamento para Navbar Fixa */
+        --page-padding-top: clamp(130px, 20vh, 180px);
+    }
+
+    /* DARK MODE (Tech/Global) */
+    body.dark-mode, [data-theme="dark"] {
+        --glass-bg: var(--prm-bg-dark, #1e1e1e);
+        --input-bg: rgba(255, 255, 255, 0.05);
+        --glass-border: rgba(255, 255, 255, 0.1);
+    }
+
+    /* --- AMBIENTE --- */
+    .submit-page-wrapper {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-top: var(--page-padding-top);
+        padding-bottom: 80px;
+        padding-left: 20px; padding-right: 20px;
+        /* Fundo sutil do tema */
+        background-color: var(--prm-bg-light, #f4f6f9);
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Textura de fundo opcional (se o tema permitir) */
+    .submit-page-wrapper::before {
+        content: ''; position: absolute; top: -20%; left: 50%; transform: translateX(-50%);
+        width: 120%; height: 80%;
+        background: radial-gradient(circle, rgba(var(--prm-accent-red-rgb), 0.08), transparent 70%);
+        pointer-events: none; z-index: 0;
+    }
+
+    /* --- CARD DEPOIMENTO --- */
+    .testimonial-card {
+        width: 100%;
+        max-width: 700px;
+        background: var(--glass-bg);
+        /* Blur apenas se o tema suportar transparência */
+        backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+        border: 1px solid var(--glass-border);
+        border-radius: 24px;
+        padding: 50px;
+        box-shadow: 0 25px 60px rgba(0,0,0,0.08);
+        position: relative;
+        z-index: 10;
+        animation: slideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+    
+    /* Borda de destaque no topo */
+    .testimonial-card::after {
+        content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+        background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+        opacity: 0.8;
+    }
+
+    @keyframes slideUp {
+        from { opacity: 0; transform: translateY(40px) scale(0.98); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* --- CABEÇALHO --- */
+    .form-header { text-align: center; margin-bottom: 45px; }
+    
+    .quote-icon-box {
+        width: 80px; height: 80px; margin: 0 auto 20px;
+        background: rgba(var(--prm-accent-red-rgb), 0.05); /* Se RGB não definido, usa fallback */
+        background: rgba(185, 32, 39, 0.05);
+        border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    }
+    .quote-icon-box i { font-size: 2.5rem; color: var(--accent-color); }
+
+    .form-header h2 {
+        font-family: var(--font-heading, serif);
+        font-size: clamp(1.8rem, 4vw, 2.4rem);
+        color: var(--text-color);
+        margin-bottom: 10px; font-weight: 700;
+    }
+    
+    .form-header p {
+        color: var(--prm-text-light, #666); opacity: 0.8;
+        font-size: 1.05rem; line-height: 1.5; max-width: 500px; margin: 0 auto;
+    }
+
+    /* --- INPUTS --- */
+    .form-group-premium { margin-bottom: 25px; }
+    
+    .form-label-premium {
+        display: block; font-weight: 700; margin-bottom: 8px;
+        color: var(--text-color); font-size: 0.85rem;
+        text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.9;
+    }
+
+    .form-control-premium {
+        width: 100%; padding: 15px 15px 15px 45px;
+        background: var(--input-bg);
+        border: 1px solid var(--glass-border); 
+        border-bottom: 2px solid rgba(0,0,0,0.1);
+        border-radius: 8px; color: var(--text-color); font-size: 1rem;
+        transition: 0.3s;
+    }
+    
+    .form-control-premium:focus {
+        outline: none; background: var(--prm-bg-surface);
+        border-color: var(--glass-border); border-bottom-color: var(--accent-color);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    }
+    
+    .input-icon-wrapper { position: relative; }
+    .input-icon {
+        position: absolute; left: 15px; top: 50%; transform: translateY(-50%);
+        color: var(--text-color); opacity: 0.4; font-size: 1.1rem; pointer-events: none;
+    }
+    .form-control-premium:focus + .input-icon, 
+    .form-control-premium:focus ~ .input-icon { color: var(--accent-color); opacity: 1; }
+
+    /* --- UPLOAD CUSTOMIZADO --- */
+    .file-upload-wrapper {
+        position: relative; width: 100%; height: 140px;
+        border: 2px dashed var(--prm-border, #ccc);
+        border-radius: 12px;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        cursor: pointer; transition: 0.3s;
+        background: var(--input-bg); overflow: hidden;
+    }
+    
+    .file-upload-wrapper:hover, .file-upload-wrapper.drag-over {
+        border-color: var(--accent-color);
+        background: rgba(185, 32, 39, 0.05);
+    }
+    
+    .file-upload-input {
+        position: absolute; width: 100%; height: 100%; top: 0; left: 0; opacity: 0; cursor: pointer; z-index: 5;
+    }
+    
+    .upload-content { text-align: center; pointer-events: none; transition: 0.3s; z-index: 1; }
+    .upload-icon { font-size: 2.5rem; color: var(--accent-color); margin-bottom: 10px; display: block; transition: 0.3s; }
+    .upload-text { font-size: 0.95rem; color: var(--text-color); font-weight: 500; }
+    .upload-hint { font-size: 0.8rem; color: var(--text-color); opacity: 0.5; display: block; margin-top: 5px; }
+
+    /* Estado: Arquivo Selecionado */
+    .file-upload-wrapper.has-file { border-style: solid; border-color: #28a745; background: rgba(40, 167, 69, 0.05); }
+    .file-upload-wrapper.has-file .upload-icon { color: #28a745; transform: scale(1.1); }
+
+    /* --- BOTÃO --- */
+    .btn-submit-premium {
+        width: 100%; padding: 18px;
+        background: var(--accent-color); color: #fff;
+        font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
+        border: none; border-radius: 8px; cursor: pointer;
+        transition: 0.3s; box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    
+    .btn-submit-premium:hover {
+        filter: brightness(0.9); transform: translateY(-2px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    }
+
+    @media (max-width: 768px) {
+        .submit-page-wrapper { padding-left: 15px; padding-right: 15px; }
+        .testimonial-card { padding: 30px 20px; border-radius: 20px; }
+    }
+</style>
+
+<div class="submit-page-wrapper">
+    <div class="testimonial-card">
+        
+        <div class="form-header">
+            <div class="quote-icon-box">
+                <i class="bi bi-chat-heart-fill"></i>
+            </div>
+            <h2>Sua Voz é Importante</h2>
+            <p>Ajude-nos a inspirar outros clientes contando sua história de sucesso com o escritório.</p>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data">
+            {# 
+               IMPORTANTE: Se você não estiver usando CSRF globalmente no Flask, 
+               a linha abaixo (form.hidden_tag) pode gerar erro se 'form' não for passado.
+               No seu main_routes.py atual, você precisa garantir que 'form' é passado para este template.
+               Se não tiver um objeto form Flask-WTF aqui, remova a linha abaixo.
+            #}
+            {% if form %}
+                {{ form.hidden_tag() }}
+            {% endif %}
+            
+            <div class="form-group-premium">
+                <label for="client_name" class="form-label-premium">Nome ou Empresa</label>
+                <div class="input-icon-wrapper">
+                    <input type="text" id="client_name" name="client_name" class="form-control-premium" placeholder="Como devemos lhe identificar?" required>
+                    <i class="bi bi-person-fill input-icon"></i>
+                </div>
+            </div>
+
+            <div class="form-group-premium">
+                <label class="form-label-premium">Foto ou Logo (Opcional)</label>
+                <div class="file-upload-wrapper" id="drop-area">
+                    <input type="file" id="client_logo" name="client_logo" class="file-upload-input" accept="image/*">
+                    
+                    <div class="upload-content" id="upload-content">
+                        <i class="bi bi-cloud-arrow-up-fill upload-icon" id="upload-icon"></i>
+                        <span class="upload-text" id="upload-text">Clique ou Arraste sua Imagem</span>
+                        <span class="upload-hint">JPG, PNG ou WEBP (Max 5MB)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group-premium">
+                <label for="testimonial_text" class="form-label-premium">Seu Depoimento</label>
+                <div class="input-icon-wrapper">
+                    <textarea id="testimonial_text" name="testimonial_text" class="form-control-premium" rows="6" style="padding-left: 15px;" placeholder="Escreva aqui como ajudamos a resolver seu caso..." required></textarea>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit-premium">
+                <span>Enviar Depoimento</span> <i class="bi bi-send-fill"></i>
+            </button>
+            
+            <div class="text-center mt-4">
+                <small style="color: var(--text-color); opacity: 0.5;">
+                    <i class="bi bi-lock-fill me-1"></i> Ambiente Seguro. Seus dados não serão compartilhados.
+                </small>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const dropArea = document.getElementById('drop-area');
+        const fileInput = document.getElementById('client_logo');
+        const uploadText = document.getElementById('upload-text');
+        const uploadIcon = document.getElementById('upload-icon');
+        const originalText = uploadText.innerHTML;
+
+        if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+            uploadText.textContent = "Toque para selecionar imagem";
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                dropArea.classList.add('drag-over');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                dropArea.classList.remove('drag-over');
+            }, false);
+        });
+
+        fileInput.addEventListener('change', handleFiles);
+        dropArea.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            fileInput.files = files;
+            handleFiles();
+        });
+
+        function handleFiles() {
+            if (fileInput.files && fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                dropArea.classList.add('has-file');
+                uploadIcon.classList.replace('bi-cloud-arrow-up-fill', 'bi-check-circle-fill');
+                
+                let fileName = file.name;
+                if (fileName.length > 25) fileName = fileName.substring(0, 25) + '...';
+                
+                uploadText.innerHTML = `<strong>${fileName}</strong> selecionado`;
+                document.querySelector('.upload-hint').style.display = 'none';
+            } else {
+                dropArea.classList.remove('has-file');
+                uploadIcon.classList.replace('bi-check-circle-fill', 'bi-cloud-arrow-up-fill');
+                uploadText.innerHTML = originalText;
+                document.querySelector('.upload-hint').style.display = 'block';
+            }
+        }
+    });
+</script>
+
+{% endblock %}

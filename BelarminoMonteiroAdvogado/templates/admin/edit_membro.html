@@ -1,0 +1,51 @@
+{% extends "admin/admin_base.html" %}
+
+{% block title %}Editar Membro da Equipe - {{ member.nome }}{% endblock %}
+
+{% block content %}
+<section class="content-section">
+    <div class="container">
+        <div class="admin-header">
+            <h2>Editar Membro: {{ member.nome }}</h2>
+            <a href="{{ url_for('admin.dashboard') }}#Team" class="btn btn-secondary">Voltar para o Painel</a>
+        </div>
+
+        <div class="form-container">
+            <form method="POST" action="{{ url_for('admin.edit_membro', member_id=member.id) }}" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+
+                <div class="form-group">
+                    <label for="nome">Nome</label>
+                    <input type="text" id="nome" name="nome" class="form-control" value="{{ member.nome }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="cargo">Cargo</label>
+                    <input type="text" id="cargo" name="cargo" class="form-control" value="{{ member.cargo }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="biografia">Biografia</label>
+                    <textarea id="biografia" name="biografia" class="form-control" rows="5">{{ member.biografia or '' }}</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="foto">Foto</label>
+                    <p class="admin-hint-inline">Envie uma nova imagem para substituir a atual. Deixe em branco para manter a foto existente.</p>
+                    {% if member.foto %}
+                        <div class="current-image">
+                            <p>Foto Atual:</p>
+                            <img src="{{ url_for('static', filename=member.foto) }}" alt="Foto de {{ member.nome }}" style="max-width: 150px; height: auto; border-radius: 5px; margin-bottom: 10px;">
+                            <div class="form-check mt-2">
+                                <input type="checkbox" class="form-check-input" id="remover_foto" name="remover_foto" value="1">
+                                <label class="form-check-label" for="remover_foto">Remover foto atual</label>
+                            </div>
+                        </div>
+                    {% endif %}
+                    <input type="file" id="foto" name="foto" class="form-control-file" accept="image/*">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

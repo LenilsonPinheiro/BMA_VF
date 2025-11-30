@@ -1,0 +1,134 @@
+/* ==========================================================================
+   THEME OPTION 3: DARK MODE (BOUTIQUE / DARK LUXURY)
+   ==========================================================================
+   Define a variação escura para o layout "Golden Balance".
+   Foco: Tons de Café/Carvão, Dourado Brilhante, Serifas e Requinte Noturno.
+*/
+
+body.option3.dark-mode,
+[data-theme="dark"] body.option3 {
+
+    /* --- 1. FUNDOS & ESTRUTURA (Dark Velvet) --- */
+    --btq-bg-main: #121212;          /* Preto Quente - Fundo */
+    --btq-bg-surface: #1e1e1e;       /* Carvão - Cards (Elevação) */
+    --btq-bg-subtle: #2a2a2a;        /* Cinza Médio - Detalhes */
+    
+    /* --- 2. TEXTOS & CONTRASTE (Ivory Text) --- */
+    --btq-text-primary: #F9F7F2;     /* Marfim - Títulos (Não branco puro) */
+    --btq-text-secondary: #d4d4d4;   /* Cinza Claro - Parágrafos */
+    --btq-text-muted: #888888;       /* Cinza Neutro - Metadados */
+    
+    /* --- 3. BORDAS & SEPARADORES (Gold Threads) --- */
+    --btq-border: rgba(212, 175, 55, 0.15); /* Fio de Ouro Sutil */
+    --btq-border-hover: #D4AF37;            /* Ouro Sólido */
+
+    /* --- 4. CORES DE DESTAQUE (Luminous Gold) --- */
+    --btq-gold-main: #D4AF37;
+    --btq-gold-dark: #b5902b;        /* Ouro Fechado */
+    
+    /* --- 5. SOMBRAS (Deep Atmosphere) --- */
+    --btq-shadow-card: 0 10px 30px rgba(0, 0, 0, 0.5);
+    --btq-shadow-hover: 0 15px 40px rgba(0, 0, 0, 0.7);
+
+    /* --- 6. GLASSMORPHISM (Dark Crystal) --- */
+    --glass-nav: rgba(30, 30, 30, 0.95);
+    --glass-card: rgba(35, 35, 35, 0.85);
+}
+
+/* ==========================================================================
+   OVERRIDES ESPECÍFICOS (Adaptação Dark Luxury)
+   ========================================================================== */
+
+/* Navbar Boutique (Dark) */
+body.option3.dark-mode .header-boutique {
+    background-color: var(--btq-bg-surface);
+    border-bottom: 1px solid var(--btq-border);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+
+/* Links de Navegação */
+body.option3.dark-mode .nav-link {
+    color: var(--btq-text-secondary) !important;
+}
+body.option3.dark-mode .nav-link:hover,
+body.option3.dark-mode .nav-link.active {
+    color: var(--btq-gold-main) !important;
+}
+
+/* Hero Section (Dark Adjustment) */
+body.option3.dark-mode .hero-boutique {
+    background-color: var(--btq-bg-main);
+}
+body.option3.dark-mode .hero-decor-line {
+    background-color: var(--btq-gold-main);
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.3); /* Glow Dourado */
+}
+
+/* Botão Boutique (Invertido para Contraste) */
+body.option3.dark-mode .btn-boutique {
+    color: var(--btq-gold-main);
+    border-color: var(--btq-gold-main);
+}
+body.option3.dark-mode .btn-boutique:hover {
+    background-color: var(--btq-gold-main);
+    /* CORRIGIDO: Alterado de #000 para #fff (CR 16.5:1) para garantir acessibilidade */
+    color: #fff; 
+}
+
+/* Service List (Dark Stripes) */
+body.option3.dark-mode .services-boutique {
+    background-color: var(--btq-bg-main);
+}
+body.option3.dark-mode .service-row {
+    border-bottom-color: var(--btq-border);
+}
+body.option3.dark-mode .service-row:hover {
+    background-color: var(--btq-bg-surface);
+    box-shadow: inset 3px 0 0 var(--btq-gold-main); /* Linha lateral */
+}
+body.option3.dark-mode .service-num {
+    color: var(--btq-gold-dark);
+}
+body.option3.dark-mode .service-title {
+    color: var(--btq-text-primary);
+}
+
+/* Cards Universais no Contexto Boutique Dark */
+body.option3.dark-mode .area-card,
+body.option3.dark-mode .team-card,
+body.option3.dark-mode .testimonial-card {
+    background-color: var(--btq-bg-surface);
+    border: 1px solid var(--btq-border);
+}
+
+body.option3.dark-mode .area-card:hover,
+body.option3.dark-mode .team-card:hover {
+    border-color: var(--btq-gold-main);
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
+}
+
+/* Inputs de Formulário (Dark Paper) */
+body.option3.dark-mode .form-control-custom,
+body.option3.dark-mode .form-control {
+    background-color: var(--btq-bg-subtle);
+    border: 1px solid var(--btq-border);
+    color: var(--btq-text-primary);
+}
+body.option3.dark-mode .form-control-custom:focus,
+body.option3.dark-mode .form-control:focus {
+    background-color: var(--btq-bg-surface);
+    border-color: var(--btq-gold-main);
+    box-shadow: 0 0 0 1px var(--btq-gold-main);
+}
+
+/* Elementos Gráficos */
+body.option3.dark-mode .gold-circle {
+    border-color: var(--btq-gold-dark);
+    opacity: 0.15;
+}
+
+/* Footer (Mantém escuro, mas ajusta bordas) */
+body.option3.dark-mode .footer-boutique {
+    background-color: #0a0a0a; /* Mais escuro que o fundo */
+    border-top: 1px solid var(--btq-gold-dark);
+}

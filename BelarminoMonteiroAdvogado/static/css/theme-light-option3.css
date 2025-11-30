@@ -1,0 +1,127 @@
+/* ==========================================================================
+   THEME OPTION 3: LIGHT MODE (BOUTIQUE / GOLDEN HOUR)
+   ==========================================================================
+   Define a variação clara para o layout "Golden Balance".
+   Foco: Tons Creme, Dourado, Serifas e Elegância Clássica.
+*/
+
+body.option3,
+body.option3.light-mode {
+
+    /* --- 1. FUNDOS & ESTRUTURA (Warm Paper) --- */
+    --btq-bg-main: #F9F7F2;          /* Creme Suave - Fundo da Página */
+    --btq-bg-surface: #ffffff;       /* Branco Puro - Cards (Contraste) */
+    --btq-bg-subtle: #F3E5AB;        /* Champagne - Elementos Secundários */
+    
+    /* --- 2. TEXTOS & CONTRASTE (Soft Black) --- */
+    --btq-text-primary: #2C2C2C;     /* Carvão - Títulos */
+    --btq-text-secondary: #595959;   /* Cinza Quente - Parágrafos */
+    --btq-text-muted: #8C8C8C;       /* Cinza Neutro - Detalhes */
+    
+    /* --- 3. BORDAS & SEPARADORES (Gold Lines) --- */
+    --btq-border: rgba(212, 175, 55, 0.2);  /* Dourado Muito Suave */
+    --btq-border-hover: #D4AF37;            /* Dourado Puro */
+
+    /* --- 4. CORES DE DESTAQUE (Luxury Gold) --- */
+    /* CORRIGIDO: De #D4AF37 para #b78c1a (CR 4.52:1 vs #ffffff) */
+    --btq-gold-main: #b78c1a;
+    --btq-gold-dark: #AA8C2C;
+    
+    /* --- 5. SOMBRAS (Warm Glow) --- */
+    --btq-shadow-card: 0 10px 30px rgba(212, 175, 55, 0.05);
+    --btq-shadow-hover: 0 15px 40px rgba(212, 175, 55, 0.15);
+
+    /* --- 6. GLASSMORPHISM (Crystal) --- */
+    --glass-nav: rgba(255, 255, 255, 0.95);
+    --glass-card: rgba(255, 255, 255, 0.85);
+}
+
+/* ==========================================================================
+   OVERRIDES ESPECÍFICOS (Aplica as variáveis acima aos componentes)
+   ========================================================================== */
+
+/* Navbar Boutique (Light) */
+body.option3 .header-boutique {
+    background-color: var(--btq-bg-surface);
+    border-bottom: 1px solid var(--btq-border);
+    box-shadow: 0 2px 15px rgba(0,0,0,0.02);
+}
+
+/* Links de Navegação */
+body.option3 .nav-link {
+    color: var(--btq-text-primary) !important;
+    font-family: 'Lato', sans-serif;
+    font-weight: 400;
+}
+body.option3 .nav-link:hover,
+body.option3 .nav-link.active {
+    color: var(--btq-gold-main) !important;
+}
+
+/* Hero Section (Boutique) */
+body.option3 .hero-boutique {
+    background-color: var(--btq-bg-main);
+}
+body.option3 .hero-decor-line {
+    background-color: var(--btq-gold-main);
+}
+body.option3 .btn-boutique {
+    color: var(--btq-text-primary);
+    border-color: var(--btq-text-primary);
+}
+body.option3 .btn-boutique:hover {
+    background-color: var(--btq-text-primary);
+    color: #fff;
+}
+
+/* Service List (Boutique List Style) */
+body.option3 .services-boutique {
+    background-color: var(--btq-bg-main);
+}
+body.option3 .service-row {
+    border-bottom-color: var(--btq-border);
+}
+body.option3 .service-row:hover {
+    background-color: var(--btq-bg-surface);
+    box-shadow: var(--btq-shadow-card);
+}
+body.option3 .service-num {
+    color: var(--btq-gold-main);
+}
+body.option3 .service-title {
+    color: var(--btq-text-primary);
+}
+
+/* Cards Universais no Contexto Boutique */
+body.option3 .area-card,
+body.option3 .team-card,
+body.option3 .testimonial-card {
+    background-color: var(--btq-bg-surface);
+    border: 1px solid var(--btq-border);
+    border-radius: 4px; /* Mais quadrado e formal */
+}
+
+body.option3 .area-card:hover,
+body.option3 .team-card:hover {
+    box-shadow: var(--btq-shadow-hover);
+    border-color: var(--btq-gold-main);
+}
+
+/* Inputs de Formulário (Clássico) */
+body.option3 .form-control-custom,
+body.option3 .form-control {
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 2px; /* Canto reto */
+    font-family: 'Lato', sans-serif;
+}
+body.option3 .form-control-custom:focus,
+body.option3 .form-control:focus {
+    border-color: var(--btq-gold-main);
+    box-shadow: 0 0 0 1px var(--btq-gold-main);
+}
+
+/* Footer Detalhes */
+body.option3 .footer-heading {
+    color: var(--btq-gold-main);
+}

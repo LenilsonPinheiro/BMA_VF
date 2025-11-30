@@ -1,0 +1,82 @@
+{% extends "admin/admin_base.html" %}
+
+{% block title %}Editar Serviço - {{ service.titulo }} - Belarmino Monteiro{% endblock %}
+
+{% block content %}
+<section class="content-section">
+    <div class="container">
+        <div class="admin-header">
+            <h2>Editar Serviço: {{ service.titulo }}</h2>
+            <a href="{{ url_for('admin.dashboard') }}#Services" class="btn btn-secondary btn-sm">Voltar para Gerenciar Serviços</a>
+        </div>
+        <p class="admin-intro">Edite os detalhes do serviço "{{ service.titulo }}".</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% include '_flashes.html' %}
+        {% endwith %}
+
+        <div class="add-service-container">
+            <h4>Detalhes do Serviço</h4>
+            <form id="edit-service-form" method="POST" action="{{ url_for('admin.edit_service', slug=service.slug) }}" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+
+                <div class="form-group">
+                    <label for="service-titulo">Título do Serviço</label>
+                    <p class="admin-hint-inline">O nome principal do serviço.</p>
+                    <input type="text" id="service-titulo" name="titulo" class="form-control" value="{{ service.titulo }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="service-slug">URL (slug)</label>
+                    <p class="admin-hint-inline">O endereço da página. Não pode ser alterado.</p>
+                    <input type="text" id="service-slug" name="slug" class="form-control" value="{{ service.slug }}" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="service-descricao">Descrição Curta (para card)</label>
+                    <p class="admin-hint-inline">Um resumo que aparecerá nos cards da página inicial.</p>
+                    <input type="text" id="service-descricao" name="descricao" class="form-control" value="{{ service.descricao }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="service-icone">ID do Ícone</label>
+                    <p class="admin-hint-inline">O identificador do ícone SVG ou Bootstrap Icon (ex: bi-bank).</p>
+                    <input type="text" id="service-icone" name="icone" class="form-control" value="{{ service.icone }}" required>
+                </div>
+
+                {% if service_content %}
+                    <h4>Conteúdo da Página do Serviço</h4>
+                    {% for secao, conteudo in service_content.items() %}
+                        <div class="form-group">
+                            <label for="content-{{ secao }}">{{ secao.replace('_', ' ')|title }}</label>
+                            {% if conteudo.startswith('{') and ('small' in conteudo|from_json or 'medium' in conteudo|from_json) %}
+                                {% set image_paths = conteudo|from_json %}
+                                <p class="admin-hint-inline">Imagem atual:</p>
+                                <img src="{{ url_for('static', filename=image_paths.get('small', '')) }}" style="max-width: 150px; height: auto; display: block; margin-bottom: 10px;">
+                                <p class="admin-hint-inline">Para alterar, edite na aba 'Gerenciar Conteúdo'.</p>
+                                <input type="hidden" name="content-{{ secao }}" value="{{ conteudo }}">
+                            {% else %}
+                                <textarea id="content-{{ secao }}" name="content-{{ secao }}" class="form-control rich-text-editor">{{ conteudo }}</textarea>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <button type="submit" class="btn btn-primary">Salvar Alterações do Serviço</button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block body_extra %}
+{{ super() }}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        tinymce.init({
+            selector: 'textarea.rich-text-editor',
+            plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+            height: 300,
+            language: 'pt_BR'
+        });
+    });
+</script>
+{% endblock %}

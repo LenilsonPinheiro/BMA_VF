@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="pt-br" class="h-100 no-js">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    
+    <title>{% block title %}{{ configs.get('site_titulo', 'Belarmino Monteiro - Advocacia') }}{% endblock %}</title>
+    <meta name="description" content="{% block metadescription %}Advocacia humanizada e estratégica. Conheça nossos serviços.{% endblock %}">
+    <meta name="theme-color" content="#D4AF37">
+
+    <link rel="shortcut icon" href="{{ url_for('static', filename=configs.get('favicon_ico', 'favicon.ico')) }}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    {% if theme_css %}
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/' + theme_css) }}">
+    {% else %}
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/theme-light-option3.css') }}">
+    {% endif %}
+
+    {% block extra_css %}{% endblock %}
+
+    <style>
+        /* --- OPTION 3: GOLDEN BALANCE OVERRIDES --- */
+        :root {
+            --gold-primary: #D4AF37;
+            --cream-bg: #F9F7F2;
+            --text-dark: #2C2C2C;
+            --font-heading: 'Playfair Display', serif;
+            --font-body: 'Lato', sans-serif;
+        }
+
+        body.option3 {
+            font-family: var(--font-body);
+            background-color: var(--cream-bg);
+            color: var(--text-dark);
+            display: flex; flex-direction: column; min-height: 100vh;
+        }
+
+        h1, h2, h3, h4, h5, h6 { font-family: var(--font-heading); }
+
+        /* HEADER BOUTIQUE */
+        .header-boutique {
+            background-color: #fff;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.03);
+            padding: 15px 0;
+            transition: all 0.3s ease;
+        }
+        .header-boutique.scrolled {
+            padding: 10px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        /* Dark Mode Header */
+        body.dark-mode .header-boutique, [data-theme="dark"] .header-boutique {
+            background-color: #1a1a1a;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .navbar-brand img { height: 65px; transition: 0.3s; }
+        .header-boutique.scrolled .navbar-brand img { height: 50px; }
+        /* Logo Dark Mode Filter */
+        body.dark-mode .navbar-brand img, [data-theme="dark"] .navbar-brand img { filter: brightness(0) invert(1); }
+
+        .nav-link {
+            font-family: var(--font-body); font-weight: 400; text-transform: uppercase;
+            letter-spacing: 2px; font-size: 0.8rem; color: #555 !important;
+            padding: 10px 15px !important; transition: 0.3s;
+        }
+        .nav-link:hover, .nav-link.active { color: var(--gold-primary) !important; }
+        
+        body.dark-mode .nav-link, [data-theme="dark"] .nav-link { color: #ccc !important; }
+        body.dark-mode .nav-link:hover, [data-theme="dark"] .nav-link:hover { color: var(--gold-primary) !important; }
+
+        /* FOOTER BOUTIQUE */
+        .footer-boutique {
+            background-color: #222; color: #fff;
+            padding: 70px 0 30px; border-top: 3px solid var(--gold-primary);
+        }
+        .footer-brand span { font-family: var(--font-heading); font-size: 1.8rem; line-height: 1; }
+        .brand-line-1 { color: #fff; font-weight: 400; font-style: italic; }
+        .brand-line-2 { color: var(--gold-primary); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+
+        .footer-heading {
+            font-family: var(--font-body); text-transform: uppercase; letter-spacing: 2px;
+            font-size: 0.85rem; color: var(--gold-primary); margin-bottom: 20px;
+        }
+        
+        .footer-links li a {
+            color: #999; text-decoration: none; transition: 0.3s; font-size: 0.95rem;
+            display: block; margin-bottom: 8px;
+        }
+        .footer-links li a:hover { color: #fff; padding-left: 5px; }
+
+        /* THEME TOGGLE (Discrete) */
+        .theme-toggle-minimal {
+            background: transparent; border: 1px solid #ddd;
+            color: #555; width: 35px; height: 35px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            transition: 0.3s; cursor: pointer;
+        }
+        .theme-toggle-minimal:hover { border-color: var(--gold-primary); color: var(--gold-primary); }
+        
+        body.dark-mode .theme-toggle-minimal, [data-theme="dark"] .theme-toggle-minimal {
+            border-color: #444; color: #ccc;
+        }
+
+    </style>
+</head>
+
+<body class="option3 d-flex flex-column h-100">
+
+    <header class="header-boutique fixed-top" id="mainHeader">
+        <nav class="navbar navbar-expand-lg">
+            <div class="container">
+                <a class="navbar-brand" href="{{ url_for('main.home') }}">
+                    <img src="{{ url_for('static', filename=configs.get('logo_principal', 'images/BM.png')) }}" alt="Belarmino Monteiro">
+                </a>
+
+                <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse justify-content-end" id="navMain">
+                    <ul class="navbar-nav align-items-center gap-2">
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.home') }}">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.pagina_dinamica', slug='sobre-nos') }}">O Escritório</a></li>
+                        
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Atuação</a>
+                            <ul class="dropdown-menu shadow-sm border-0 rounded-0 p-0 mt-2">
+                                <li><a class="dropdown-item py-2 px-4 small text-uppercase" href="{{ url_for('main.todas_areas_atuacao') }}">Ver Todas</a></li>
+                                {% if lista_areas_atuacao %}
+                                    {% for area in lista_areas_atuacao[:5] %}
+                                    <li><a class="dropdown-item py-2 px-4 small" href="{{ url_for('main.pagina_dinamica', slug=area.slug) }}">{{ area.titulo }}</a></li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+                        </li>
+
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.pagina_contato') }}">Contato</a></li>
+
+                        <li class="nav-item ms-lg-2">
+                            <button id="theme-toggle" class="theme-toggle-minimal" aria-label="Alternar Tema">
+                                <i class="bi bi-moon" id="theme-icon"></i>
+                            </button>
+                        </li>
+
+                        <li class="nav-item ms-lg-3">
+                            <a href="https://wa.me/558597698475" target="_blank" class="btn btn-outline-dark rounded-0 px-4 py-2 text-uppercase" style="font-size: 0.8rem; letter-spacing: 1px;">
+                                Consultar
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div style="position: fixed; top: 100px; right: 20px; z-index: 10000; max-width: 400px;">
+        {% include '_flashes.html' %}
+    </div>
+
+    <main class="flex-grow-1" style="padding-top: 100px;">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer-boutique">
+        <div class="container">
+            <div class="row gy-5">
+                <div class="col-lg-4 col-md-6">
+                    <div class="footer-brand mb-4">
+                        <span class="brand-line-1">Belarmino</span><br>
+                        <span class="brand-line-2">Monteiro</span>
+                    </div>
+                    <p class="text-secondary small mb-4" style="line-height: 1.8;">
+                        Excelência jurídica artesanal. Tratamos cada caso com a singularidade que ele merece, construindo estratégias personalizadas para resultados definitivos.
+                    </p>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="text-secondary hover-gold"><i class="bi bi-instagram fs-5"></i></a>
+                        <a href="#" class="text-secondary hover-gold"><i class="bi bi-linkedin fs-5"></i></a>
+                        <a href="#" class="text-secondary hover-gold"><i class="bi bi-whatsapp fs-5"></i></a>
+                    </div>
+                </div>
+
+                <div class="col-lg-2 col-md-6">
+                    <h5 class="footer-heading">Navegação</h5>
+                    <ul class="list-unstyled footer-links">
+                        <li><a href="{{ url_for('main.home') }}">Início</a></li>
+                        <li><a href="{{ url_for('main.pagina_dinamica', slug='sobre-nos') }}">O Escritório</a></li>
+                        <li><a href="{{ url_for('main.todas_areas_atuacao') }}">Áreas de Atuação</a></li>
+                        <li><a href="{{ url_for('main.pagina_contato') }}">Fale Conosco</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="footer-heading">Contato</h5>
+                    <ul class="list-unstyled text-secondary small" style="line-height: 2;">
+                        <li><i class="bi bi-envelope me-2 text-warning"></i> contato@belarminomonteiro.com.br</li>
+                        <li><i class="bi bi-telephone me-2 text-warning"></i> +55 (85) 9 9999-9999</li>
+                        <li class="mt-3"><i class="bi bi-geo-alt me-2 text-warning"></i> Av. Santos Dumont, 1234<br><span class="ms-4">Aldeota, Fortaleza - CE</span></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-3 col-md-6 text-lg-end">
+                    <h5 class="footer-heading">vCard</h5>
+                    <div class="bg-white p-2 d-inline-block rounded-1">
+                        <img src="{{ url_for('static', filename='images/QRCODE - BM ESCRITÓRIO DE ADVOCACIA/BELARMINO/QRCODE SEM LOGO/qr-code (SEM O LOGO NO CENTRO).svg') }}" 
+                             alt="QR Code" style="width: 90px; height: 90px;">
+                    </div>
+                    <div class="mt-2 text-secondary small fst-italic">Salve nosso contato</div>
+                </div>
+            </div>
+
+            <div class="row mt-5 pt-4 border-top border-secondary border-opacity-25">
+                <div class="col-md-6 text-center text-md-start">
+                    <small class="text-secondary opacity-75">&copy; {{ current_year }} Belarmino Monteiro. Todos os direitos reservados.</small>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <a href="{{ url_for('main.politica_privacidade') }}" class="text-secondary small text-decoration-none opacity-75 hover-gold">Política de Privacidade</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    {% include '_cookie_consent.html' %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="{{ url_for('static', filename='js/cookie_consent.js') }}"></script>
+
+    <script>
+        AOS.init({ duration: 1000, once: true });
+
+        // Header Scroll Logic
+        const header = document.getElementById('mainHeader');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 30) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Theme Logic
+        const themeBtn = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const body = document.body;
+
+        if (localStorage.getItem('theme') === 'dark') {
+            body.classList.add('dark-mode');
+            themeIcon.classList.replace('bi-moon', 'bi-sun');
+        }
+
+        if (themeBtn) {
+            themeBtn.addEventListener('click', () => {
+                body.classList.toggle('dark-mode');
+                const isDark = body.classList.contains('dark-mode');
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                
+                themeIcon.classList.toggle('bi-moon');
+                themeIcon.classList.toggle('bi-sun');
+            });
+        }
+    </script>
+    
+    {% block scripts %}{% endblock %}
+
+</body>
+</html>

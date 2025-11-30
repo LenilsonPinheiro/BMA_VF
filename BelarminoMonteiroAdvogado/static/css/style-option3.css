@@ -1,0 +1,269 @@
+/* ==========================================================================
+   STYLE OPTION 3: GOLDEN BALANCE (LAYOUT & STRUCTURE)
+   ==========================================================================
+   Define a estrutura, tipografia e layout do tema "Boutique".
+   As cores são puxadas das variáveis --btq-* definidas nos arquivos de tema.
+*/
+
+/* --- 1. TIPOGRAFIA & BASE (Editorial) --- */
+body.option3 {
+    background-color: var(--btq-bg-main);
+    color: var(--btq-text-secondary);
+    font-family: 'Lato', sans-serif; /* Corpo moderno e limpo */
+    line-height: 1.8; /* Leitura confortável */
+    overflow-x: hidden;
+}
+
+body.option3 h1, 
+body.option3 h2, 
+body.option3 h3, 
+body.option3 h4, 
+body.option3 h5, 
+body.option3 h6 {
+    font-family: 'Playfair Display', serif; /* Títulos Clássicos */
+    color: var(--btq-text-primary);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+/* --- 2. HEADER BOUTIQUE (Classic Nav) --- */
+body.option3 .header-boutique {
+    padding: 20px 0;
+    transition: all 0.4s ease;
+    background-color: var(--btq-bg-surface);
+    border-bottom: 1px solid transparent;
+}
+
+body.option3 .header-boutique.scrolled {
+    padding: 10px 0;
+    border-bottom-color: var(--btq-border);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+}
+
+body.option3 .navbar-brand img {
+    height: 65px;
+    transition: 0.3s;
+}
+body.option3 .header-boutique.scrolled .navbar-brand img {
+    height: 50px;
+}
+
+body.option3 .nav-link {
+    font-family: 'Lato', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 0.8rem;
+    font-weight: 400;
+    padding: 10px 15px !important;
+    transition: color 0.3s;
+}
+
+/* --- 3. HERO SECTION (Split & Decor) --- */
+body.option3 .hero-boutique {
+    position: relative;
+    min-height: 85vh;
+    padding-top: 100px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+body.option3 .hero-boutique-content {
+    padding-right: 50px;
+    position: relative;
+    z-index: 2;
+}
+
+body.option3 .hero-decor-line {
+    width: 80px;
+    height: 3px;
+    margin-bottom: 30px;
+    /* Cor vem do theme-*.css */
+}
+
+body.option3 .hero-title {
+    font-size: clamp(3rem, 5vw, 4.5rem);
+    line-height: 1.15;
+    margin-bottom: 25px;
+}
+
+body.option3 .hero-subtitle {
+    font-family: 'Lato', sans-serif;
+    font-size: 1.1rem;
+    max-width: 550px;
+    margin-bottom: 40px;
+}
+
+/* Imagem Hero */
+body.option3 .hero-image-wrapper {
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+body.option3 .gold-circle {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 65vh; height: 65vh;
+    border-radius: 50%;
+    border: 1px solid transparent; /* Cor definida no theme */
+    z-index: 0;
+}
+
+body.option3 .hero-img {
+    position: relative;
+    z-index: 2;
+    max-height: 85vh;
+    width: auto;
+    object-fit: contain;
+}
+
+/* --- 4. INTRO SECTION (Signature) --- */
+body.option3 .intro-section {
+    padding: 120px 0;
+    text-align: center;
+}
+
+body.option3 .signature-text {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 3vw, 2.2rem);
+    font-style: italic;
+    line-height: 1.6;
+    max-width: 900px;
+    margin: 0 auto 40px;
+}
+
+body.option3 .signature-author {
+    font-family: 'Lato', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+/* --- 5. SERVICES LIST (Editorial) --- */
+body.option3 .services-boutique {
+    padding: 100px 0;
+}
+
+body.option3 .service-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 40px 20px;
+    border-bottom: 1px solid transparent; /* Cor no theme */
+    transition: all 0.4s ease;
+    cursor: pointer;
+}
+
+body.option3 .service-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-style: italic;
+    margin-right: 30px;
+    opacity: 0.6;
+}
+
+body.option3 .service-title {
+    font-size: 1.8rem;
+    margin: 0;
+    transition: transform 0.3s;
+}
+
+body.option3 .service-desc {
+    margin: 0;
+    max-width: 500px;
+    opacity: 0.8;
+}
+
+body.option3 .service-icon-arrow {
+    font-size: 2rem;
+    transition: transform 0.3s;
+    opacity: 0;
+    transform: translateX(-20px);
+}
+
+/* Hover Effects */
+body.option3 .service-row:hover {
+    padding-left: 40px;
+}
+body.option3 .service-row:hover .service-icon-arrow {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* --- 6. FOOTER BOUTIQUE --- */
+body.option3 .footer-boutique {
+    padding: 100px 0 40px;
+    font-size: 0.95rem;
+}
+
+body.option3 .footer-brand span {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    line-height: 1;
+    display: block;
+}
+
+body.option3 .footer-heading {
+    font-family: 'Lato', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 0.8rem;
+    margin-bottom: 25px;
+    font-weight: 700;
+}
+
+body.option3 .footer-links li {
+    margin-bottom: 12px;
+}
+body.option3 .footer-links a {
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+/* --- 7. BUTTONS (Elegant) --- */
+body.option3 .btn-boutique {
+    display: inline-flex;
+    align-items: center;
+    padding: 16px 40px;
+    font-family: 'Lato', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: none;
+    background: transparent;
+    border: 1px solid currentColor;
+    transition: all 0.4s ease;
+}
+
+/* --- 8. RESPONSIVIDADE --- */
+@media (max-width: 991px) {
+    body.option3 .hero-boutique {
+        text-align: center;
+        flex-direction: column;
+        justify-content: center;
+        padding-top: 120px;
+    }
+    
+    body.option3 .hero-boutique-content {
+        padding-right: 0;
+        margin-bottom: 60px;
+    }
+    
+    body.option3 .hero-decor-line {
+        margin: 0 auto 30px;
+    }
+    
+    body.option3 .hero-img {
+        max-height: 50vh;
+    }
+    
+    body.option3 .service-desc {
+        display: none; /* Simplifica lista no mobile */
+    }
+}

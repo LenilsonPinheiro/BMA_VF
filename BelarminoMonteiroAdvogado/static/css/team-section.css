@@ -1,0 +1,285 @@
+/* ==========================================================================
+   COMPONENT: TEAM SECTION (THE ELITE SQUAD)
+   ==========================================================================
+   Estilos específicos para a galeria de equipe.
+   Suporta os 4 temas visuais e Dark Mode via variáveis CSS.
+*/
+
+/* --- 1. VARIÁVEIS DO SISTEMA ADAPTATIVO --- */
+.team-universal-wrapper {
+    /* Padrão (Option 1 - Luxo) */
+    --tm-bg: var(--prm-bg-light, #f8f9fa);
+    --tm-card-bg: #ffffff;
+    --tm-accent: var(--prm-accent-red, #b92027);
+    --tm-text: #333333;
+    --tm-text-muted: #666666;
+    --tm-border-color: rgba(0,0,0,0.05);
+    --tm-border-radius: 12px;
+    --tm-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    --tm-img-height: 400px;
+    --tm-hover-lift: -10px;
+}
+
+/* Option 2 (Corporativo / Titan) */
+body.option2 .team-universal-wrapper {
+    --tm-card-bg: #ffffff;
+    --tm-accent: #002F49; /* Navy */
+    --tm-border-radius: 4px; /* Cantos retos */
+    --tm-img-height: 450px; /* Imagens mais altas/imponentes */
+    --tm-shadow: 0 5px 15px rgba(0, 47, 73, 0.08);
+}
+
+/* Option 3 (Boutique / Gold) */
+body.option3 .team-universal-wrapper {
+    --tm-bg: #F9F7F2; /* Creme */
+    --tm-accent: #D4AF37; /* Gold */
+    --tm-shadow: 0 15px 40px rgba(212, 175, 55, 0.1);
+    --tm-border-radius: 8px;
+}
+
+/* Option 4 (Tech / Future) */
+body.option4 .team-universal-wrapper {
+    --tm-bg: transparent;
+    --tm-card-bg: rgba(255, 255, 255, 0.6); /* Vidro */
+    --tm-accent: var(--prm-accent-red, #b92027);
+    --tm-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    --tm-border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* DARK MODE GLOBAL (Overrides) */
+body.dark-mode .team-universal-wrapper,
+[data-theme="dark"] .team-universal-wrapper,
+body.option4.dark-mode .team-universal-wrapper {
+    --tm-bg: transparent;
+    --tm-card-bg: rgba(255, 255, 255, 0.03); /* Vidro Escuro */
+    --tm-text: #f1f1f1;
+    --tm-text-muted: #aaaaaa;
+    --tm-border-color: rgba(255, 255, 255, 0.1);
+    --tm-shadow: 0 15px 40px rgba(0,0,0,0.4);
+    --tm-accent: var(--prm-accent-red, #b92027);
+}
+
+/* ==========================================================================
+   2. ESTRUTURA DA SEÇÃO
+   ========================================================================== */
+
+.team-universal-wrapper {
+    padding: 100px 0;
+    background-color: var(--tm-bg);
+    position: relative;
+    transition: background-color 0.3s ease;
+}
+
+/* Cabeçalhos e Títulos */
+.team-universal-wrapper .section-header .section-badge {
+    display: block; 
+    font-size: 0.8rem; 
+    text-transform: uppercase;
+    letter-spacing: 2px; 
+    color: var(--tm-accent); 
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.team-universal-wrapper .section-header .section-title {
+    font-family: var(--font-heading, serif);
+    font-size: clamp(2rem, 4vw, 3rem); 
+    color: var(--tm-text); 
+    margin: 0;
+}
+
+.team-universal-wrapper .section-line {
+    width: 60px; 
+    height: 3px; 
+    background-color: var(--tm-accent);
+    border-radius: 2px;
+}
+
+.team-universal-wrapper .section-subtitle {
+    font-size: 1.1rem; 
+    color: var(--tm-text-muted); 
+    opacity: 0.8;
+    max-width: 600px; 
+    margin: 0 auto;
+}
+
+/* ==========================================================================
+   3. CARD DO MEMBRO
+   ========================================================================== */
+
+.team-card {
+    background: var(--tm-card-bg);
+    border-radius: var(--tm-border-radius);
+    overflow: hidden;
+    box-shadow: var(--tm-shadow);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    position: relative;
+    height: 100%;
+    border: 1px solid var(--tm-border-color);
+    display: flex;
+    flex-direction: column;
+}
+
+.team-card:hover {
+    transform: translateY(var(--tm-hover-lift));
+    box-shadow: 0 20px 50px rgba(0,0,0,0.15); /* Sombra Elevada */
+    z-index: 2; /* Traz para frente */
+}
+
+/* --- IMAGEM & OVERLAY --- */
+.team-img-wrapper {
+    position: relative;
+    height: var(--tm-img-height);
+    overflow: hidden;
+    background-color: #e9ecef; /* Placeholder enquanto carrega */
+    flex-shrink: 0;
+}
+
+.team-img {
+    width: 100%; 
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1), filter 0.6s ease;
+}
+
+/* Zoom suave no hover */
+.team-card:hover .team-img {
+    transform: scale(1.05);
+}
+
+/* Overlay Gradiente (para texto sobre a imagem se necessário) */
+.team-overlay {
+    position: absolute; 
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 60%);
+    opacity: 0; 
+    transition: opacity 0.4s ease;
+    display: flex; 
+    align-items: flex-end; 
+    justify-content: center;
+    padding-bottom: 30px;
+    pointer-events: none;
+}
+
+.team-card:hover .team-overlay {
+    opacity: 1;
+}
+
+/* Botão "Ver Perfil" no Overlay */
+.view-profile-btn {
+    color: #fff; 
+    border: 1px solid rgba(255,255,255,0.8);
+    background: rgba(0,0,0,0.2);
+    backdrop-filter: blur(4px);
+    padding: 8px 24px; 
+    border-radius: 50px;
+    font-size: 0.8rem; 
+    text-transform: uppercase; 
+    letter-spacing: 1px;
+    font-weight: 600;
+    transform: translateY(20px); 
+    transition: 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.team-card:hover .view-profile-btn {
+    transform: translateY(0);
+}
+
+/* --- CONTEÚDO / INFO --- */
+.team-info {
+    padding: 25px;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    background: var(--tm-card-bg);
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    /* Borda superior sutil para separar imagem em temas claros */
+    border-top: 1px solid var(--tm-border-color); 
+}
+
+/* Nome do Advogado */
+.member-name {
+    font-family: var(--font-heading, serif);
+    font-size: 1.4rem; 
+    color: var(--tm-text);
+    margin-bottom: 5px; 
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+/* Cargo / Especialidade */
+.member-role {
+    display: block; 
+    font-size: 0.85rem;
+    color: var(--tm-accent); 
+    text-transform: uppercase;
+    letter-spacing: 1.5px; 
+    font-weight: 700;
+    margin-bottom: 15px; /* Espaço padrão */
+}
+
+/* --- BIO REVEAL (Efeito Acordeão) --- */
+/* O texto da bio fica oculto e aparece suavemente no hover */
+.member-bio-reveal {
+    max-height: 0; 
+    opacity: 0;
+    overflow: hidden;
+    transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.team-card:hover .member-bio-reveal {
+    max-height: 200px; /* Altura suficiente para o texto */
+    opacity: 1;
+}
+
+/* Separador decorativo */
+.separator-small {
+    width: 40px; 
+    height: 2px; 
+    background-color: var(--tm-text-muted);
+    opacity: 0.2; 
+    margin: 15px auto;
+}
+
+.member-bio {
+    font-size: 0.9rem; 
+    color: var(--tm-text-muted);
+    line-height: 1.6; 
+    margin: 0;
+}
+
+/* ==========================================================================
+   4. RESPONSIVIDADE
+   ========================================================================== */
+
+@media (max-width: 991px) {
+    .team-universal-wrapper { 
+        padding: 60px 0; 
+    }
+    
+    .team-img-wrapper { 
+        height: 380px; 
+    }
+    
+    /* Mobile UX: Mostrar bio sempre ou manter interação? 
+       Optamos por manter o reveal mas facilitar a ativação (click/focus)
+       ou mostrar parcialmente se desejar. Aqui, mantemos o padrão desktop
+       mas garantimos que o card não seja gigante. */
+    
+    .member-bio-reveal {
+        /* Opcional: Descomentar abaixo para mostrar bio sempre no mobile */
+        /* max-height: 150px; opacity: 1; margin-top: 10px; */
+    }
+}
+
+@media (max-width: 576px) {
+    .team-img-wrapper { 
+        height: 350px; 
+    }
+    .team-info {
+        padding: 20px 15px;
+    }
+}

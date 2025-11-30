@@ -1,0 +1,194 @@
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="flash-container">
+            {% for category, message in messages %}
+                
+                {# Mapeamento de Ícones e Classes #}
+                {% set icon = 'bi-info-circle-fill' %}
+                {% set color_var = 'var(--flash-info)' %}
+                
+                {% if category == 'success' %}
+                    {% set icon = 'bi-check-circle-fill' %}
+                    {% set color_var = 'var(--flash-success)' %}
+                {% elif category == 'error' or category == 'danger' %}
+                    {% set icon = 'bi-x-octagon-fill' %}
+                    {% set color_var = 'var(--flash-error)' %}
+                {% elif category == 'warning' %}
+                    {% set icon = 'bi-exclamation-triangle-fill' %}
+                    {% set color_var = 'var(--flash-warning)' %}
+                {% endif %}
+
+                <div class="flash-toast" role="alert" style="--toast-accent: {{ color_var }}">
+                    <div class="flash-icon">
+                        <i class="bi {{ icon }}"></i>
+                    </div>
+                    <div class="flash-content">
+                        <span class="flash-message">{{ message }}</span>
+                    </div>
+                    <button type="button" class="flash-close" onclick="closeToast(this.parentElement)">
+                        <i class="bi bi-x"></i>
+                    </button>
+                    <div class="flash-progress"></div>
+                </div>
+
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+
+<style>
+    /* --- VARIÁVEIS --- */
+    :root {
+        --flash-success: #28a745;
+        --flash-error: #dc3545;
+        --flash-warning: #fd7e14;
+        --flash-info: #17a2b8;
+        --flash-bg: rgba(255, 255, 255, 0.95);
+        --flash-text: #333;
+        --flash-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    }
+
+    /* Dark Mode Support */
+    body.dark-mode, [data-theme="dark"], @media (prefers-color-scheme: dark) {
+        :root {
+            --flash-bg: rgba(30, 35, 40, 0.95);
+            --flash-text: #f1f1f1;
+            --flash-shadow: 0 15px 50px rgba(0,0,0,0.5);
+        }
+    }
+
+    /* --- CONTAINER FLUTUANTE --- */
+    .flash-container {
+        position: fixed;
+        top: 100px; /* Abaixo da Navbar */
+        right: 20px;
+        z-index: 10000;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        pointer-events: none; /* Permite clicar no site através do container vazio */
+        max-width: 400px;
+        width: 100%;
+    }
+
+    /* --- TOAST CARD --- */
+    .flash-toast {
+        background: var(--flash-bg);
+        backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        color: var(--flash-text);
+        padding: 16px 20px;
+        border-radius: 12px;
+        border-left: 5px solid var(--toast-accent);
+        box-shadow: var(--flash-shadow);
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        pointer-events: all;
+        position: relative;
+        overflow: hidden;
+        animation: slideInRight 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        transform: translateX(120%); /* Estado inicial para animação */
+    }
+
+    /* Ícone */
+    .flash-icon {
+        font-size: 1.5rem;
+        color: var(--toast-accent);
+        display: flex; align-items: center;
+    }
+
+    /* Texto */
+    .flash-content { flex: 1; }
+    .flash-message {
+        font-size: 0.95rem;
+        font-weight: 500;
+        line-height: 1.4;
+        display: block;
+    }
+
+    /* Botão Fechar */
+    .flash-close {
+        background: none; border: none;
+        color: var(--flash-text); opacity: 0.5;
+        font-size: 1.2rem; cursor: pointer;
+        padding: 0; display: flex; align-items: center;
+        transition: 0.2s;
+    }
+    .flash-close:hover { opacity: 1; transform: scale(1.1); }
+
+    /* Barra de Progresso */
+    .flash-progress {
+        position: absolute; bottom: 0; left: 0; height: 3px;
+        background: var(--toast-accent);
+        width: 100%;
+        animation: progressLinear 5s linear forwards;
+        opacity: 0.7;
+    }
+
+    /* --- ANIMAÇÕES --- */
+    @keyframes slideInRight {
+        from { transform: translateX(120%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes slideOutRight {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(120%); opacity: 0; }
+    }
+
+    @keyframes progressLinear {
+        from { width: 100%; }
+        to { width: 0%; }
+    }
+
+    /* --- RESPONSIVIDADE --- */
+    @media (max-width: 576px) {
+        .flash-container {
+            right: 0; left: 0; top: auto; bottom: 20px;
+            padding: 0 15px;
+            align-items: center;
+        }
+        .flash-toast {
+            width: 100%;
+            animation: slideInUp 0.5s forwards;
+            transform: translateY(100%);
+        }
+        @keyframes slideInUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes slideOutDown {
+            from { transform: translateY(0); opacity: 1; }
+            to { transform: translateY(100%); opacity: 0; }
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const toasts = document.querySelectorAll('.flash-toast');
+        
+        toasts.forEach(toast => {
+            // Auto remove após 5 segundos (tempo da animação da barra)
+            setTimeout(() => {
+                closeToast(toast);
+            }, 5000);
+        });
+    });
+
+    function closeToast(element) {
+        // Decide a animação de saída baseada na largura da tela
+        if (window.innerWidth <= 576) {
+            element.style.animation = 'slideOutDown 0.5s forwards';
+        } else {
+            element.style.animation = 'slideOutRight 0.5s forwards';
+        }
+        
+        // Remove do DOM após a animação terminar
+        setTimeout(() => {
+            if(element.parentElement) {
+                element.remove();
+            }
+        }, 500);
+    }
+</script>

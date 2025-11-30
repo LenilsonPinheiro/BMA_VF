@@ -1,0 +1,367 @@
+{#-*- coding: utf-8 -*-#}
+{#
+    BelarminoMonteiroAdvogado/templates/home/home_option1.html: Template da página inicial para o Tema "Invisible Luxury".
+
+    Este template define a estrutura e o design da homepage quando o tema "Invisible Luxury" (Option 1) está ativo.
+    Ele herda do template base (que despacha o tema) e organiza o conteúdo da página inicial em diversas seções,
+    cada uma com seu próprio estilo e componentes dinâmicos.
+
+    Características principais:
+    - Design minimalista e elegante, focado na experiência visual.
+    - Utilização de vídeo de fundo na seção Hero para um impacto cinemático.
+    - Estrutura modular, com inclusão de seções como serviços, sobre, mapa e CTA.
+    - Adaptação para modos claro e escuro através de variáveis CSS.
+
+    Atenção: A presença de blocos <style> com CSS diretamente no template é uma escolha de design
+    para encapsular estilos específicos do tema/componente diretamente onde são usados, facilitando
+    a "metamorfose" visual sem depender de folhas de estilo externas complexas por tema.
+#}
+{% extends "base.html" %}
+
+{% block title %}Belarmino Monteiro - Tradição e Excelência Jurídica{% endblock %}
+{% block metadescription %}Advocacia de alto padrão com foco em resultados sólidos e atendimento personalizado.{% endblock %}
+
+{% block content %}
+
+<style>
+    /* --- VARIÁVEIS LOCAIS (Herdam do Tema 1) --- */
+    .luxury-wrapper {
+        --lux-gold: var(--prm-accent-red, #b92027); /* Usando a cor da marca como acento nobre */
+        --lux-dark: #111;
+        --lux-light: #fdfdfd;
+        --lux-gray: #f4f4f4;
+        --lux-text: #333;
+        --lux-font-serif: 'Playfair Display', serif;
+        --lux-font-sans: 'Open Sans', sans-serif;
+    }
+
+    /* Dark Mode Engine */
+    body.dark-mode .luxury-wrapper,
+    [data-theme="dark"] .luxury-wrapper {
+        --lux-light: #0f1215;
+        --lux-gray: #1a1d21;
+        --lux-text: #f1f1f1;
+        --lux-dark: #000;
+    }
+
+    /* --- 1. HERO CINEMATIC --- */
+    .hero-luxury {
+        position: relative;
+        height: 100vh;
+        min-height: 600px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        color: #fff;
+        text-align: center;
+    }
+    
+    /* FIX CRÍTICO: Garante que os títulos e subtítulos sejam brancos contra o fundo escuro do vídeo */
+    .hero-content .hero-pre-title,
+    .hero-content .hero-title,
+    .hero-content .hero-subtitle {
+        color: #fff; 
+    }
+
+    .hero-video-bg {
+        position: absolute; inset: 0;
+        width: 100%; height: 100%;
+        object-fit: cover;
+        z-index: 0;
+        filter: brightness(0.4); /* Escurece para legibilidade */
+    }
+
+    .hero-content {
+        position: relative; z-index: 2;
+        max-width: 900px; padding: 0 20px;
+    }
+
+    .hero-pre-title {
+        font-family: var(--lux-font-sans);
+        text-transform: uppercase; letter-spacing: 4px;
+        font-size: 0.9rem; margin-bottom: 20px;
+        opacity: 0.8; display: block;
+    }
+
+    .hero-title {
+        font-family: var(--lux-font-serif);
+        font-size: clamp(3rem, 7vw, 5.5rem);
+        font-weight: 700; margin-bottom: 20px;
+        line-height: 1.1;
+    }
+
+    .hero-subtitle {
+        font-family: var(--lux-font-sans);
+        font-size: clamp(1rem, 2vw, 1.25rem);
+        font-weight: 300; opacity: 0.9;
+        max-width: 600px; margin: 0 auto 40px;
+        line-height: 1.6;
+    }
+
+    .btn-luxury {
+        background: transparent; color: #fff;
+        border: 1px solid rgba(255,255,255,0.3);
+        padding: 18px 45px;
+        font-family: var(--lux-font-sans);
+        text-transform: uppercase; letter-spacing: 2px;
+        font-size: 0.8rem; transition: 0.4s ease;
+        position: relative; overflow: hidden;
+    }
+    .btn-luxury:hover {
+        background: #fff; color: #000;
+        padding-left: 60px; padding-right: 60px;
+    }
+
+    /* Scroll Indicator */
+    .scroll-down {
+        position: absolute; bottom: 40px; left: 50%;
+        transform: translateX(-50%);
+        animation: bounce 2s infinite; opacity: 0.7;
+    }
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {transform: translateX(-50%) translateY(0);}
+        40% {transform: translateX(-50%) translateY(-10px);}
+        60% {transform: translateX(-50%) translateY(-5px);}
+    }
+
+    /* --- 2. INTRODUÇÃO (A Essência) --- */
+    .intro-luxury {
+        padding: 120px 0;
+        background-color: var(--lux-light);
+    }
+
+    .intro-text-large {
+        font-family: var(--lux-font-serif);
+        font-size: clamp(1.8rem, 3vw, 2.5rem);
+        line-height: 1.5; color: var(--lux-text);
+        text-align: center; max-width: 900px; margin: 0 auto;
+    }
+    .intro-highlight { color: var(--lux-gold); font-style: italic; }
+
+    /* --- 3. SERVIÇOS (Cards Flutuantes) --- */
+    .services-luxury {
+        padding: 100px 0;
+        background-color: var(--lux-gray);
+    }
+
+    .section-header-lux {
+        margin-bottom: 60px; text-align: center;
+    }
+    .section-label {
+        font-family: var(--lux-font-sans);
+        text-transform: uppercase; letter-spacing: 2px;
+        font-size: 0.75rem; color: var(--lux-gold);
+        margin-bottom: 10px; display: block;
+    }
+    .section-title {
+        font-family: var(--lux-font-serif);
+        font-size: 2.5rem; color: var(--lux-text);
+    }
+
+    .card-lux {
+        background: var(--lux-light);
+        padding: 40px; height: 100%;
+        transition: all 0.4s ease;
+        border: 1px solid transparent;
+        position: relative;
+    }
+    .card-lux:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.05);
+        border-color: rgba(0,0,0,0.05);
+    }
+    body.dark-mode .card-lux:hover { border-color: rgba(255,255,255,0.1); }
+
+    .card-icon {
+        font-size: 2rem; color: var(--lux-gold);
+        margin-bottom: 25px; display: block;
+    }
+    .card-title {
+        font-family: var(--lux-font-serif);
+        font-size: 1.5rem; margin-bottom: 15px; color: var(--lux-text);
+    }
+    .card-desc {
+        font-family: var(--lux-font-sans);
+        font-size: 0.95rem; color: var(--lux-text);
+        opacity: 0.7; line-height: 1.6; margin-bottom: 25px;
+    }
+    .card-link {
+        font-size: 0.8rem; text-transform: uppercase;
+        letter-spacing: 1px; color: var(--lux-text);
+        text-decoration: none; border-bottom: 1px solid var(--lux-gold);
+        padding-bottom: 2px; transition: 0.2s;
+    }
+    .card-link:hover { opacity: 0.6; }
+
+    /* --- 4. SOBRE (Split Layout) --- */
+    .about-luxury { padding: 0; overflow: hidden; }
+    
+    .about-img-col {
+        min-height: 600px;
+        background-size: cover; background-position: center top;
+        position: relative;
+    }
+    .about-text-col {
+        background-color: var(--lux-dark);
+        color: #fff; padding: 80px;
+        display: flex; align-items: center;
+    }
+
+    .about-quote {
+        font-family: var(--lux-font-serif);
+        font-size: 1.8rem; margin-bottom: 30px;
+        border-left: 3px solid var(--lux-gold);
+        padding-left: 30px; line-height: 1.5;
+    }
+
+    /* RESPONSIVIDADE */
+    @media (max-width: 991px) {
+        .about-text-col { padding: 50px 25px; }
+        .about-img-col { min-height: 300px; }
+    }
+</style>
+
+{#
+    luxury-wrapper: Contêiner principal para todo o conteúdo do tema "Invisible Luxury".
+    Define variáveis CSS locais e encapsula o layout específico deste tema.
+#}
+<div class="luxury-wrapper">
+
+    {#
+        HERO CINEMATIC (Seção Principal):
+        Grande destaque visual com vídeo de fundo, título impactante e chamada para ação.
+        Utiliza classes CSS para estilização e `data-aos` para animações no scroll.
+    #}
+    <section class="hero-luxury">
+        {# Vídeo de fundo com autoplay, loop e mute, cobrindo toda a área da seção Hero. #}
+        <video autoplay muted loop playsinline class="hero-video-bg" poster="{{ url_for('static', filename='images/Escolhidas Escritorio/3S5A1373.jpg') }}">
+            <source src="{{ url_for('static', filename='videos/maior-1.mp4') }}" type="video/mp4">
+            <source src="{{ url_for('static', filename='videos/maior-1.webm') }}" type="video/webm">
+            Seu navegador não suporta vídeos HTML5.
+        </video>
+
+        {# Conteúdo principal da seção Hero: pré-título, título, subtítulo e botão CTA. #}
+        <div class="hero-content">
+            <span class="hero-pre-title" data-aos="fade-down" data-aos-delay="200">Belarmino Monteiro</span>
+            <h1 class="hero-title" data-aos="fade-up" data-aos-delay="400">
+                A Arte de Advogar.
+            </h1>
+            <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="600">
+                Compromisso com a ética, excelência técnica e resultados que constroem legados.
+            </p>
+            {# Botão que redireciona para a seção de introdução da página. #}
+            <a href="#intro" class="btn-luxury" data-aos="fade-up" data-aos-delay="800">
+                Conheça Nossa Visão
+            </a>
+        </div>
+
+        {# Indicador visual para rolar a página para baixo. #}
+        <a href="#intro" class="scroll-down text-white">
+            <i class="bi bi-arrow-down"></i>
+        </a>
+    </section>
+
+    {#
+        INTRODUÇÃO (A Essência):
+        Seção de texto que apresenta a filosofia ou um breve resumo do escritório.
+    #}
+    <section id="intro" class="intro-luxury">
+        <div class="container" data-aos="fade-up">
+            <p class="intro-text-large">
+                Acreditamos que cada caso é uma história única que merece ser ouvida e defendida com <span class="intro-highlight">rigor absoluto</span>. Nossa advocacia combina a tradição dos grandes juristas com a agilidade do mundo moderno.
+            </p>
+        </div>
+    </section>
+
+    {#
+        SERVIÇOS (Cards Flutuantes):
+        Exibe as principais áreas de atuação em formato de cards, com uma opção para ver todos os serviços.
+        Utiliza um loop Jinja2 para iterar sobre a lista de áreas de atuação.
+    #}
+    <section class="services-luxury">
+        <div class="container">
+            {# Cabeçalho da seção de serviços. #}
+            <div class="section-header-lux" data-aos="fade-up">
+                <span class="section-label">Áreas de Prática</span>
+                <h2 class="section-title">Expertise Jurídica</h2>
+            </div>
+
+            <div class="row g-4">
+                {# Loop para exibir os 3 primeiros serviços da lista. #}
+                {% for area in lista_areas_atuacao[:3] %}
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
+                    <div class="card-lux">
+                        {# Ícone dinâmico da área de atuação, com fallback. #}
+                        <i class="{{ area.icone if area.icone else 'bi bi-shield-check' }} card-icon"></i>
+                        <h3 class="card-title">{{ area.titulo }}</h3>
+                        {# Descrição da área, truncada para 120 caracteres. #}
+                        <p class="card-desc">{{ area.descricao[:120] }}...</p>
+                        {# Link para a página de detalhes da área de atuação, usando a rota dinâmica. #}
+                        <a href="{{ url_for('main.pagina_dinamica', slug=area.slug) }}" class="card-link">Saiba Mais</a>
+                    </div>
+                </div>
+                {% endfor %}
+                
+                {# Card adicional para "Ver Todas as Áreas". #}
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
+                    <div class="card-lux d-flex flex-column align-items-center justify-content-center text-center">
+                        <h3 class="card-title mb-3">Atuação Completa</h3>
+                        <p class="card-desc mb-4">Explore todas as nossas áreas de especialização.</p>
+                        {# Link para a página que lista todas as áreas de atuação. #}
+                        <a href="{{ url_for('main.todas_areas_atuacao') }}" class="btn btn-outline-dark rounded-0 px-4">Ver Portfolio</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {#
+        SOBRE (Split Layout):
+        Seção que apresenta o escritório com uma imagem de fundo e texto detalhado.
+        Utiliza um layout de duas colunas, com imagem de um lado e texto do outro.
+    #}
+    <section class="about-luxury">
+        <div class="row g-0">
+            {# Coluna da imagem, com estilo de background inline. #}
+            <div class="col-lg-6 about-img-col" 
+                 style="background-image: url('{{ url_for('static', filename='images/Belarmino.png') }}');">
+            </div>
+            
+            {# Coluna do texto, contendo citação e descrição do escritório. #}
+            <div class="col-lg-6 about-text-col">
+                <div data-aos="fade-left">
+                    <span class="section-label text-white-50">Sobre o Escritório</span>
+                    <h2 class="section-title text-white mb-4">Liderança & Estratégia</h2>
+                    <blockquote class="about-quote">
+                        "A justiça não é apenas um conceito abstrato, é o resultado de trabalho árduo, conhecimento profundo e estratégia impecável."
+                    </blockquote>
+                    <p class="opacity-75 mb-4">
+                        Fundado pelo Dr. Belarmino Monteiro, nosso escritório se consolidou como uma referência em advocacia estratégica, atendendo empresas e indivíduos que buscam segurança jurídica e resultados expressivos.
+                    </p>
+                    {# Link para a página completa "Sobre Nós", usando a rota dinâmica. #}
+                    <a href="{{ url_for('main.pagina_dinamica', slug='sobre-nos') }}" class="text-white text-decoration-underline small text-uppercase ls-1">
+                        Ler História Completa
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {#
+        EQUIPE (Team Section):
+        Seção que apresenta os membros da equipe do escritório.
+    #}
+    {% include 'home/_team_section.html' %}
+
+    {#
+        INCLUSÃO DE COMPONENTES REUTILIZÁVEIS:
+        Estes são blocos de HTML que são incluídos em várias páginas ou temas,
+        promovendo a modularidade e reusabilidade do código.
+    #}
+    {% include 'home/_map_section.html' %} {# Seção do mapa de localização. #}
+    {% include '_cta_section.html' %} {# Seção de Call To Action (Chamada para Ação). #}
+
+</div>
+
+{% endblock %}

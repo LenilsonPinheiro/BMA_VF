@@ -1,0 +1,311 @@
+/* ==========================================================================
+   COMPONENT: COOKIE CONSENT (PRIVACY GUARDIAN)
+   ==========================================================================
+   Estilos para o banner de consentimento LGPD/GDPR.
+   Suporta Glassmorphism, Temas (1-4) e Dark Mode via variáveis CSS.
+*/
+
+/* --- 1. VARIÁVEIS LOCAIS (Escopadas no ID) --- */
+#cookie-consent-banner {
+    /* Default (Option 1 - Luxury) */
+    --cc-bg: rgba(255, 255, 255, 0.95);
+    --cc-border: rgba(255, 255, 255, 0.8);
+    --cc-text: #333333;
+    --cc-text-muted: #666666;
+    --cc-accent: var(--prm-accent-red, #b92027);
+    --cc-shadow: 0 15px 40px rgba(0,0,0,0.12);
+    --cc-radius: 16px;
+    --cc-z-index: 10000;
+    --cc-btn-text: #ffffff;
+}
+
+/* --- ADAPTAÇÃO DE TEMAS --- */
+
+/* Option 2 (Corporativo - Navy/Green) */
+body.option2 #cookie-consent-banner {
+    --cc-radius: 4px; /* Quadrado */
+    --cc-accent: #002F49; /* Navy */
+}
+
+/* Option 3 (Boutique - Gold/Cream) */
+body.option3 #cookie-consent-banner {
+    --cc-bg: #F9F7F2; /* Creme Sólido (Menos vidro) */
+    --cc-accent: #D4AF37; /* Gold */
+    --cc-border: rgba(212, 175, 55, 0.3);
+}
+
+/* Option 4 (Tech - Future) */
+body.option4 #cookie-consent-banner {
+    --cc-bg: rgba(255, 255, 255, 0.8);
+    --cc-radius: 24px; /* Bem redondo */
+    --cc-accent: var(--prm-accent-red, #b92027);
+    --cc-border: rgba(255, 255, 255, 0.5);
+}
+
+/* --- DARK MODE ENGINE --- */
+body.dark-mode #cookie-consent-banner,
+[data-theme="dark"] #cookie-consent-banner {
+    --cc-bg: rgba(25, 25, 25, 0.95);
+    --cc-border: rgba(255, 255, 255, 0.1);
+    --cc-text: #f1f1f1;
+    --cc-text-muted: #aaaaaa;
+    --cc-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    --cc-btn-text: #ffffff;
+}
+
+/* Ajuste específico Tech Dark */
+body.option4.dark-mode #cookie-consent-banner {
+    --cc-bg: rgba(15, 23, 42, 0.9); /* Slate Deep */
+    --cc-border: rgba(255, 255, 255, 0.05);
+}
+
+
+/* ==========================================================================
+   2. ESTRUTURA & POSICIONAMENTO
+   ========================================================================== */
+
+#cookie-consent-banner {
+    position: fixed;
+    bottom: 30px;
+    left: 30px; /* Esquerda para evitar colisão com WhatsApp (Direita) */
+    width: 100%;
+    max-width: 400px;
+    z-index: var(--cc-z-index);
+    font-family: var(--font-body, sans-serif);
+    
+    /* Estado Inicial (Oculto) */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px) scale(0.98);
+    transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+    pointer-events: none;
+}
+
+/* Estado Ativo (Visível) */
+#cookie-consent-banner.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+    pointer-events: all;
+}
+
+/* Card Principal */
+.cc-card {
+    background: var(--cc-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--cc-border);
+    border-radius: var(--cc-radius);
+    padding: 24px;
+    box-shadow: var(--cc-shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* ==========================================================================
+   3. CONTEÚDO INTERNO
+   ========================================================================== */
+
+/* Cabeçalho (Ícone + Texto) */
+.cc-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.cc-icon {
+    font-size: 1.5rem;
+    color: var(--cc-accent);
+    background: rgba(128, 128, 128, 0.1);
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.cc-content h4 {
+    margin: 0 0 5px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--cc-text);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.cc-content p {
+    margin: 0;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--cc-text-muted);
+}
+
+.cc-link {
+    color: var(--cc-accent);
+    text-decoration: none;
+    font-weight: 600;
+    border-bottom: 1px dotted currentColor;
+    transition: 0.2s;
+}
+.cc-link:hover { opacity: 0.8; }
+
+/* ==========================================================================
+   4. PAINEL DE PREFERÊNCIAS (Toggle)
+   ========================================================================== */
+
+.cc-preferences {
+    display: none; /* Oculto por padrão */
+    background: rgba(128,128,128,0.05);
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 5px;
+    border: 1px solid rgba(128,128,128,0.1);
+}
+
+.cc-switch-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+.cc-switch-row:last-child { margin-bottom: 0; }
+
+.cc-switch-label {
+    font-size: 0.85rem;
+    color: var(--cc-text);
+    font-weight: 600;
+    display: block;
+}
+
+.cc-switch-desc {
+    font-size: 0.75rem;
+    color: var(--cc-text-muted);
+    display: block;
+}
+
+/* Custom Toggle Switch */
+.cc-switch {
+    position: relative;
+    display: inline-block;
+    width: 36px;
+    height: 20px;
+}
+
+.cc-switch input { opacity: 0; width: 0; height: 0; }
+
+.cc-slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background-color: #ccc;
+    transition: .3s;
+    border-radius: 20px;
+}
+
+.cc-slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    transition: .3s;
+    border-radius: 50%;
+}
+
+input:checked + .cc-slider { background-color: var(--cc-accent); }
+input:checked + .cc-slider:before { transform: translateX(16px); }
+input:disabled + .cc-slider { opacity: 0.5; cursor: not-allowed; }
+
+/* ==========================================================================
+   5. AÇÕES (Botões)
+   ========================================================================== */
+
+.cc-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.cc-btn {
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    text-align: center;
+}
+
+/* Botão Aceitar (Primary) */
+.cc-btn-accept {
+    background: var(--cc-accent);
+    color: var(--cc-btn-text);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.cc-btn-accept:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+}
+
+/* Botão Rejeitar (Ghost) */
+.cc-btn-ghost {
+    background: transparent;
+    color: var(--cc-text-muted);
+    border: 1px solid rgba(128,128,128,0.3);
+}
+.cc-btn-ghost:hover {
+    background: rgba(128,128,128,0.1);
+    color: var(--cc-text);
+    border-color: rgba(128,128,128,0.5);
+}
+
+/* Link "Gerenciar" */
+.cc-manage-link {
+    font-size: 0.75rem;
+    color: var(--cc-text-muted);
+    text-align: center;
+    text-decoration: underline;
+    cursor: pointer;
+    margin-top: 10px;
+    display: block;
+    transition: color 0.2s;
+}
+.cc-manage-link:hover { color: var(--cc-accent); }
+
+/* ==========================================================================
+   6. RESPONSIVIDADE
+   ========================================================================== */
+
+@media (max-width: 576px) {
+    #cookie-consent-banner {
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        max-width: 100%;
+        border-radius: 20px 20px 0 0; /* Arredonda só em cima (Bottom Sheet) */
+    }
+
+    .cc-card {
+        border-radius: 20px 20px 0 0;
+        border-bottom: none;
+        border-left: none;
+        border-right: none;
+        padding: 20px;
+    }
+
+    /* Stack buttons for easier tapping */
+    .cc-actions {
+        grid-template-columns: 1fr;
+    }
+}

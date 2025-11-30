@@ -1,0 +1,335 @@
+{% extends "base.html" %}
+
+{# 
+    TEMPLATE: AREA BASE (AUTHORITY HUB)
+    Layout para grandes áreas de atuação (Ex: Direito Civil, Trabalhista).
+#}
+
+{% block title %}{{ titulo | default('Área de Atuação') }} - Belarmino Monteiro{% endblock %}
+{% block metadescription %}{{ subtitulo | default('Assessoria jurídica especializada e estratégica para proteger seus direitos.') }}{% endblock %}
+
+{% block content %}
+
+{% with 
+    title=titulo, 
+    subtitle=subtitulo | default('Atuação estratégica focada em resultados e segurança jurídica.'), 
+    bg_image=imagem_fundo if imagem_fundo else url_for('static', filename='images/banners/default_law.jpg') 
+%}
+    {% include '_inner_page_header.html' %}
+{% endwith %}
+
+<section class="area-page-wrapper">
+    
+    <div class="container relative-z3">
+        <div class="row g-4 justify-content-center floating-cards-row">
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="benefit-card h-100">
+                    <div class="benefit-icon"><i class="bi bi-search"></i></div>
+                    <h4>Análise Profunda</h4>
+                    <p>Mapeamos todos os riscos e oportunidades do seu caso com rigor técnico e visão 360º.</p>
+                </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="benefit-card h-100">
+                    <div class="benefit-icon"><i class="bi bi-diagram-3"></i></div>
+                    <h4>Estratégia Personalizada</h4>
+                    <p>Não usamos fórmulas prontas. Desenhamos a melhor rota jurídica para o seu objetivo específico.</p>
+                </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="benefit-card h-100">
+                    <div class="benefit-icon"><i class="bi bi-trophy"></i></div>
+                    <h4>Foco no Resultado</h4>
+                    <p>Atuação combativa, ética e eficiente para garantir a melhor resolução possível para o conflito.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container main-content-container">
+        <div class="row g-5">
+            
+            <div class="col-lg-8">
+                <article class="area-article" data-aos="fade-right">
+                    
+                    <h2 class="article-title">Como atuamos em {{ titulo }}</h2>
+                    <div class="article-divider"></div>
+
+                    <div class="article-body">
+                        {{ conteudo_principal | default('
+                            <p class="lead">Nesta área, o escritório Belarmino Monteiro atua com foco total na resolução de conflitos e na garantia de direitos. Nossa abordagem começa com um diagnóstico completo da situação.</p>
+                            <p>Entendemos que por trás de cada processo existe uma história, um patrimônio ou uma família. Por isso, aliamos conhecimento técnico de ponta com um atendimento humanizado e próximo.</p>
+                            
+                            <h3>Nossos Serviços</h3>
+                            <ul class="check-list">
+                                <li>Consultoria preventiva e análise de riscos contratuais.</li>
+                                <li>Atuação contenciosa em todas as instâncias judiciais.</li>
+                                <li>Negociação de acordos extrajudiciais e mediação.</li>
+                                <li>Pareceres jurídicos e auditoria legal.</li>
+                            </ul>
+                            
+                            <h3>Por que contratar um especialista?</h3>
+                            <p>O direito é vasto e complexo. Contar com um especialista na área garante que nenhuma tese de defesa seja esquecida e que os prazos e procedimentos sejam seguidos com rigor absoluto.</p>
+                        ') | safe }}
+                    </div>
+
+                    <div class="area-faq mt-5">
+                        <h3 class="h4 fw-bold mb-4">Perguntas Frequentes</h3>
+                        <div class="accordion custom-accordion" id="accordionArea">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingOne">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                                        Quais documentos são necessários inicialmente?
+                                    </button>
+                                </h2>
+                                <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionArea">
+                                    <div class="accordion-body">
+                                        Para uma análise inicial, recomendamos trazer documentos pessoais (RG/CPF), comprovante de residência e todos os documentos relacionados ao fato (contratos, notificações, trocas de e-mail).
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingTwo">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                                        Qual o prazo médio para resolução?
+                                    </button>
+                                </h2>
+                                <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionArea">
+                                    <div class="accordion-body">
+                                        O prazo varia conforme a complexidade e o tipo de procedimento (judicial ou extrajudicial). Na consulta inicial, poderemos dar uma estimativa baseada em casos similares.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </article>
+            </div>
+
+            <div class="col-lg-4">
+                <aside class="area-sidebar sticky-top" style="top: 120px; z-index: 10;">
+                    
+                    <div class="sidebar-card contact-widget mb-4" data-aos="fade-left">
+                        <div class="lawyer-avatar">
+                            <img src="{{ url_for('static', filename=configs.get('foto_advogado_destaque', 'images/Belarmino.png')) }}" alt="Especialista">
+                        </div>
+                        <h5 class="widget-title text-center">Fale com o Especialista</h5>
+                        <p class="text-center small text-muted mb-4">Nossa equipe de {{ titulo }} está pronta para analisar seu caso.</p>
+                        
+                        <a href="https://wa.me/558597698475?text=Olá,+gostaria+de+falar+sobre+{{ titulo }}" target="_blank" class="btn btn-whatsapp-sidebar w-100 mb-2">
+                            <i class="bi bi-whatsapp me-2"></i> WhatsApp
+                        </a>
+                        <a href="{{ url_for('main.pagina_contato') }}" class="btn btn-outline-sidebar w-100">
+                            Agendar Reunião
+                        </a>
+                    </div>
+
+                    <div class="sidebar-card nav-widget" data-aos="fade-left" data-aos-delay="100">
+                        <h6 class="widget-subtitle mb-3 text-uppercase fs-7 fw-bold text-muted ls-1">Outras Áreas</h6>
+                        <ul class="sidebar-nav-list">
+                            <li><a href="{{ url_for('main.todas_areas_atuacao') }}" class="back-link"><i class="bi bi-grid-fill me-2"></i> Ver Todas</a></li>
+                            {% if lista_areas_atuacao %}
+                                {% for area in lista_areas_atuacao[:5] %}
+                                    {% if area.titulo != titulo %}
+                                    <li>
+                                        <a href="{{ url_for('main.pagina_dinamica', slug=area.slug) }}">
+                                            <i class="bi bi-chevron-right small"></i> {{ area.titulo }}
+                                        </a>
+                                    </li>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </ul>
+                    </div>
+
+                </aside>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+{% include '_cta_section.html' %}
+
+<style>
+    /* --- VARIÁVEIS LOCAIS --- */
+    .area-page-wrapper {
+        --area-bg: var(--prm-bg-light, #f8f9fa);
+        --area-card-bg: var(--prm-bg-surface, #ffffff);
+        --area-accent: var(--prm-accent-red, #b92027);
+        --area-text: var(--prm-text, #333);
+        --area-text-muted: var(--prm-text-light, #666);
+        --area-border: var(--prm-border, rgba(0,0,0,0.08));
+        --area-radius: 12px;
+        --area-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+
+    /* Temas Específicos */
+    body.option2 .area-page-wrapper, body.option6 .area-page-wrapper { 
+        --area-accent: var(--titan-text-primary, #002F49); 
+        --area-radius: 4px; 
+    }
+    body.option3 .area-page-wrapper, body.option7 .area-page-wrapper { 
+        --area-bg: var(--btq-bg-main, #F9F7F2); 
+        --area-accent: var(--btq-gold-main, #D4AF37); 
+    }
+    
+    /* Dark Mode */
+    body.dark-mode .area-page-wrapper,
+    [data-theme="dark"] .area-page-wrapper {
+        --area-bg: var(--prm-bg-surface, #0f1215);
+        --area-card-bg: var(--prm-bg-dark, #1a1d21);
+        --area-text: #f1f1f1;
+        --area-text-muted: #aaa;
+        --area-border: rgba(255,255,255,0.1);
+        --area-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    /* --- LAYOUT --- */
+    .area-page-wrapper {
+        padding-bottom: 100px;
+        background-color: var(--area-bg);
+    }
+    
+    .relative-z3 { position: relative; z-index: 3; }
+    
+    /* Floating Cards (Overlap Hero) */
+    .floating-cards-row {
+        margin-top: -60px; /* Sobe por cima do header */
+        margin-bottom: 60px;
+    }
+
+    .benefit-card {
+        background: var(--area-card-bg);
+        padding: 30px 25px;
+        border-radius: var(--area-radius);
+        box-shadow: var(--area-shadow);
+        border-bottom: 4px solid transparent;
+        transition: all 0.3s ease;
+    }
+    .benefit-card:hover {
+        transform: translateY(-10px);
+        border-bottom-color: var(--area-accent);
+    }
+
+    .benefit-icon {
+        width: 60px; height: 60px;
+        background: rgba(var(--prm-accent-red-rgb), 0.05); /* Fallback seguro se RGB não existir */
+        background: rgba(185, 32, 39, 0.05);
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.8rem; color: var(--area-accent);
+        margin-bottom: 20px;
+    }
+    body.dark-mode .benefit-icon { background: rgba(255,255,255,0.1); }
+
+    .benefit-card h4 { font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; color: var(--area-text); }
+    .benefit-card p { font-size: 0.95rem; color: var(--area-text-muted); margin: 0; line-height: 1.5; }
+
+    /* --- ARTIGO PRINCIPAL --- */
+    .article-title {
+        font-family: var(--font-heading, serif);
+        font-size: 2.5rem; color: var(--area-text);
+        font-weight: 700; margin-bottom: 15px;
+    }
+    .article-divider {
+        width: 80px; height: 4px; background-color: var(--area-accent);
+        margin-bottom: 30px; border-radius: 2px;
+    }
+
+    .article-body {
+        font-size: 1.05rem; line-height: 1.8; color: var(--area-text);
+    }
+    .article-body h3 {
+        font-family: var(--font-heading, serif);
+        margin-top: 40px; margin-bottom: 20px;
+        font-size: 1.5rem; color: var(--area-text);
+    }
+    .article-body .lead {
+        font-size: 1.25rem; font-weight: 300; color: var(--area-text-muted);
+        margin-bottom: 30px;
+    }
+
+    /* Lista Customizada */
+    .check-list { list-style: none; padding: 0; margin-bottom: 30px; }
+    .check-list li {
+        position: relative; padding-left: 30px; margin-bottom: 15px;
+        color: var(--area-text-muted);
+    }
+    .check-list li::before {
+        content: '\F26A'; /* bi-check-circle-fill */
+        font-family: 'bootstrap-icons';
+        position: absolute; left: 0; top: 2px;
+        color: var(--area-accent); font-size: 1.1rem;
+    }
+
+    /* --- SIDEBAR --- */
+    .sidebar-card {
+        background: var(--area-card-bg);
+        padding: 30px; border-radius: var(--area-radius);
+        border: 1px solid var(--area-border);
+        box-shadow: var(--area-shadow);
+    }
+
+    .lawyer-avatar {
+        width: 100px; height: 100px; margin: 0 auto 20px;
+        border-radius: 50%; overflow: hidden;
+        border: 3px solid var(--area-accent);
+        padding: 3px; background: var(--area-card-bg);
+    }
+    .lawyer-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+
+    .btn-whatsapp-sidebar {
+        background-color: #25D366; color: #fff; border: none;
+        padding: 12px; border-radius: 8px; font-weight: 600;
+        transition: 0.3s;
+    }
+    .btn-whatsapp-sidebar:hover { background-color: #20bd5a; color: #fff; transform: translateY(-2px); }
+
+    .btn-outline-sidebar {
+        background: transparent; color: var(--area-text);
+        border: 1px solid var(--area-border);
+        padding: 12px; border-radius: 8px; font-weight: 600;
+        transition: 0.3s;
+    }
+    .btn-outline-sidebar:hover { border-color: var(--area-accent); color: var(--area-accent); }
+
+    /* Navegação Sidebar */
+    .sidebar-nav-list { list-style: none; padding: 0; margin: 0; }
+    .sidebar-nav-list li { border-bottom: 1px solid var(--area-border); }
+    .sidebar-nav-list li:last-child { border: none; }
+    
+    .sidebar-nav-list a {
+        display: block; padding: 12px 0;
+        text-decoration: none; color: var(--area-text-muted);
+        transition: 0.2s; font-size: 0.95rem;
+    }
+    .sidebar-nav-list a:hover {
+        color: var(--area-accent); padding-left: 5px;
+    }
+    .back-link { font-weight: 700; color: var(--area-accent) !important; }
+
+    /* Accordion Custom */
+    .custom-accordion .accordion-item {
+        background: transparent; border: 1px solid var(--area-border);
+        border-radius: 8px; margin-bottom: 10px; overflow: hidden;
+    }
+    .custom-accordion .accordion-button {
+        background: var(--area-card-bg); color: var(--area-text);
+        font-weight: 600; box-shadow: none;
+    }
+    .custom-accordion .accordion-button:not(.collapsed) {
+        background: var(--area-accent); color: #fff;
+    }
+    .custom-accordion .accordion-body {
+        background: var(--area-card-bg); color: var(--area-text-muted);
+        border-top: 1px solid var(--area-border);
+    }
+
+    @media (max-width: 991px) {
+        .floating-cards-row { margin-top: 0; padding-top: 40px; }
+        .area-sidebar { margin-top: 50px; position: static !important; }
+    }
+</style>
+
+{% endblock %}

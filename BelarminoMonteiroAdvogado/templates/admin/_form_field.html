@@ -1,0 +1,112 @@
+{% if extra_legends is defined %}
+    {% set current_legends = extra_legends %}
+{% else %}
+    {% set current_legends = {
+        'logo_principal': 'Faça upload da logo principal do site. Será usada na barra de navegação e login. (Recomendado: .PNG transparente)',
+        'favicon_ico': 'Faça upload do ícone do site (.ico). Este é o ícone que aparece na aba do navegador.',
+        'video_fundo': 'Faça upload do vídeo de fundo. (Recomendado: .webm ou .mp4, otimizado para web)'
+    } %}
+{% endif %}
+
+{# Mapeia o field_type do banco de dados para um tipo de input #}
+{% set field_type = item.field_type|default('text') %}
+
+<div class="form-group">
+    <label for="content-{{ item.id }}">{{ item.secao.replace('_', ' ')|title }}</label>
+    
+    {% if item.secao in current_legends %}
+        <p class="admin-hint-inline">{{ current_legends[item.secao] }}</p>
+    {% endif %}
+
+    {% if field_type == 'file' or field_type == 'video' %}
+        <div class="image-preview-container">
+            {% if 'logo' in item.secao %}
+                <p>Preview:</p>
+                <img src="{{ url_for('static', filename=item.conteudo) }}" alt="Preview" class="admin-thumb" style="max-height: 80px; width: auto; background: #fff; padding: 10px;">
+            {% elif 'favicon' in item.secao %}
+                <p>Preview:</p>
+                <img src="{{ url_for('static', filename=item.conteudo) }}" alt="Preview" class="admin-thumb" style="width: 32px; height: 32px;">
+            {% elif field_type == 'video' %}
+                <p>Preview:</p>
+                <video src="{{ url_for('static', filename=item.conteudo) }}" class="admin-thumb" style="max-width: 300px;" controls muted loop playsinline></video>
+            {% endif %}
+            <input type="file" id="content-{{ item.id }}" name="{{ item.secao }}_file" class="form-control-file">
+        </div>
+    
+    {% elif field_type == 'color' %}
+        <div class="color-picker-wrapper">
+            <input type="color" id="color-picker-{{ item.id }}" value="{{ item.conteudo }}" class="color-picker-visual">
+            <input type="text" id="content-{{ item.id }}" name="content-{{ item.id }}" class="form-control color-picker-text" value="{{ item.conteudo }}">
+        </div>
+        <script>
+            // Sincroniza o color picker com o campo de texto
+            document.getElementById('color-picker-{{ item.id }}').addEventListener('input', function() {
+                document.getElementById('content-{{ item.id }}').value = this.value;
+            });
+            document.getElementById('content-{{ item.id }}').addEventListener('input', function() {
+                document.getElementById('color-picker-{{ item.id }}').value = this.value;
+            });
+        </script>
+    
+    {% elif field_type == 'textarea' %}
+        <textarea id="content-{{ item.id }}" name="content-{{ item.id }}" class="form-control" rows="8" style="font-family: 'Courier New', Courier, monospace; background: #1a1a1a; color: #d4d4d4;">{{ item.conteudo }}</textarea>
+    
+    {% elif field_type == 'image' %}
+        <p class="admin-hint-inline">Envie uma nova imagem para substituir a atual. Formatos recomendados: JPG, PNG, WebP.</p>
+        <div class="image-preview-container">
+            {% if item.conteudo and item.conteudo.startswith('{') %}
+                {% set image_paths = item.conteudo|from_json %}
+                <img src="{{ url_for('static', filename=image_paths.get('small', '')) }}" 
+                     alt="Preview de {{ item.secao }}" 
+                     class="admin-thumb"
+                     loading="lazy"
+                     onerror="this.style.display='none'">
+            {% elif item.conteudo %}
+                 <img src="{{ url_for('static', filename=item.conteudo) }}" 
+                     alt="Preview de {{ item.secao }}" 
+                     class="admin-thumb"
+                     loading="lazy"
+                     onerror="this.style.display='none'">
+            {% endif %}
+            <input type="file" id="content-{{ item.id }}" name="content-{{ item.id }}" class="form-control-file" accept="image/*">
+        </div>
+    
+    {% elif field_type == 'richtext' %}
+        <textarea id="content-{{ item.id }}" name="content-{{ item.id }}" class="form-control rich-text-editor">{{ item.conteudo }}</textarea>
+    
+    {% elif item.secao == 'meta_keywords' %}
+        <input type="text" id="content-{{ item.id }}" name="content-{{ item.id }}" class="form-control" value="{{ item.conteudo }}">
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var input = document.querySelector('#content-{{ item.id }}');
+                new Tagify(input);
+            });
+        </script>
+
+    {% elif field_type == 'boolean' %}
+        <div class="toggle-switch">
+            <input type="hidden" name="content-{{ item.id }}" value="{{ item.conteudo|default('false') }}">
+            <input type="checkbox" id="toggle-{{ item.id }}" class="toggle-checkbox" {% if item.conteudo == 'true' %}checked{% endif %}>
+            <label for="toggle-{{ item.id }}" class="toggle-label"></label>
+        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                document.getElementById('toggle-{{ item.id }}').addEventListener('change', function() {
+                    const hiddenInput = this.previousElementSibling;
+                    hiddenInput.value = this.checked ? 'true' : 'false';
+                });
+            });
+        </script>
+
+    {% elif field_type == 'icon' %}
+        <div class="input-group">
+            <span class="input-group-text"><i id="icon-preview-{{ item.id }}" class="{{ item.conteudo|default('bi bi-question-circle') }}"></i></span>
+            <input type="text" id="content-{{ item.id }}" name="content-{{ item.id }}" class="form-control" value="{{ item.conteudo }}">
+            <button type="button" class="btn btn-secondary open-icon-picker" data-target-input="content-{{ item.id }}" data-target-preview="icon-preview-{{ item.id }}">Selecionar Ícone</button>
+        </div>
+        <p class="admin-hint-inline">Ex: "bi bi-bank". <a href="https://icons.getbootstrap.com/" target="_blank">Ver todos os ícones</a>.</p>
+
+    {% else %} {# O padrão é 'text' #}
+        <input type="text" id="content-{{ item.id }}" name="content-{{ item.id }}" class="form-control" value="{{ item.conteudo }}">
+    {% endif %}
+</div>

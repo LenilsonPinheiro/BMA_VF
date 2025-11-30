@@ -1,0 +1,240 @@
+/* ==========================================================================
+   UI/UX IMPROVEMENTS - Global Enhancements
+   ==========================================================================
+   Melhorias aplicadas em todos os temas:
+   1. QR Code maior e mais legível
+   2. Navbar com opacidade inicial para melhor legibilidade
+   3. Animações nos links e ícones do footer
+*/
+
+/* ==========================================================================
+   1. QR CODE - TAMANHO AUMENTADO E MELHOR QUALIDADE
+   ========================================================================== */
+
+/* Aumenta o tamanho do QR Code de 100px para 140px */
+.footer-qr-img {
+    width: 140px !important;
+    height: 140px !important;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+}
+
+/* Aumenta o padding da caixa do QR Code */
+.footer-qr-box {
+    padding: 15px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+}
+
+.footer-qr-box:hover {
+    transform: scale(1.08) !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Reduz margens do footer para dar mais espaço */
+footer .container {
+    padding-top: 60px !important;
+    padding-bottom: 20px !important;
+}
+
+footer .row.gy-5 {
+    row-gap: 2.5rem !important;
+}
+
+/* ==========================================================================
+   2. NAVBAR - OPACIDADE INICIAL PARA MELHOR LEGIBILIDADE
+   ========================================================================== */
+
+/* Navbar Premium (Options 1, 5) - Começa com leve opacidade */
+.navbar-premium {
+    background: rgba(255, 255, 255, 0.75) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.navbar-premium.scrolled {
+    background: rgba(255, 255, 255, 0.98) !important;
+}
+
+/* Dark Mode */
+body.dark-mode .navbar-premium,
+[data-theme="dark"] .navbar-premium {
+    background: rgba(17, 17, 17, 0.85) !important;
+}
+
+body.dark-mode .navbar-premium.scrolled,
+[data-theme="dark"] .navbar-premium.scrolled {
+    background: rgba(17, 17, 17, 0.98) !important;
+}
+
+/* Header Tech (Options 4, 8) - Começa com leve opacidade */
+.header-tech {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.navbar-tech {
+    background: rgba(255, 255, 255, 0.85) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.header-tech.scrolled .navbar-tech {
+    background: rgba(255, 255, 255, 0.98) !important;
+}
+
+/* Dark Mode Tech */
+body.dark-mode .navbar-tech,
+[data-theme="dark"] .navbar-tech {
+    background: rgba(15, 23, 42, 0.85) !important;
+}
+
+body.dark-mode .header-tech.scrolled .navbar-tech,
+[data-theme="dark"] .header-tech.scrolled .navbar-tech {
+    background: rgba(15, 23, 42, 0.98) !important;
+}
+
+/* Navbar Corporativa (Options 2, 6) */
+.navbar-corporate {
+    background: rgba(255, 255, 255, 0.85) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.navbar-corporate.scrolled {
+    background: rgba(255, 255, 255, 0.98) !important;
+}
+
+/* Navbar Boutique (Options 3, 7) */
+.navbar-boutique {
+    background: rgba(255, 255, 255, 0.80) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.navbar-boutique.scrolled {
+    background: rgba(255, 255, 255, 0.98) !important;
+}
+
+/* ==========================================================================
+   3. ANIMAÇÕES NO FOOTER - LINKS E ÍCONES
+   ========================================================================== */
+
+/* Animação nos links do footer */
+footer a {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+footer a:hover {
+    transform: translateX(5px);
+    color: var(--prm-accent-red, #b92027) !important;
+}
+
+/* Animação nos ícones de redes sociais */
+footer .social-btn,
+footer .bi {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+footer .social-btn:hover {
+    transform: translateY(-5px) rotate(5deg);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Animação nos ícones inline (telefone, email, etc) */
+footer .bi-envelope,
+footer .bi-telephone,
+footer .bi-geo-alt,
+footer .bi-whatsapp,
+footer .bi-instagram,
+footer .bi-linkedin {
+    transition: all 0.3s ease;
+}
+
+footer li:hover .bi-envelope,
+footer li:hover .bi-telephone,
+footer li:hover .bi-geo-alt {
+    transform: scale(1.2) rotate(10deg);
+    color: var(--prm-accent-red, #b92027) !important;
+}
+
+/* Efeito de pulso nos ícones de redes sociais */
+@keyframes pulse-social {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+footer .social-btn:hover {
+    animation: pulse-social 0.6s ease-in-out;
+}
+
+/* Underline animado nos links do footer */
+footer .footer-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -2px;
+    left: 0;
+    background-color: var(--prm-accent-red, #b92027);
+    transition: width 0.3s ease;
+}
+
+footer .footer-link:hover::after {
+    width: 100%;
+}
+
+/* Animação suave no texto do footer ao hover */
+footer p:hover,
+footer li:hover {
+    transform: translateX(3px);
+    transition: transform 0.3s ease;
+}
+
+/* Efeito de brilho nos links */
+footer a:hover {
+    text-shadow: 0 0 8px rgba(185, 32, 39, 0.3);
+}
+
+/* ==========================================================================
+   RESPONSIVIDADE
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    /* QR Code um pouco menor em mobile */
+    .footer-qr-img {
+        width: 120px !important;
+        height: 120px !important;
+    }
+    
+    .footer-qr-box {
+        padding: 12px !important;
+    }
+    
+    /* Reduz ainda mais as margens do footer em mobile */
+    footer .container {
+        padding-top: 40px !important;
+    }
+}
+
+/* ==========================================================================
+   ACESSIBILIDADE
+   ========================================================================== */
+
+/* Melhora o foco para navegação por teclado */
+footer a:focus,
+footer .social-btn:focus {
+    outline: 2px solid var(--prm-accent-red, #b92027);
+    outline-offset: 4px;
+}
+
+/* Garante contraste adequado */
+footer a:focus-visible {
+    background-color: rgba(185, 32, 39, 0.1);
+    border-radius: 4px;
+    padding: 2px 4px;
+}

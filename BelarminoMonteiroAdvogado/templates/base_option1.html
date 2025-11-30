@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="pt-br" class="no-js">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    
+    <title>{% block title %}Belarmino Monteiro Advogado{% endblock %}</title>
+    <meta name="description" content="{% block metadescription %}Escritório de Advocacia Belarmino Monteiro. Excelência, ética e resultados em Fortaleza.{% endblock %}">
+    <meta name="author" content="Belarmino Monteiro">
+    <meta name="theme-color" content="#b92027">
+
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;500;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    {% if theme_css %}
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/' + theme_css) }}">
+    {% else %}
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/theme-light.css') }}" id="theme-css">
+    {% endif %}
+
+    <!-- UI/UX Improvements -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/ui-improvements.css') }}">
+
+    {% block head %}{% endblock %}
+
+    <style>
+        /* --- ESTILOS CRÍTICOS INLINE (Para evitar FOUC - Flash of Unstyled Content) --- */
+        body { 
+            display: flex; flex-direction: column; min-height: 100vh; 
+            font-family: 'Open Sans', sans-serif;
+            overflow-x: hidden;
+        }
+        main { flex: 1; }
+        
+        /* Navbar Premium Transition */
+        .navbar-premium {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 20px 0;
+            background: transparent; /* Começa transparente */
+        }
+        
+        .navbar-premium.scrolled {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            padding: 10px 0;
+        }
+
+        /* Dark Mode Navbar */
+        body.dark-mode .navbar-premium.scrolled,
+        [data-theme="dark"] .navbar-premium.scrolled {
+            background: rgba(17, 17, 17, 0.95);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        /* Logo Sizing */
+        .navbar-brand img { height: 55px; transition: 0.3s; }
+        .navbar-premium.scrolled .navbar-brand img { height: 45px; }
+
+        /* Links */
+        .nav-link-premium {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            color: #333 !important;
+            padding: 10px 15px !important;
+            position: relative;
+        }
+        
+        body.dark-mode .nav-link-premium, [data-theme="dark"] .nav-link-premium { color: #f1f1f1 !important; }
+
+        /* Hover Effect (Underline Expansion) */
+        .nav-link-premium::after {
+            content: ''; position: absolute; width: 0; height: 2px;
+            bottom: 5px; left: 50%; background-color: var(--prm-accent-red, #b92027);
+            transition: all 0.3s ease; transform: translateX(-50%);
+        }
+        .nav-link-premium:hover::after, .nav-link-premium.active::after { width: 80%; }
+
+        /* Footer Texture */
+        footer.footer-premium {
+            background-color: #1a1a1a;
+            color: #ccc;
+            padding: 0;
+            position: relative;
+            border-top: 5px solid var(--prm-accent-red, #b92027);
+        }
+        
+        footer.footer-premium::before {
+            content: ''; position: absolute; inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23333333' fill-opacity='0.1' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3Ccircle cx='13' cy='13' r='3'/%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.1; pointer-events: none;
+        }
+
+        /* vCard Footer */
+        .footer-qr-box {
+            background: #fff; padding: 10px; border-radius: 8px;
+            display: inline-block; transition: transform 0.3s;
+        }
+        .footer-qr-box:hover { transform: scale(1.05); }
+        .footer-qr-img { width: 100px; height: 100px; }
+
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg fixed-top navbar-premium" id="mainNav">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('main.home') }}">
+                <img src="{{ url_for('static', filename='images/BM.svg') }}" alt="Belarmino Monteiro" id="navLogo">
+            </a>
+
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse justify-content-end" id="navbarContent">
+                <ul class="navbar-nav align-items-center gap-3">
+                    <li class="nav-item"><a class="nav-link nav-link-premium" href="{{ url_for('main.home') }}">Início</a></li>
+                    
+                    <li class="nav-item dropdown">
+                        <a class="nav-link nav-link-premium dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Atuação</a>
+                        <ul class="dropdown-menu shadow-lg border-0 rounded-0 mt-3 p-0 overflow-hidden">
+                            <li><a class="dropdown-item py-3 px-4 border-bottom" href="{{ url_for('main.todas_areas_atuacao') }}">Todas as Áreas</a></li>
+                            {% if lista_areas_atuacao %}
+                                {% for area in lista_areas_atuacao[:5] %}
+                                <li><a class="dropdown-item py-2 px-4" href="{{ url_for('main.pagina_dinamica', slug=area.slug) }}">{{ area.titulo }}</a></li>
+                                {% endfor %}
+                            {% endif %}
+                        </ul>
+                    </li>
+
+                    <li class="nav-item"><a class="nav-link nav-link-premium" href="{{ url_for('main.pagina_dinamica', slug='sobre-nos') }}">Sobre</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-premium" href="{{ url_for('main.pagina_contato') }}">Contato</a></li>
+                    
+                    <li class="nav-item ms-lg-3">
+                        <a href="https://wa.me/558597698475" target="_blank" class="btn btn-outline-danger rounded-pill px-4 fw-bold">
+                            <i class="bi bi-whatsapp me-2"></i> Agendar
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div style="position: fixed; top: 100px; right: 20px; z-index: 10000; max-width: 400px;">
+        {% include '_flashes.html' %}
+    </div>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer-premium">
+        <div class="container">
+            <div class="row gy-3">
+                
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="text-white text-uppercase mb-4 fw-bold ls-1">Belarmino Monteiro</h5>
+                    <p class="small text-secondary mb-4">
+                        Sociedade de advogados comprometida com a excelência técnica e a defesa intransigente dos direitos de nossos clientes.
+                    </p>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="text-secondary fs-5 hover-white"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="text-secondary fs-5 hover-white"><i class="bi bi-linkedin"></i></a>
+                        <a href="#" class="text-secondary fs-5 hover-white"><i class="bi bi-facebook"></i></a>
+                    </div>
+                </div>
+
+                <div class="col-lg-2 col-md-6">
+                    <h6 class="text-white text-uppercase mb-4 fw-bold fs-7">Institucional</h6>
+                    <ul class="list-unstyled d-flex flex-column gap-2">
+                        <li><a href="{{ url_for('main.home') }}" class="text-decoration-none text-secondary small hover-red">Início</a></li>
+                        <li><a href="{{ url_for('main.pagina_dinamica', slug='sobre-nos') }}" class="text-decoration-none text-secondary small hover-red">Sobre Nós</a></li>
+                        <li><a href="{{ url_for('main.todas_areas_atuacao') }}" class="text-decoration-none text-secondary small hover-red">Áreas de Atuação</a></li>
+                        <li><a href="{{ url_for('main.politica_privacidade') }}" class="text-decoration-none text-secondary small hover-red">Privacidade</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <h6 class="text-white text-uppercase mb-4 fw-bold fs-7">Fale Conosco</h6>
+                    <ul class="list-unstyled d-flex flex-column gap-3">
+                        <li class="d-flex align-items-start gap-3">
+                            <i class="bi bi-geo-alt text-danger mt-1"></i>
+                            <span class="text-secondary small">Av. Santos Dumont, 1234<br>Aldeota, Fortaleza - CE</span>
+                        </li>
+                        <li class="d-flex align-items-center gap-3">
+                            <i class="bi bi-envelope text-danger"></i>
+                            <span class="text-secondary small">contato@belarminomonteiro.com.br</span>
+                        </li>
+                        <li class="d-flex align-items-center gap-3">
+                            <i class="bi bi-telephone text-danger"></i>
+                            <span class="text-secondary small">+55 (85) 9769-8475</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-3 col-md-6 text-lg-end">
+                    <h6 class="text-white text-uppercase mb-4 fw-bold fs-7">Salve nosso Contato</h6>
+                    <div class="footer-qr-box">
+                        <img src="{{ url_for('static', filename=theme_settings.qr_code_path) if theme_settings and theme_settings.qr_code_path else '' }}" 
+                             alt="vCard QR Code" class="footer-qr-img">
+                    </div>
+                    <p class="text-secondary mt-3 small" style="font-size: 0.75rem;">Aponte a câmera para salvar.</p>
+                </div>
+
+            </div>
+            
+            <hr class="border-secondary opacity-25 my-0">
+            
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="small text-secondary mb-0">&copy; {{ now.year if now else '2025' }} Belarmino Monteiro Sociedade de Advogados. OAB/CE 0000.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end mt-3 mt-md-0">
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    {% include '_cookie_consent.html' %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <script>
+        // Init AOS
+        AOS.init({ duration: 800, once: true });
+
+        // Navbar Scroll Effect Logic
+        const navbar = document.getElementById('mainNav');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+                navbar.classList.remove('navbar-dark');
+                navbar.classList.add('navbar-light'); // Texto escuro no fundo branco
+            } else {
+                navbar.classList.remove('scrolled');
+                // Se estiver na Home (assumindo hero escuro), volta para navbar-dark
+                // Se não, mantém light. Essa lógica depende da página, mas o CSS trata a cor.
+            }
+        });
+    </script>
+    
+    {% block scripts %}{% endblock %}
+
+</body>
+</html>

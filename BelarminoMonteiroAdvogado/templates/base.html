@@ -1,0 +1,67 @@
+{#-*- coding: utf-8 -*-#}
+{#
+   BelarminoMonteiroAdvogado/templates/base.html: Template mestre para despacho de temas (Theme Dispatcher).
+
+   Este template é o ponto de entrada para todas as páginas da aplicação. Ele atua como um
+   "roteador de temas", selecionando qual template base específico de tema (`base_option1.html`,
+   `base_option2.html`, etc.) deve ser estendido com base na variável `theme` (definida globalmente
+   pelas configurações do sistema).
+
+   ATUALIZAÇÃO V2.0: Inclui suporte para Options 5, 6, 7 e 8.
+#}
+
+{#
+   ==========================================================================
+   SELETOR DE TEMA (ROTEADOR VISUAL)
+   ==========================================================================
+#}
+
+{# --- NOVOS LAYOUTS (V2.0) --- #}
+
+{# Verifica se o tema atual é 'option8' (Tech V2) #}
+{% if theme == 'option8' %}
+    {% extends 'base_option8.html' %}
+
+{# Verifica se o tema atual é 'option7' (Boutique V2) #}
+{% elif theme == 'option7' %}
+    {% extends 'base_option7.html' %}
+
+{# Verifica se o tema atual é 'option6' (Corporativo V2) #}
+{% elif theme == 'option6' %}
+    {% extends 'base_option6.html' %}
+
+{# Verifica se o tema atual é 'option5' (Luxo V2) #}
+{% elif theme == 'option5' %}
+    {% extends 'base_option5.html' %}
+
+{# --- LAYOUTS ANTIGOS (V1.0 - Preservados) --- #}
+
+{# Verifica se o tema atual é 'option4' #}
+{% elif theme == 'option4' %}
+    {% extends 'base_option4.html' %}
+
+{# Verifica se o tema atual é 'option3' #}
+{% elif theme == 'option3' %}
+    {% extends 'base_option3.html' %}
+
+{# Verifica se o tema atual é 'option2' #}
+{% elif theme == 'option2' %}
+    {% extends 'base_option2.html' %}
+
+{# Se nenhum tema específico for correspondido ou se o tema for 'option1' (padrão) #}
+{% else %}
+    {# Layout Padrão Antigo: Invisible Luxury #}
+    {% extends 'base_option1.html' %}
+
+{% endif %}
+
+{#
+   BLOCO HEAD GLOBAL PARA PRÉ-CARREGAMENTO DE RECURSOS (PRELOAD)
+   O conteúdo deste bloco será injetado no bloco 'head' dos templates filhos.
+#}
+{% block head %}
+    {# Pré-carrega o vídeo institucional em formato WebM, otimizado para navegadores modernos. #}
+    <link rel="preload" href="{{ url_for('static', filename='videos/institucional.webm') }}" as="video" type="video/webm">
+    {# Pré-carrega a imagem de banner padrão para páginas internas. #}
+    <link rel="preload" href="{{ url_for('static', filename='images/banners/inner_bg_default.jpg') }}" as="image">
+{% endblock %}

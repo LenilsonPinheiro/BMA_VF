@@ -1,0 +1,64 @@
+/* ==========================================================================
+   THEME: LIGHT MODE (DEFAULT / DAYLIGHT PROTOCOL)
+   ==========================================================================
+   Define a paleta de cores para o modo claro.
+   Pode ser aplicado no :root (padrão) ou forçado via classe .light-mode
+*/
+
+:root,
+body.light-mode {
+    
+    /* --- 1. FUNDOS & SUPERFÍCIES --- */
+    --prm-bg-surface: #ffffff;       /* Cartões e Elementos Flutuantes */
+    --prm-bg-light: #f8f9fa;         /* Fundo da Página / Seções Alternadas */
+    --prm-bg-dark: #1a1a1a;          /* Elementos invertidos (Ex: Footer) */
+    
+    /* --- 2. TIPOGRAFIA & CONTEÚDO --- */
+    --prm-text: #333333;             /* Texto Principal (Leitura) */
+    --prm-text-light: #666666;       /* Texto Secundário / Legendas */
+    --prm-navy: #111111;             /* Títulos (Quase preto para autoridade) */
+    
+    /* --- 3. BORDAS & SEPARADORES --- */
+    --prm-border: rgba(0, 0, 0, 0.08);
+    --prm-border-light: rgba(0, 0, 0, 0.04);
+
+    /* --- 4. CORES DE DESTAQUE (Mantendo a Marca) --- */
+    /* Nota: O acento geralmente não muda entre light/dark, mas o brilho sim */
+    --prm-accent-red: #b92027;
+    --prm-accent-hover: #8a1218;
+
+    /* --- 5. SISTEMA DE SOMBRAS (Ambient Light) --- */
+    /* Sombras no modo claro são difusas e simulam luz do sol vindo de cima */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.12);
+    
+    /* --- 6. EFEITOS DE VIDRO (Glassmorphism Light) --- */
+    --glass-bg: rgba(255, 255, 255, 0.75);
+    --glass-border: rgba(255, 255, 255, 0.6);
+    --glass-shadow: 0 8px 32px rgba(31, 38, 135, 0.05);
+}
+
+/* Ajustes Específicos para Componentes no Modo Claro */
+
+/* Inputs de Formulário */
+body.light-mode .form-control,
+body.light-mode .form-control-custom {
+    background-color: #fdfdfd;
+    border-color: #e0e0e0;
+    color: #333;
+}
+
+body.light-mode .form-control:focus,
+body.light-mode .form-control-custom:focus {
+    background-color: #fff;
+    box-shadow: 0 0 0 4px rgba(185, 32, 39, 0.1); /* Glow Vermelho Suave */
+}
+
+/* Cards */
+body.light-mode .card,
+body.light-mode .team-card,
+body.light-mode .service-card {
+    background-color: var(--prm-bg-surface);
+    border-color: var(--prm-border);
+}

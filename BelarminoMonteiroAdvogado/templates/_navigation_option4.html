@@ -1,0 +1,80 @@
+<div class="container-fluid">
+    
+    <a class="navbar-brand" href="{{ url_for('main.home') }}">
+        <img src="{{ url_for('static', filename=configs.get('logo_principal', 'images/BM.png')) }}" 
+             alt="{{ configs.get('site_titulo', 'Belarmino Monteiro') }}" 
+             class="d-inline-block align-text-top">
+    </a>
+
+    <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navTechCollapse" aria-controls="navTechCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="bi bi-grid-fill fs-2 text-secondary"></i>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navTechCollapse">
+        <ul class="navbar-nav ms-auto align-items-center gap-1">
+            
+            <li class="nav-item">
+                <a class="nav-link {% if request.endpoint == 'main.home' %}active{% endif %}" href="{{ url_for('main.home') }}">
+                    Início
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link {% if 'sobre' in request.path %}active{% endif %}" href="{{ url_for('main.pagina_dinamica', slug='sobre-nos') }}">
+                    O Escritório
+                </a>
+            </li>
+
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Atuação
+                </a>
+                <ul class="dropdown-menu shadow-lg border-0 rounded-3 mt-2 p-1" style="backdrop-filter: blur(10px); background: rgba(255,255,255,0.95);">
+                    <li>
+                        <a class="dropdown-item rounded-2 py-2 small fw-bold" href="{{ url_for('main.todas_areas_atuacao') }}">
+                            <i class="bi bi-grid me-2 text-secondary"></i> Ver Todas
+                        </a>
+                    </li>
+                    
+                    {% if lista_areas_atuacao %}
+                        <li><hr class="dropdown-divider my-1 opacity-25"></li>
+                        {% for area in lista_areas_atuacao[:5] %}
+                        <li>
+                            <a class="dropdown-item rounded-2 py-2 small" href="{{ url_for('main.pagina_dinamica', slug=area.slug) }}">
+                                {{ area.titulo }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    {% endif %}
+                </ul>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link {% if request.endpoint == 'main.pagina_contato' %}active{% endif %}" href="{{ url_for('main.pagina_contato') }}">
+                    Contato
+                </a>
+            </li>
+
+            <li class="nav-item d-none d-lg-block mx-2 opacity-25">
+                <span style="border-left: 1px solid currentColor; height: 20px; display: block;"></span>
+            </li>
+
+            <li class="nav-item d-flex align-items-center my-3 my-lg-0 mx-lg-2">
+                <i class="bi bi-sun-fill text-warning me-2 fs-6"></i>
+                <label class="theme-switch" for="themeCheckbox">
+                    <input type="checkbox" id="themeCheckbox" />
+                    <div class="slider round"></div>
+                </label>
+                <i class="bi bi-moon-fill text-secondary ms-2 fs-6"></i>
+            </li>
+
+            <li class="nav-item mt-3 mt-lg-0 ms-lg-2">
+                <a href="https://wa.me/558597698475" target="_blank" class="btn btn-danger fw-bold rounded-pill px-4 shadow-sm d-flex align-items-center justify-content-center gap-2" style="background: var(--tech-primary); border: none; min-width: 140px;">
+                    <span>Agendar</span>
+                    <i class="bi bi-arrow-right-short fs-5"></i>
+                </a>
+            </li>
+
+        </ul>
+    </div>
+</div>

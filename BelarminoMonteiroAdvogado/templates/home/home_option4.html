@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+
+{% block title %}Belarmino Monteiro - Future Tech: Advocacia Digital e Ágil{% endblock %}
+{% block metadescription %}Consultoria jurídica com a velocidade e precisão da tecnologia. Foco em Legal Ops e Startups.{% endblock %}
+
+{% block content %}
+
+<style>
+    /* VARIÁVEIS LOCAIS SÃO DEFINIDAS EM theme-light-option4.css e theme-dark-option4.css */
+
+    /* --- 1. HERO TECH --- */
+    .hero-tech {
+        position: relative;
+        height: 100vh;
+        min-height: 600px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        text-align: center;
+        background-color: var(--tech-bg-main);
+    }
+    
+    .hero-bg-grid {
+        position: absolute; inset: 0;
+        z-index: 0;
+        background-image: 
+            linear-gradient(var(--tech-border) 1px, transparent 1px),
+            linear-gradient(90deg, var(--tech-border) 1px, transparent 1px);
+        background-size: 40px 40px;
+        opacity: 0.6;
+        pointer-events: none;
+    }
+
+    .hero-content-tech {
+        position: relative; z-index: 2;
+        max-width: 1000px; padding: 0 20px;
+    }
+
+    /* FIX CRÍTICO: Garante cor branca no Hero (fallback e elementos não-gradiente) */
+    .hero-tech .hero-title, 
+    .hero-tech .hero-subtitle-tech, 
+    .hero-tech .hero-pre-title {
+        color: #fff; /* Fallback de alta prioridade */
+    }
+
+    .hero-pre-title {
+        font-family: var(--font-secondary);
+        text-transform: uppercase; letter-spacing: 4px;
+        font-size: 0.9rem; margin-bottom: 20px;
+        color: var(--prm-accent-red);
+        display: block;
+    }
+
+    .hero-title {
+        font-family: var(--font-primary);
+        font-size: clamp(3rem, 8vw, 6rem);
+        font-weight: 900; margin-bottom: 10px;
+        line-height: 1.05;
+        
+        /* Gradiente de Texto Holográfico */
+        background: linear-gradient(135deg, var(--tech-text-primary) 0%, var(--tech-text-secondary) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .hero-subtitle-tech {
+        font-family: var(--font-secondary);
+        font-size: clamp(1rem, 2vw, 1.3rem);
+        font-weight: 400; 
+        max-width: 700px; margin: 0 auto 40px;
+        line-height: 1.6;
+        color: var(--tech-text-secondary);
+    }
+    
+    /* --- 2. DESTAQUE (Data Driven) --- */
+    .data-section {
+        padding: 50px 0;
+        background-color: var(--tech-bg-surface);
+        border-bottom: 1px solid var(--tech-border);
+        position: relative;
+    }
+
+    .stat-number {
+        font-family: var(--font-primary);
+        font-size: 3rem; font-weight: 800;
+        color: var(--tech-text-primary);
+    }
+    
+    /* --- 3. SERVIÇOS (Bento Grid) --- */
+    .services-tech {
+        padding: 100px 0;
+        background-color: var(--tech-bg-main);
+    }
+    
+    .bento-card {
+        padding: 30px;
+        background-color: var(--tech-bg-surface);
+        border: 1px solid var(--tech-border);
+        border-radius: 16px;
+        transition: all 0.3s ease;
+        height: 100%;
+        box-shadow: var(--tech-shadow-card);
+    }
+    
+    .bento-title {
+        font-family: var(--font-primary);
+        font-size: 1.5rem; margin-bottom: 10px;
+    }
+    
+    .bento-icon {
+        font-size: 2.5rem; color: var(--prm-accent-red);
+        margin-bottom: 15px;
+    }
+    
+</style>
+
+<div class="option4-wrapper">
+
+    <section class="hero-tech">
+        <div class="hero-bg-grid"></div>
+        <div class="container position-relative z-2">
+            <div class="hero-content-tech" data-aos="fade-up">
+                <span class="hero-pre-title" data-aos="fade-down" data-aos-delay="200">Legal Tech</span>
+                <h1 class="hero-title" data-aos="fade-up" data-aos-delay="400">
+                    Advocacia com a Velocidade do Código.
+                </h1>
+                <p class="hero-subtitle-tech" data-aos="fade-up" data-aos-delay="600">
+                    Otimizamos a sua segurança jurídica com processos automatizados e análise de dados de ponta.
+                </p>
+                <a href="#services" class="btn btn-primary btn-lg rounded-pill px-5 fw-bold" data-aos="fade-up" data-aos-delay="800">
+                    Ver Soluções
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="data-section">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-md-3 col-6" data-aos="fade-up" data-aos-delay="100">
+                    <span class="stat-number">99%</span>
+                    <p class="stat-label">Taxa de Resolução</p>
+                </div>
+                <div class="col-md-3 col-6" data-aos="fade-up" data-aos-delay="200">
+                    <span class="stat-number">48H</span>
+                    <p class="stat-label">Tempo de Resposta</p>
+                </div>
+                <div class="col-md-3 col-6" data-aos="fade-up" data-aos-delay="300">
+                    <span class="stat-number">150+</span>
+                    <p class="stat-label">Clientes Satisfeitos</p>
+                </div>
+                <div class="col-md-3 col-6" data-aos="fade-up" data-aos-delay="400">
+                    <span class="stat-number">20+</span>
+                    <p class="stat-label">Anos de Mercado</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="services" class="services-tech">
+        <div class="container">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <span class="hero-pre-title">Nossas Ferramentas</span>
+                <h2 class="display-5 fw-bold mb-3">Serviços Habilitados por IA</h2>
+            </div>
+            
+            <div class="row g-4">
+                {% for area in lista_areas_atuacao[:4] %}
+                <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
+                    <div class="bento-card">
+                        <div class="bento-icon"><i class="{{ area.icone if area.icone else 'bi bi-laptop' }}"></i></div>
+                        <h3 class="bento-title">{{ area.titulo }}</h3>
+                        <p class="small opacity-75 bento-desc">{{ area.descricao[:100] }}...</p>
+                        {# CORREÇÃO: Substitui servico_detalhe por pagina_dinamica #}
+                        <a href="{{ url_for('main.pagina_dinamica', slug=area.slug) }}" class="small text-uppercase fw-bold text-decoration-none">Ver Detalhes</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    {% include 'home/_map_section.html' %}
+    {% include '_cta_section.html' %}
+
+</div>
+
+{% endblock %}

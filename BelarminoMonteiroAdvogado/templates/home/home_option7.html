@@ -1,0 +1,43 @@
+{% extends "base_option7.html" %}
+
+{% block title %}Boutique Jurídica - Belarmino Monteiro{% endblock %}
+
+{% block content %}
+<div class="home-wrapper option7-wrapper">
+
+    {# HERO SPLIT (Texto Esquerda / Imagem Direita) #}
+    {% include 'home/_hero_section.html' %}
+
+    {# INTRODUÇÃO ASSINADA #}
+    <section class="intro-section">
+        <div class="container">
+            <blockquote class="signature-text">
+                "A advocacia não é apenas uma profissão, é a arte de cuidar do patrimônio e da liberdade de quem confia em nós."
+            </blockquote>
+            <p class="signature-author">Dr. Belarmino Monteiro</p>
+        </div>
+    </section>
+
+    {# LISTA DE SERVIÇOS EDITORIAL (Stripes) #}
+    <section class="services-boutique">
+        <div class="container">
+            <h6 class="text-center text-uppercase ls-2 mb-5" style="color: var(--btq-gold-main);">Áreas de Expertise</h6>
+            
+            {% for area in lista_areas_atuacao %}
+            <a href="{{ url_for('main.pagina_dinamica', slug=area.slug) }}" class="text-decoration-none">
+                <div class="service-row">
+                    <span class="service-num">0{{ loop.index }}</span>
+                    <h3 class="service-title">{{ area.titulo }}</h3>
+                    <p class="service-desc d-none d-md-block">{{ area.descricao[:100] }}...</p>
+                    <i class="bi bi-arrow-right service-icon-arrow"></i>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+
+    {% include 'home/_team_section.html' %}
+    {% include '_cta_section.html' %}
+
+</div>
+{% endblock %}

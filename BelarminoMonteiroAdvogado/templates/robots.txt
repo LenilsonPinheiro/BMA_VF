@@ -1,0 +1,20 @@
+User-agent: *
+# --- Segurança e Administração ---
+Disallow: /admin/
+Disallow: /login
+Disallow: /auth/
+
+# --- SEO Técnico ---
+# Bloquear resultados de pesquisa interna evita penalizações por "conteúdo duplicado" no Google
+Disallow: /search
+
+# --- Páginas Funcionais ---
+# Não faz sentido indexar páginas de submissão de tokens ou formulários soltos
+Disallow: /depoimento/submit/
+
+# --- Renderização ---
+# É crucial permitir que o Google leia CSS e JS para saber que o site é responsivo (Mobile-Friendly)
+Allow: /static/
+
+# --- Mapa do Site ---
+Sitemap: {{ url_for('main.sitemap', _external=True) }}

@@ -1,0 +1,261 @@
+/* ==========================================================================
+   AUTHENTICATION STYLES (THE ADMIN SHIELD)
+   ==========================================================================
+   Estilos exclusivos para páginas de Login, Registro e Recuperação de Senha.
+   Design System: "Fortaleza Digital" (Dark, Secure, Immersive).
+*/
+
+/* --- 1. VARIÁVEIS DE AUTENTICAÇÃO --- */
+:root {
+    --auth-bg-color: #0f172a;       /* Slate 900 */
+    --auth-bg-gradient-start: #1e293b;
+    --auth-bg-gradient-end: #0f172a;
+    --auth-accent: #b92027;         /* Vermelho Marca */
+    --auth-accent-hover: #ffffff;
+    --auth-text: #ffffff;
+    --auth-text-muted: rgba(255, 255, 255, 0.5);
+    
+    /* Card & Glass */
+    --auth-card-bg: rgba(30, 41, 59, 0.7); /* Slate Glass */
+    --auth-card-border: rgba(255, 255, 255, 0.1);
+    --auth-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    
+    /* Inputs */
+    --auth-input-bg: rgba(0, 0, 0, 0.3);
+    --auth-input-border: rgba(255, 255, 255, 0.1);
+    --auth-input-focus: rgba(185, 32, 39, 0.5);
+}
+
+/* --- 2. LAYOUT & AMBIENTE --- */
+html, body {
+    height: 100%;
+}
+
+.login-page-wrapper {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--auth-bg-color);
+    background-image: radial-gradient(circle at 50% 0%, var(--auth-bg-gradient-start) 0%, var(--auth-bg-gradient-end) 70%);
+    position: relative;
+    overflow: hidden;
+    padding: 20px;
+    font-family: 'Open Sans', sans-serif;
+}
+
+/* Grade de Fundo (Security Grid) */
+.login-bg-grid {
+    position: absolute;
+    inset: 0;
+    background-image: 
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(circle at center, black 30%, transparent 80%);
+    -webkit-mask-image: radial-gradient(circle at center, black 30%, transparent 80%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* --- 3. CARD DE LOGIN --- */
+.login-card {
+    width: 100%;
+    max-width: 400px;
+    background: var(--auth-card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--auth-card-border);
+    border-radius: 16px;
+    padding: 40px;
+    box-shadow: var(--auth-shadow);
+    position: relative;
+    z-index: 10;
+    animation: authCardEntry 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes authCardEntry {
+    from { opacity: 0; transform: translateY(20px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Cabeçalho do Card */
+.login-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.brand-logo {
+    width: 120px;
+    margin-bottom: 20px;
+    filter: brightness(0) invert(1); /* Logo branca */
+    opacity: 0.9;
+    transition: opacity 0.3s;
+}
+.brand-logo:hover { opacity: 1; }
+
+.login-title {
+    font-family: 'Playfair Display', serif;
+    color: var(--auth-text);
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+    font-weight: 700;
+}
+
+.login-subtitle {
+    color: var(--auth-text-muted);
+    font-size: 0.85rem;
+    font-weight: 400;
+}
+
+/* --- 4. FORMULÁRIOS & INPUTS --- */
+.form-group-auth {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.form-label {
+    color: var(--auth-text);
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.form-control-auth {
+    width: 100%;
+    background: var(--auth-input-bg);
+    border: 1px solid var(--auth-input-border);
+    border-radius: 8px;
+    padding: 14px 16px 14px 45px; /* Espaço para ícone à esquerda */
+    color: var(--auth-text);
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.form-control-auth::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.form-control-auth:focus {
+    outline: none;
+    border-color: var(--auth-accent);
+    background: rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 0 4px rgba(185, 32, 39, 0.15);
+}
+
+/* Ícones dentro dos Inputs */
+.input-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%; /* Se tiver label, ajustar top */
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 1.1rem;
+    pointer-events: none;
+    transition: color 0.3s;
+}
+
+/* Ajuste de posição se não houver label explícita acima */
+.form-group-auth:not(:has(label)) .input-icon {
+    top: 50%;
+}
+
+.form-control-auth:focus ~ .input-icon {
+    color: var(--auth-accent);
+}
+
+/* --- 5. BOTÕES --- */
+.btn-auth {
+    width: 100%;
+    padding: 14px;
+    background: var(--auth-accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(185, 32, 39, 0.3);
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-auth:hover {
+    background-color: #a01c22;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(185, 32, 39, 0.4);
+}
+
+.btn-auth:active {
+    transform: translateY(0);
+}
+
+/* --- 6. LINKS & RODAPÉ --- */
+.login-footer {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--auth-card-border);
+}
+
+.auth-link {
+    color: var(--auth-text-muted);
+    font-size: 0.85rem;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.auth-link:hover {
+    color: var(--auth-text);
+    text-decoration: underline;
+}
+
+.back-link {
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 0.8rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.back-link:hover {
+    color: var(--auth-accent);
+}
+
+/* --- 7. FLASH MESSAGES (Admin Context) --- */
+.alert-auth {
+    background: rgba(185, 32, 39, 0.1);
+    border: 1px solid rgba(185, 32, 39, 0.3);
+    color: #ffcccc;
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.alert-auth-success {
+    background: rgba(40, 167, 69, 0.1);
+    border-color: rgba(40, 167, 69, 0.3);
+    color: #d4edda;
+}
+
+/* --- RESPONSIVIDADE --- */
+@media (max-width: 480px) {
+    .login-card {
+        padding: 30px 20px;
+    }
+    .brand-logo {
+        width: 100px;
+    }
+}

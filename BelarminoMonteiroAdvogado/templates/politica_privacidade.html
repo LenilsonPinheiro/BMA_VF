@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+
+{% block title %}Política de Privacidade - Belarmino Monteiro{% endblock %}
+{% block metadescription %}Termos de uso e política de privacidade e proteção de dados do escritório Belarmino Monteiro Advogado.{% endblock %}
+
+{% block content %}
+
+<style>
+    /* Hero Minimalista Legal */
+    .legal-hero {
+        background-color: var(--prm-navy, #111);
+        padding: 120px 0 60px;
+        color: #fff;
+        text-align: center;
+        background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.9)), url('{{ url_for('static', filename='images/banners/inner_bg_default.jpg') }}');
+        background-size: cover;
+        background-position: center;
+    }
+    
+    .legal-title {
+        font-family: var(--font-primary, 'Roboto', serif);
+        font-weight: 700;
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .legal-meta {
+        color: rgba(255,255,255,0.6);
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    /* Container estilo "Papel" */
+    .legal-paper-wrapper {
+        background-color: #f4f4f4; /* Fundo cinza suave */
+        padding: 60px 0;
+        min-height: 800px;
+    }
+
+    .legal-paper {
+        background: #fff;
+        max-width: 900px;
+        margin: -100px auto 0; /* Sobe por cima do Hero */
+        padding: 60px 50px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.08); /* Sombra suave */
+        border-radius: 8px;
+        position: relative;
+        z-index: 10;
+        border-top: 5px solid var(--prm-accent-red, #b92027); /* Detalhe da marca */
+    }
+
+    /* Tipografia de Leitura */
+    .legal-content {
+        font-family: 'Open Sans', 'Helvetica Neue', sans-serif; /* Fonte limpa */
+        font-size: 1.05rem;
+        line-height: 1.8; /* Entrelinha maior para conforto */
+        color: #333;
+    }
+
+    .legal-content h1, 
+    .legal-content h2, 
+    .legal-content h3 {
+        color: var(--prm-navy, #111);
+        font-weight: 700;
+        margin-top: 2.5rem;
+        margin-bottom: 1rem;
+        font-family: var(--font-primary, serif);
+    }
+    
+    .legal-content h2 { font-size: 1.5rem; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+    .legal-content h3 { font-size: 1.25rem; }
+    .legal-content p { margin-bottom: 1.5rem; }
+    .legal-content ul { margin-bottom: 1.5rem; padding-left: 20px; }
+    .legal-content li { margin-bottom: 0.5rem; }
+
+    /* Botão de Imprimir */
+    .btn-print {
+        background: transparent;
+        border: 1px solid #ddd;
+        color: #666;
+        padding: 5px 15px;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        cursor: pointer;
+    }
+    .btn-print:hover {
+        background: #333;
+        color: #fff;
+        border-color: #333;
+    }
+
+    /* Mobile Adjustments */
+    @media (max-width: 768px) {
+        .legal-paper {
+            margin-top: 0;
+            padding: 30px 20px;
+            border-radius: 0;
+        }
+        .legal-paper-wrapper { padding: 0; }
+        .legal-title { font-size: 2rem; }
+    }
+    
+    /* Print Styles */
+    @media print {
+        header, footer, .legal-hero, .no-print { display: none !important; }
+        .legal-paper-wrapper { background: #fff; padding: 0; }
+        .legal-paper { 
+            box-shadow: none; 
+            margin: 0; 
+            padding: 0; 
+            max-width: 100%;
+            border: none;
+        }
+        body { font-size: 12pt; color: #000; }
+        a { text-decoration: none; color: #000; }
+    }
+</style>
+
+<header class="legal-hero">
+    <div class="container">
+        <h1 class="legal-title">{{ titulo | default('Política de Privacidade') }}</h1>
+        <div class="legal-meta">
+            Última atualização: <span id="current-date"></span> • Proteção de Dados
+        </div>
+    </div>
+</header>
+
+<div class="legal-paper-wrapper">
+    <div class="container">
+        <article class="legal-paper">
+            
+            <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom no-print">
+                <span class="text-muted small"><i class="bi bi-shield-lock-fill me-2 text-success"></i>Conexão Segura & Dados Criptografados</span>
+                <button onclick="window.print()" class="btn-print">
+                    <i class="bi bi-printer"></i> Imprimir / Salvar PDF
+                </button>
+            </div>
+
+            <div class="legal-content">
+                {% if conteudo %}
+                    {{ conteudo | safe }}
+                {% else %}
+                    <p class="lead">No escritório <strong>Belarmino Monteiro Advogado</strong>, privacidade e segurança são prioridades e nos comprometemos com a transparência do tratamento de dados pessoais dos nossos usuários e clientes. Por isso, esta presente Política de Privacidade estabelece como é feita a coleta, uso e transferência de informações de clientes ou outras pessoas que acessam ou usam nosso site.</p>
+
+                    <h2>1. Quais dados coletamos?</h2>
+                    <p>Nosso escritório coleta e utiliza alguns dados pessoais seus, de forma a viabilizar a prestação de serviços e aprimorar a experiência de uso. A coleta pode ocorrer das seguintes formas:</p>
+                    <ul>
+                        <li><strong>Dados pessoais fornecidos pelo titular:</strong> Nome completo, e-mail, telefone e mensagem enviada através de nossos formulários de contato.</li>
+                        <li><strong>Dados coletados automaticamente:</strong> Informações sobre o dispositivo de acesso, endereço IP, navegador, e páginas acessadas (via cookies).</li>
+                    </ul>
+
+                    <h2>2. Como utilizamos os seus dados?</h2>
+                    <p>Os dados pessoais coletados têm a finalidade de:</p>
+                    <ul>
+                        <li>Retornar contatos e agendamentos solicitados pelo usuário;</li>
+                        <li>Enviar atualizações jurídicas ou newsletters (caso autorizado);</li>
+                        <li>Melhorar a segurança e funcionamento do site;</li>
+                        <li>Cumprir obrigações legais e regulatórias.</li>
+                    </ul>
+
+                    <h2>3. Consentimento</h2>
+                    <p>Ao utilizar os nossos serviços e fornecer as informações pessoais na plataforma, você está consentindo com a presente Política de Privacidade.</p>
+                    <p>O usuário tem o direito de retirar o seu consentimento a qualquer momento, para tanto, deve entrar em contato através do e-mail oficial do escritório.</p>
+
+                    <h2>4. Seus Direitos (LGPD)</h2>
+                    <p>O escritório Belarmino Monteiro assegura a seus usuários seus direitos de titular previstos no artigo 18 da Lei Geral de Proteção de Dados (Lei nº 13.709/18). Dessa maneira, você pode, de maneira gratuita e a qualquer tempo:</p>
+                    <ul>
+                        <li>Confirmar a existência de tratamento de dados;</li>
+                        <li>Acessar seus dados;</li>
+                        <li>Corrigir dados incompletos, inexatos ou desatualizados;</li>
+                        <li>Solicitar a eliminação dos dados tratados com o seu consentimento.</li>
+                    </ul>
+
+                    <h2>5. Segurança dos Dados</h2>
+                    <p>Para mantermos suas informações pessoais seguras, usamos ferramentas físicas, eletrônicas e gerenciais orientadas para a proteção da sua privacidade.</p>
+                    <p>Apenas profissionais autorizados têm acesso aos seus dados pessoais em nosso escritório.</p>
+
+                    <h2>6. Alterações nesta Política</h2>
+                    <p>Reservamos o direito de modificar essa Política de Privacidade a qualquer tempo, principalmente em função da adequação a eventuais alterações feitas em nosso site ou em âmbito legislativo.</p>
+
+                    <hr class="my-5">
+
+                    <h3>Fale Conosco</h3>
+                    <p>Se você tiver dúvidas sobre esta Política de Privacidade ou sobre os dados pessoais que tratamos, entre em contato conosco através dos canais oficiais disponíveis no rodapé deste site.</p>
+                {% endif %}
+            </div>
+
+            <div class="mt-5 pt-4 border-top text-center text-muted small">
+                <p>Belarmino Monteiro Sociedade Individual de Advocacia<br>
+                Compromisso com a Justiça e com a sua Privacidade.</p>
+            </div>
+
+        </article>
+    </div>
+</div>
+
+<script>
+    // Script simples para atualizar a data, se necessário
+    document.addEventListener('DOMContentLoaded', function() {
+        const dateSpan = document.getElementById('current-date');
+        const now = new Date();
+        // Formata data como Mês/Ano (ex: Novembro/2025)
+        const dateString = now.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+        dateSpan.textContent = dateString.charAt(0).toUpperCase() + dateString.slice(1);
+    });
+</script>
+
+{% endblock %}

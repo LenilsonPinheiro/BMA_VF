@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Configuração Inicial - Administração{% endblock %}
+
+{% block content %}
+<section class="content-section">
+    <div class="container" style="max-width: 500px;">
+        <div class="form-card">
+            <h2 class="text-center">Configuração de Senha</h2>
+            <p class="text-center">Para sua segurança, por favor, defina uma nova senha para o usuário <strong>admin</strong>.</p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('admin.setup') }}">
+                {{ form.hidden_tag() }}
+                <div class="form-group">
+                    <label for="password">Nova Senha (mínimo 8 caracteres)</label>
+                    <input type="password" id="password" name="password" class="form-control" required minlength="8">
+                </div>
+                <div class="form-group">
+                    <label for="confirm_password">Confirmar Nova Senha</label>
+                    <input type="password" id="confirm_password" name="confirm_password" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Definir Senha e Continuar</button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}
