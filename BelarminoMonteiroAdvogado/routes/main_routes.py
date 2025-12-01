@@ -35,17 +35,6 @@ def home():
         template_name = 'home/home_option1.html'
     # --- End of Dynamic Template Selection ---
 
-    # Busca a seção 'hero' especificamente
-    hero_section = HomePageSection.query.filter_by(section_type='hero', is_active=True).first()
-
-    # Se a seção hero não for encontrada, cria um objeto placeholder para evitar erros no template
-    if hero_section is None:
-        class PlaceholderHeroSection:
-            def __init__(self):
-                self.title = "Bem-vindo ao Nosso Escritório"
-                self.subtitle = "Soluções jurídicas personalizadas para suas necessidades."
-        hero_section = PlaceholderHeroSection()
-
     # Busca as outras seções da home page que estão ativas e ordenadas
     other_sections = HomePageSection.query.filter(
         HomePageSection.section_type != 'hero',
@@ -66,7 +55,6 @@ def home():
     form = ContactForm()
     extra_context = {
         'form': form,
-        'section': hero_section,  # Passa a seção hero como 'section'
         'all_home_sections': all_sections,
         'lista_areas_atuacao': AreaAtuacao.query.group_by(AreaAtuacao.titulo, AreaAtuacao.slug).order_by(AreaAtuacao.ordem).all(),
         'testimonials': Depoimento.query.filter_by(aprovado=True).order_by(Depoimento.data_criacao.desc()).all(),

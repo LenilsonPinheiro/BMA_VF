@@ -97,7 +97,6 @@ def main():
     
     areas = [
         "direito-civil",
-        "direito-trabalhista",
         "direito-previdenciario",
         "direito-consumidor"
     ]

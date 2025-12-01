@@ -466,6 +466,7 @@ def create_app():
                 current_year=datetime.utcnow().year,
                 configs=configs,
                 home_sections=home_sections_dict,
+                hero_section=home_sections_dict.get('hero'),
                 theme=theme,
                 theme_settings=theme_settings,
                 lista_areas_atuacao=AreaAtuacao.query.order_by(AreaAtuacao.ordem).all()

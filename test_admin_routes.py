@@ -65,10 +65,21 @@ class AdminTester:
             if response.status_code == 200:
                 self.print_test("GET /auth/login", "PASS", f"Status: {response.status_code}")
                 
+                # Extrai o CSRF token do formulário de login
+                import re
+                match = re.search(r'<input id="csrf_token" name="csrf_token" type="hidden" value="([^"]+)">', response.text)
+                if not match:
+                    self.print_test("CSRF Token", "FAIL", "Não foi possível encontrar o token CSRF na página de login.")
+                    return False
+                
+                self.csrf_token = match.group(1)
+                self.print_test("CSRF Token", "PASS", "Token extraído com sucesso.")
+
                 # Tenta fazer login
                 login_data = {
                     'username': ADMIN_USERNAME,
-                    'password': ADMIN_PASSWORD
+                    'password': ADMIN_PASSWORD,
+                    'csrf_token': self.csrf_token
                 }
                 
                 response = self.session.post(
