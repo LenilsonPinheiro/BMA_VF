@@ -152,8 +152,7 @@ def check_videos_local():
 def check_cdn_references():
     """Verifica referências ao servidor de arquivos rapido nos modelo de paginas"""
     print_header("VERIFICAÇÃO DE REFERÊNCIAS AO servidor de arquivos rapido")
-    
-    modelo de paginas_with_videos = [
+    templates_with_videos = [
         'BelarminoMonteiroAdvogado/modelo de paginas/home/_hero_section.html',
         'BelarminoMonteiroAdvogado/modelo de paginas/home/home_option1.html',
         'BelarminoMonteiroAdvogado/modelo de paginas/home/home_option2.html',
@@ -169,12 +168,12 @@ def check_cdn_references():
     mp4_count = 0
     cdn_count = 0
     
-    for modelo de pagina_path in modelo de paginas_with_videos:
-        if not os.path.exists(modelo de pagina_path):
-            print_warning(f"{os.path.basename(modelo de pagina_path)}: Não encontrado")
+    for template_path_str in templates_with_videos:
+        if not os.path.exists(template_path_str):
+            print_warning(f"{os.path.basename(template_path_str)}: Não encontrado")
             continue
         
-        with open(modelo de pagina_path, 'r', encoding='utf-8') as f:
+        with open(template_path_str, 'r', encoding='utf-8') as f:
             content = f.read()
         
         # Verificar formato de vídeo
@@ -184,10 +183,10 @@ def check_cdn_references():
         
         if has_webm:
             webm_count += 1
-            print_success(f"{os.path.basename(modelo de pagina_path)}: WebM ")
+            print_success(f"{os.path.basename(template_path_str)}: WebM ")
         elif has_mp4:
             mp4_count += 1
-            print_warning(f"{os.path.basename(modelo de pagina_path)}: MP4 (considere WebM)")
+            print_warning(f"{os.path.basename(template_path_str)}: MP4 (considere WebM)")
         
         if has_cdn or has_webm:
             cdn_count += 1

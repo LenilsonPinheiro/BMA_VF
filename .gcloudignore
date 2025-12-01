@@ -1,0 +1,16 @@
+# Este arquivo especifica quais arquivos NÃO devem ser enviados para o Google App Engine.
+
+# Arquivos de ambiente virtual
+/venv/
+
+# Arquivos de cache do Python
+__pycache__/
+*.pyc
+
+# Banco de dados local e backups
+/instance/
+
+# Arquivos de configuração local e segredos
+.env
+*.sqlite
+*.db

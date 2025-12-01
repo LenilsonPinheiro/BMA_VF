@@ -8,6 +8,20 @@
 
 ---
 
+## 🌳 Branching & Contribution Workflow (MANDATORY)
+
+**Golden Rule**: Never commit directly to `main`. All changes must go through a Pull Request.
+
+1.  **Create a Branch**: Create a new branch from `main` named `feature/<description>` or `fix/<description>`.
+2.  **Develop**: Make your code changes on this new branch.
+3.  **Local Checks**: Before pushing, run `python verify_ecosystem.py` and `python run_all_tests.py` locally. Fix any issues.
+4.  **Pull Request**: Push your branch and open a PR against `main`.
+5.  **Automated Review**: A GitHub Action will run all checks (`detect-secrets`, `black --check`, tests, ecosystem sync). The PR merge will be **blocked** if any check fails.
+6.  **Manual Review**: Await human review and approval.
+7.  **Merge**: Once approved, the PR can be merged.
+
+---
+
 ## Critical Developer Workflows
 
 ### Local Development Setup
@@ -31,8 +45,10 @@ Removes `site.db` and `migrations/` folder before rebuilding—use when schema c
 
 ### Testing
 - Test fixtures in `test_app.py` use in-memory SQLite (`sqlite:///:memory:`) with CSRF disabled
-- Tests expect admin credentials: `admin/admin` (created by fixtures)
-- Run: `pytest test_app.py` or use individual test files for specific routes
+- The master runner `run_all_tests.py` automatically discovers and executes all `test_*.py` files in the root directory.
+- **To add a new test suite**: Create a file named `test_your_feature.py`. It will be picked up automatically.
+- **To make a test critical for deployment**: Add the filename to the `CRITICAL_TESTS` list inside `run_all_tests.py`.
+- **To run a specific test for faster debugging**: Follow the `PYTEST_USAGE_GUIDE.md`.
 
 ---
 
@@ -1464,6 +1480,8 @@ python limpar_projeto.py
 ---
 
 ## Security & Environment Variables
+
+**Secret Detection**: This project uses `detect-secrets` (installed via `requirements.txt`) via a pre-commit hook to prevent committing API keys or passwords. Any new potential secret will block the commit. Legitimate but flagged strings should be added to the `.secrets.baseline` file.
 
 ### Critical Security Settings
 

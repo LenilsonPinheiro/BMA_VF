@@ -20,7 +20,7 @@ Este documento fornece uma referência completa sobre:
 
 ### 🧪 **Testes & Validação**
 3. `test_app.py` - Testes unitários core
-4. `run_all_tests.py` - Master test runner
+4. `run_all_tests.py` - Master test runner (descobre e executa todos os `test_*.py`)
 5. `diagnostico.py` - Diagnóstico de saúde do sistema
 
 ### 🚀 **Deploy & Produção**
@@ -37,7 +37,7 @@ Este documento fornece uma referência completa sobre:
 
 ### 🧹 **Manutenção & Limpeza**
 12. `limpar_projeto.py` - Limpeza de temporários
-13. `limpeza_total_venv.py` - Reset completo de venv
+13. `limpeza_total_venv.py` - **Destrutivo**: Deleta completamente a pasta `venv` para forçar uma recriação limpa.
 
 ---
 
@@ -90,24 +90,29 @@ Migrations: Up-to-date ✓
 
 ---
 
-### Fluxo 2: **Antes de Fazer Commit**
+### Fluxo 2: **Desenvolvimento e Preparação para Commit (em uma `feature` Branch)**
 
 **Objetivo**: Garantir que seu código não quebra nada antes de commitar.
 
 **Sequência**:
 ```powershell
-# 1️⃣ QUICK TEST - Testa core functionality
-pytest test_app.py -v
+# 0️⃣ SETUP (uma única vez por máquina)
+# Instala hooks que rodam a cada 'git commit'
+pip install pre-commit
+pre-commit install
 
-# 2️⃣ FULL TEST - Roda todos os testes
+# 1️⃣ TESTES - Roda todos os testes para garantir que nada quebrou
 python run_all_tests.py
 
-# 3️⃣ CHECK CLEANUP - Remove arquivos temporários
-python limpar_projeto.py
-
-# 4️⃣ GIT - Commit se tudo passou
+# 2️⃣ COMMIT - O pre-commit hook executa as verificações automaticamente
 git add .
 git commit -m "feature: description"
+
+# O hook irá:
+# 1. Formatar o código com 'black'.
+# 2. Verificar se novos segredos foram adicionados com 'detect-secrets' (instalado via requirements.txt).
+# 3. Verificar a sincronia do ecossistema com 'verify_ecosystem.py'.
+# Se o 'black' modificar arquivos, você precisará fazer 'git add' e 'git commit' novamente.
 ```
 
 **Logs Esperados (run_all_tests.py)**:

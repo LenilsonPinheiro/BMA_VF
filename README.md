@@ -1,3 +1,17 @@
+> [!IMPORTANT]
+> **AVISO OBRIGATÓRIO PARA QUALQUER IA (GPT, Gemini, Copilot, etc.) E DESENVOLVEDORES**
+>
+> QUALQUER ALTERAÇÃO NESTE PROJETO SÓ ESTÁ COMPLETA QUANDO O ECOSSISTEMA INTEIRO FOR ATUALIZADO.
+>
+> Isto significa:
+> 1.  **DOCUMENTAÇÃO:** Todos os READMEs, guias (`.md`) e manuais devem ser atualizados para refletir a nova lógica.
+> 2.  **COMENTÁRIOS NO CÓDIGO:** O código alterado e relacionado deve ter comentários claros, úteis e que expliquem o "porquê" da mudança.
+> 3.  **SCRIPTS DE DIAGNÓSTICO:** Scripts como `diagnostico.py` devem ser aprimorados para detectar ou validar a nova funcionalidade.
+>
+> Esta é a regra mais importante deste projeto. A manutenção a longo prazo depende da aderência estrita a este princípio. **NÃO FAÇA MUDANÇAS ISOLADAS.**
+
+---
+
 # Belarmino Monteiro Advogado - Sistema Web
 
 Este é o repositório principal para o sistema web do escritório de advocacia Belarmino Monteiro. O sistema é construído utilizando Flask, SQLAlchemy, Flask-Login, Flask-Migrate e Bootstrap, oferecendo um painel de administração para gerenciamento de conteúdo dinâmico.
@@ -19,6 +33,40 @@ Este é o repositório principal para o sistema web do escritório de advocacia 
 - Usuário: `admin`
 - Senha: `admin`
 
+### Verificações Automáticas de Qualidade
+
+Este projeto usa duas ferramentas para garantir a qualidade do código automaticamente:
+
+1.  **Pre-commit Hooks:** Antes de cada commit, os seguintes hooks são executados:
+    - **`black`**: Formata automaticamente todo o código Python para um padrão consistente.
+    - **`verify_ecosystem.py`**: Garante que a documentação (`.md`) foi atualizada junto com o código.
+    - **`detect-secrets`**: Impede que segredos (chaves de API, senhas) sejam commitados. (Instalado via `requirements.txt`)
+    - **Setup (uma única vez):**
+      ```powershell
+      pip install pre-commit
+      pre-commit install
+      ```
+2.  **GitHub Actions (CI/CD):** A cada Pull Request para a branch `main`, uma verificação automática é executada para:
+    - Rodar todos os testes (`run_all_tests.py`).
+    - Verificar a formatação do código (`black --check`).
+    - Verificar vazamento de segredos (`detect-secrets`).
+    - **Se qualquer verificação falhar, o workflow falha e o merge da PR é bloqueado.**
+
+> **Configuração Obrigatória no GitHub:** Para que o bloqueio funcione, você deve configurar uma **Branch Protection Rule** para a branch `main`, exigindo que o status check "Verificação de Qualidade e Ecossistema da PR" passe antes do merge.
+> Para um guia passo a passo, consulte **`GITHUB_SETUP_GUIDE.md`**.
+
+### 🤝 Fluxo de Contribuição
+
+Todas as alterações neste projeto devem seguir um fluxo estrito para garantir a qualidade e a estabilidade da branch `main`.
+
+1.  Crie uma `feature-branch` ou `fix-branch` a partir da `main`.
+2.  Faça suas alterações e commits.
+3.  Abra uma **Pull Request** para a `main`.
+4.  Aguarde a aprovação das verificações automáticas e da revisão manual.
+
+Para um guia detalhado, consulte **`BRANCHING_STRATEGY.md`**.
+
+
 ### Antes de Fazer Deploy
 ```powershell
 # Executar todos os testes
@@ -36,22 +84,30 @@ python deploy_production_complete.py
 ## 📖 Documentação Completa
 
 ### Para Desenvolvedores & AI Agents
-- **[`.github/copilot-instructions.md`](.github/copilot-instructions.md)** - Guia técnico completo para AI agents
+- **`.github/copilot-instructions.md`** - Guia técnico completo para AI agents
   - Arquitetura de aplicação (blueprints, modelos, templates)
   - Todos os 40+ scripts Python com relacionamentos e dependências
   - Padrões de código e fluxos de automação
   - Troubleshooting e debugging
 
 ### Para Automação & CI/CD
-- **[`SCRIPTS_AUTOMATION_GUIDE.md`](SCRIPTS_AUTOMATION_GUIDE.md)** - Guia de automações com fluxos completos
+- **`SCRIPTS_AUTOMATION_GUIDE.md`** - Guia de automações com fluxos completos
   - 5 automation flows (Dev → Commit → Deploy → Recover → Reset)
   - Cada fluxo com comandos exatos, logs esperados, timing e dependências
   - Matriz de dependência entre scripts
   - Checklists de segurança pré-deploy e pós-deploy
   - Troubleshooting decision tree
 
+### Para Governança e Processos
+- **`BRANCHING_STRATEGY.md`** - Guia obrigatório sobre como criar branches e fazer Pull Requests.
+- **`GITHUB_SETUP_GUIDE.md`** - Como configurar as regras de proteção de branch no GitHub.
+- **`REVERT_GUIDE.md`** - Guia de segurança para reverter um merge feito por engano.
+- **`MERGE_CONFLICT_GUIDE.md`** - Guia passo a passo para resolver conflitos de merge.
+- **`FALSE_POSITIVES_GUIDE.md`** - Como gerenciar falsos positivos no `detect-secrets`.
+- **`MERGE_CONFLICT_GUIDE.md`** - Guia passo a passo para resolver conflitos de merge.
+
 ### Para Administração
-- **[`admin_module_roadmap.md`](admin_module_roadmap.md)** - Roadmap de melhorias do painel admin
+- **`admin_module_roadmap.md`** - Roadmap de melhorias do painel admin
 
 ---
 
@@ -104,7 +160,7 @@ Recomenda-se alterar a senha após o primeiro login.
 
 ## 🔄 Fluxos de Automação Principais
 
-Para workflow completo com exemplos de logs esperados, veja **[`SCRIPTS_AUTOMATION_GUIDE.md`](SCRIPTS_AUTOMATION_GUIDE.md)**.
+Para workflow completo com exemplos de logs esperados, veja **`SCRIPTS_AUTOMATION_GUIDE.md`**.
 
 ### Desenvolvimento Local
 ```
@@ -143,6 +199,7 @@ backup_db.py --remove-migrations → limpeza_total_venv.py → run.ps1 clean →
 | Problema | Solução |
 |----------|---------|
 | App não inicia | `python check_db.py` → `python auto_fix.py` |
+| Erro "Fatal error in launcher" ou "Acesso negado" | Seu ambiente virtual (`venv`) está corrompido. Feche todos os terminais/editores, delete a pasta `venv` manualmente e execute `.\run.ps1` para recriá-la do zero. (Detect-secrets e Black serão instalados automaticamente) |
 | Testes falhando | `python run_all_tests.py` (veja output detalhado) |
 | BD corrompido | `python backup_db.py` → `python repair_alembic.py` |
 | Login não funciona | `python create_admin.py` (criar novo admin) |
@@ -160,8 +217,10 @@ Para troubleshooting completo, veja **[`SCRIPTS_AUTOMATION_GUIDE.md` - Decision 
 - `create_admin.py` - Criar novo admin
 
 ### Testing & Validation
-- `run_all_tests.py` - Master test runner (todos os testes)
-- `test_*.py` - Testes individuais
+- `run_all_tests.py` - Master test runner (descobre e executa todos os testes `test_*.py`)
+- `test_*.py` - Testes individuais (descobertos por `run_all_tests.py`)
+- `verify_ecosystem.py` - Verifica se a documentação está sincronizada com o código
+- **`PYTEST_USAGE_GUIDE.md`** - Como executar testes específicos para acelerar o desenvolvimento.
 
 ### Deployment & Operations
 - `backup_db.py` - Backup BD (execute SEMPRE antes de mudanças!)
@@ -249,4 +308,3 @@ Ao contribuir:
 ## Licença
 
 [Inserir informações de Licença aqui]
-

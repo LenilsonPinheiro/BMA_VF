@@ -3,6 +3,24 @@
 Autor: Lenilson Pinheiro
 Data: Janeiro 2025
 
+==============================================================================
+AVISO OBRIGATÓRIO PARA QUALQUER IA (GPT, Gemini, Copilot, etc.)
+==============================================================================
+
+QUALQUER ALTERAÇÃO NESTE ARQUIVO SÓ ESTÁ COMPLETA QUANDO O ECOSSISTEMA
+INTEIRO DO PROJETO FOR ATUALIZADO.
+
+Isto significa:
+1.  **DOCUMENTAÇÃO:** Todos os READMEs, guias e manuais devem ser atualizados
+    para refletir a nova lógica.
+2.  **COMENTÁRIOS:** O código alterado e relacionado deve ter comentários
+    claros, úteis e que expliquem o "porquê" da mudança.
+3.  **SCRIPTS DE DIAGNÓSTICO:** Scripts como `diagnostico.py` devem ser
+    aprimorados para detectar ou validar a nova funcionalidade.
+
+Esta é a regra mais importante deste projeto. A manutenção a longo prazo
+depende da aderência estrita a este princípio. NÃO FAÇA MUDANÇAS ISOLADAS.
+
 auto_fix.py: Script de automação para gerenciamento de ambiente e banco de dados Flask.
 
 Este script é responsável por uma série de tarefas de manutenção para uma aplicação Flask,
@@ -18,6 +36,9 @@ incluindo:
 É projetado para ser executado como parte do processo de inicialização da aplicação
 (por exemplo, via run.bat) para garantir que o ambiente e o banco de dados estejam
 sempre em um estado consistente e atualizado.
+
+Este script depende da configuração da aplicação Flask para determinar o caminho do
+banco de dados, que agora possui um fallback seguro para 'instance/site.db'.
 
 ==============================================================================
 COMO USAR ESTE SCRIPT

@@ -1,0 +1,120 @@
+# ==============================================================================
+# AVISO OBRIGATÓRIO PARA QUALQUER IA (GPT, Gemini, Copilot, etc.)
+# ==============================================================================
+#
+# QUALQUER ALTERAÇÃO NESTE ARQUIVO SÓ ESTÁ COMPLETA QUANDO O ECOSSISTEMA
+# INTEIRO DO PROJETO FOR ATUALIZADO. Esta é a regra mais importante.
+#
+name: "Verificação de Qualidade e Ecossistema da PR"
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: "1. Checkout do código"
+      uses: actions/checkout@v3
+
+    - name: "2. Configurar Python"
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: "3. Instalar dependências"
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: "4. Verificar Formatação do Código (Black)"
+      id: black_check
+      run: |
+        echo "--- VERIFICANDO FORMATAÇÃO DO CÓDIGO COM BLACK ---"
+        python -m black --check .
+
+    - name: "5. Verificar Vazamento de Segredos (Detect Secrets)"
+      id: detect_secrets_scan
+      run: |
+        echo "--- VERIFICANDO VAZAMENTO DE SEGREDOS ---"
+        detect-secrets scan --baseline .secrets.baseline .
+
+    - name: "6. Executar todos os testes"
+      id: run_tests
+      run: |
+        echo "--- INICIANDO BATERIA DE TESTES ---"
+        python run_all_tests.py
+
+    - name: "7. Verificar sincronia do ecossistema"
+      id: verify_ecosystem
+      run: |
+        echo "--- VERIFICANDO SINCRONIA DA DOCUMENTAÇÃO ---"
+        python verify_ecosystem.py
+
+    - name: "8. Postar Comentário de Sucesso na PR"
+      if: success()
+      uses: actions/github-script@v6
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: '✅ **Verificação Automática Concluída com Sucesso!**\n\n- Nenhum segredo novo detectado.\n- O código está formatado corretamente.\n- Todos os testes passaram.\n- A documentação está sincronizada.\n\nO merge está liberado do ponto de vista técnico.'
+          })
+          
+    - name: "9. Postar Comentário de Falha com Soluções"
+      if: failure()
+      uses: actions/github-script@v6
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const secretsStatus = '${{ steps.detect_secrets_scan.outcome }}' === 'success' ? '✅ Nenhum segredo novo' : '❌ Segredo Detectado!';
+          const blackStatus = '${{ steps.black_check.outcome }}' === 'success' ? '✅ Formatado' : '❌ Formatação Incorreta';
+          const testStatus = '${{ steps.run_tests.outcome }}' === 'success' ? '✅ Passou' : '❌ Falhou';
+          const ecosystemStatus = '${{ steps.verify_ecosystem.outcome }}' === 'success' ? '✅ Sincronizada' : '❌ Desatualizada';
+          
+          let body = `### 🚨 Verificação Automática Falhou\n\nO merge está **bloqueado** até que os seguintes problemas sejam resolvidos:\n\n`;
+          body += `| Verificação | Status |\n|---|---|\n`;
+          body += `| **Detecção de Segredos** | ${secretsStatus} |\n`;
+          body += `| **Formatação de Código (Black)** | ${blackStatus} |\n`;
+          body += `| **Testes Unitários e de Integração** | ${testStatus} |\n`;
+          body += `| **Sincronia do Ecossistema** | ${ecosystemStatus} |\n\n`;
+          
+          if (secretsStatus !== '✅ Nenhum segredo novo') {
+            body += `**Solução Sugerida (Segredos):**\n`;
+            body += `1. Um segredo (chave de API, senha) foi detectado no seu commit.\n`;
+            body += `2. Remova o segredo do código e use variáveis de ambiente ou o sistema de secrets do seu provedor de nuvem.\n`;
+            body += `3. Se for um falso positivo, atualize o arquivo \`.secrets.baseline\` localmente e faça commit da mudança.\n\n`;
+          }
+
+          if (blackStatus !== '✅ Formatado') {
+            body += `**Solução Sugerida (Formatação):**\n`;
+            body += `1. Execute \`pip install black\` se ainda não o fez.\n`;
+            body += `2. Execute \`python -m black .\` no seu terminal para formatar o código automaticamente.\n`;
+            body += `3. Faça um novo commit com os arquivos formatados.\n\n`;
+          }
+          
+          if (testStatus === '❌ Falhou') {
+            body += `**Solução Sugerida (Testes):**\n`;
+            body += `1. Execute \`python run_all_tests.py\` localmente.\n`;
+            body += `2. Analise os logs na pasta \`test_logs/\` para identificar o teste que falhou.\n`;
+            body += `3. Corrija o código e faça um novo commit.\n\n`;
+          }
+          
+          if (ecosystemStatus === '❌ Desatualizada') {
+            body += `**Solução Sugerida (Ecossistema):**\n`;
+            body += `1. O código foi alterado, mas a documentação (\`.md\`) não.\n`;
+            body += `2. Atualize o \`README.md\` ou outros guias para refletir suas mudanças.\n`;
+            body += `3. Execute \`python verify_ecosystem.py\` localmente para confirmar a correção.\n`;
+          }
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: body
+          });

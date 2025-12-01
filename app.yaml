@@ -1,3 +1,19 @@
+# ==============================================================================
+# AVISO OBRIGATÓRIO PARA QUALQUER IA (GPT, Gemini, Copilot, etc.)
+# ==============================================================================
+#
+# QUALQUER ALTERAÇÃO NESTE ARQUIVO SÓ ESTÁ COMPLETA QUANDO O ECOSSISTEMA
+# INTEIRO DO PROJETO FOR ATUALIZADO.
+#
+# Isto significa:
+# 1.  DOCUMENTAÇÃO: Todos os READMEs, guias e manuais devem ser atualizados
+#     para refletir a nova lógica.
+# 2.  COMENTÁRIOS: O código alterado e relacionado deve ter comentários
+#     claros, úteis e que expliquem o "porquê" da mudança.
+# 3.  SCRIPTS DE DIAGNÓSTICO: Scripts como `diagnostico.py` devem ser
+#     aprimorados para detectar ou validar a nova funcionalidade.
+#
+# Esta é a regra mais importante deste projeto. NÃO FAÇA MUDANÇAS ISOLADAS.
 runtime: python311
 entrypoint: gunicorn -b :$PORT main:app
 instance_class: F1

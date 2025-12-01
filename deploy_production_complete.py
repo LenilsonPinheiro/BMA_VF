@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Deploy Completo para Produção
-Sistema automatizado de preparação, testes e deploy
+Deploy Completo para Produção - Orquestrador Principal
+Sistema automatizado de preparação, testes e deploy para Google App Engine.
 
-Autor: Senior Full-Stack Engineer
+Autor: Lenilson Pinheiro
 Data: Janeiro 2025
 """
 
@@ -14,6 +14,22 @@ import subprocess
 import json
 from datetime import datetime
 from pathlib import Path
+
+class Colors:
+    """Cores para output no terminal"""
+    GREEN = '\033[92m'
+    RED = '\033[91m'
+    YELLOW = '\033[93m'
+    BLUE = '\033[94m'
+    CYAN = '\033[96m'
+    BOLD = '\033[1m'
+    END = '\033[0m'
+
+def print_header(text):
+    """Imprime cabeçalho formatado"""
+    print(f"\n{Colors.BOLD}{Colors.CYAN}{'='*80}{Colors.END}")
+    print(f"{Colors.BOLD}{Colors.CYAN}{text.center(80)}{Colors.END}")
+    print(f"{Colors.BOLD}{Colors.CYAN}{'='*80}{Colors.END}\n")
 
 class ProductionDeployment:
     """Sistema completo de deploy para produção"""
@@ -31,7 +47,7 @@ class ProductionDeployment:
     def log(self, message, level="INFO"):
         """Log de mensagens"""
         timestamp = datetime.now().strftime("%H:%M:%S")
-        print(f"[{timestamp}] [{level}] {message}")
+        print(f"[{timestamp}] {level}: {message}")
         self.report["steps"].append({
             "time": timestamp,
             "level": level,
@@ -40,7 +56,7 @@ class ProductionDeployment:
     
     def run_command(self, command, description):
         """Executa comando e captura resultado"""
-        self.log(f"Executando: {description}")
+        self.log(f"Executando: {description}...")
         try:
             result = subprocess.run(
                 command,
@@ -50,13 +66,13 @@ class ProductionDeployment:
                 timeout=300
             )
             if result.returncode == 0:
-                self.log(f"✓ {description} - Sucesso", "SUCCESS")
+                self.log(f"SUCESSO - {description}", "OK")
                 return True, result.stdout
             else:
-                self.log(f"✗ {description} - Falhou", "ERROR")
+                self.log(f"FALHA - {description}", "ERROR")
                 self.report["errors"].append({
                     "command": command,
-                    "error": result.stderr
+                    "error": result.stderr.strip()
                 })
                 return False, result.stderr
         except Exception as e:
@@ -67,117 +83,60 @@ class ProductionDeployment:
             })
             return False, str(e)
     
-    def step_1_seo_optimization(self):
-        """Passo 1: Otimização SEO"""
-        self.log("=" * 60)
-        self.log("PASSO 1: OTIMIZAÇÃO SEO")
-        self.log("=" * 60)
-        
-        # Verificar robots.txt
-        robots_path = self.project_root / "BelarminoMonteiroAdvogado" / "templates" / "robots.txt"
-        if robots_path.exists():
-            self.log("✓ robots.txt encontrado")
-        else:
-            self.log("✗ robots.txt não encontrado", "WARNING")
-        
-        # Verificar sitemap.xml
-        sitemap_path = self.project_root / "BelarminoMonteiroAdvogado" / "templates" / "sitemap.xml"
-        if sitemap_path.exists():
-            self.log("✓ sitemap.xml encontrado")
-        else:
-            self.log("✗ sitemap.xml não encontrado", "WARNING")
-        
-        # Verificar meta tags
-        seo_meta_path = self.project_root / "BelarminoMonteiroAdvogado" / "templates" / "_seo_meta.html"
-        if seo_meta_path.exists():
-            self.log("✓ Meta tags SEO encontradas")
-        else:
-            self.log("✗ Meta tags SEO não encontradas", "WARNING")
-        
-        return True
-    
-    def step_2_run_tests(self):
-        """Passo 2: Executar testes"""
-        self.log("=" * 60)
-        self.log("PASSO 2: EXECUTANDO TESTES")
-        self.log("=" * 60)
-        
-        # Teste de importação
-        success, output = self.run_command(
-            "python -c \"from BelarminoMonteiroAdvogado import create_app; app = create_app(); print('OK')\"",
-            "Teste de importação da aplicação"
-        )
-        
+    def execute_step(self, step_func, step_name):
+        """Executa um passo e lida com o resultado."""
+        print_header(step_name)
+        success = step_func()
         if not success:
-            self.log("✗ Falha no teste de importação", "ERROR")
+            self.log(f"FALHA no passo: {step_name}", "CRITICAL")
+            self.generate_report()
+            sys.exit(1)
+        return success
+
+    def step_1_backup_database(self):
+        """Passo 1: Backup do banco de dados"""
+        return self.run_command(
+            f"{sys.executable} backup_db.py",
+            "Backup do Banco de Dados"
+        )[0]
+
+    def step_2_optimize_images(self):
+        """Passo 2: Otimização de imagens"""
+        return self.run_command(
+            f"{sys.executable} otimizar_imagens.py",
+            "Otimização de Imagens para WebP"
+        )[0]
+
+    def step_3_run_tests(self):
+        """Passo 3: Executar suíte completa de testes"""
+        return self.run_command(
+            f"{sys.executable} run_all_tests.py",
+            "Execução da Suíte Completa de Testes"
+        )[0]
+
+    def step_4_gcloud_deploy(self):
+        """Passo 4: Deploy para Google App Engine"""
+        # Verifica se gcloud está instalado
+        gcloud_check = subprocess.run("where gcloud", shell=True, capture_output=True)
+        if gcloud_check.returncode != 0:
+            self.log("Google Cloud SDK (gcloud) não encontrado no PATH.", "CRITICAL")
             return False
         
-        # Verificar dependências
-        success, output = self.run_command(
-            "pip list",
-            "Verificação de dependências instaladas"
-        )
-        
-        return True
-    
+        return self.run_command(
+            "gcloud app deploy --quiet",
+            "Deploy para Google App Engine"
+        )[0]
 
-    
-    def step_5_generate_deploy_commands(self):
-        """Passo 5: Gerar comandos de deploy"""
-        self.log("=" * 60)
-        self.log("PASSO 5: COMANDOS DE DEPLOY")
-        self.log("=" * 60)
-        
-        commands = f"""
-# ============================================
-# COMANDOS PARA DEPLOY NO PYTHONANYWHERE
-# Gerado em: {datetime.now().strftime("%d/%m/%Y %H:%M:%S")}
-# ============================================
+    def step_5_validate_deployment(self):
+        """Passo 5: Validar o deploy em produção"""
+        return self.run_command(
+            f"{sys.executable} validar_deploy.py",
+            "Validação Pós-Deploy"
+        )[0]
 
-# 1. Acesse o console Bash no PythonAnywhere
-# 2. Faça o upload manual dos arquivos do projeto para o diretório /home/seu-usuario/seu-projeto
-# 3. Execute os comandos abaixo no console Bash:
-
-cd ~
-cd belarminomonteiro.pythonanywhere.com
-
-# Fazer backup do banco de dados atual
-cp instance/site.db instance/site_backup_{self.timestamp}.db
-
-# Atualizar dependências
-pip install --user -r requirements.txt
-
-# Executar migrações (se houver)
-flask db upgrade
-
-# Recarregar aplicação
-touch /var/www/belarminomonteiro_pythonanywhere_com_wsgi.py
-
-# ============================================
-# VERIFICAÇÃO
-# ============================================
-
-# Verificar logs
-tail -f /var/log/belarminomonteiro.pythonanywhere.com.error.log
-
-# Testar aplicação
-curl https://belarminomonteiro.pythonanywhere.com/
-
-"""
-        
-        # Salvar comandos
-        commands_file = self.project_root / f"DEPLOY_COMMANDS_{self.timestamp}.txt"
-        with open(commands_file, 'w', encoding='utf-8') as f:
-            f.write(commands)
-        
-        self.log(f"✓ Comandos salvos em: {commands_file.name}")
-        return True
-    
-    def step_6_generate_report(self):
-        """Passo 6: Gerar relatório"""
-        self.log("=" * 60)
-        self.log("PASSO 6: GERANDO RELATÓRIO")
-        self.log("=" * 60)
+    def generate_report(self):
+        """Gera um relatório final do processo de deploy."""
+        print_header("GERANDO RELATÓRIO FINAL")
         
         report_content = f"""
 # RELATÓRIO DE DEPLOY - PRODUÇÃO
@@ -202,34 +161,9 @@ curl https://belarminomonteiro.pythonanywhere.com/
                 report_content += f"  **Erro:** {error['error']}\n\n"
         
         if self.report['warnings']:
-            report_content += "\n## ⚠️ AVISOS\n\n"
+            report_content += "\n## AVISOS\n\n"
             for warning in self.report['warnings']:
                 report_content += f"- {warning}\n"
-        
-        report_content += f"""
-
-## 🚀 PRÓXIMOS PASSOS
-
-1. **Acessar PythonAnywhere:** https://www.pythonanywhere.com/
-2. **Executar comandos:** Ver arquivo `DEPLOY_COMMANDS_{self.timestamp}.txt`
-3. **Testar site:** https://belarminomonteiro.pythonanywhere.com/
-
-## 📝 CHECKLIST PÓS-DEPLOY
-
-- [ ] Site acessível
-- [ ] Vídeos carregando
-- [ ] Imagens carregando
-- [ ] Formulários funcionando
-- [ ] Admin acessível
-- [ ] SEO tags presentes
-- [ ] Robots.txt acessível
-- [ ] Sitemap.xml acessível
-- [ ] SSL ativo (HTTPS)
-- [ ] Performance OK
-
----
-**Gerado automaticamente pelo sistema de deploy**
-"""
         
         # Salvar relatório
         report_file = self.project_root / f"DEPLOY_REPORT_{self.timestamp}.md"
@@ -247,67 +181,38 @@ curl https://belarminomonteiro.pythonanywhere.com/
     
     def run(self):
         """Executar deploy completo"""
-        self.log("=" * 60)
-        self.log("INICIANDO DEPLOY PARA PRODUÇÃO")
-        self.log("=" * 60)
+        print_header("INICIANDO DEPLOY COMPLETO PARA PRODUÇÃO (GOOGLE APP ENGINE)")
         
         try:
-            # Passo 1: SEO
-            if not self.step_1_seo_optimization():
-                self.log("✗ Falha na otimização SEO", "ERROR")
-                return False
-            
-            # Passo 2: Testes
-            if not self.step_2_run_tests():
-                self.log("✗ Falha nos testes", "ERROR")
-                return False
-            
-            # Passo 5: Gerar comandos
-            if not self.step_5_generate_deploy_commands():
-                self.log("✗ Falha ao gerar comandos", "ERROR")
-                return False
-            
-            # Passo 6: Gerar relatório
-            if not self.step_6_generate_report():
-                self.log("✗ Falha ao gerar relatório", "ERROR")
-                return False
-            
-            self.log("=" * 60)
-            self.log("✓ DEPLOY CONCLUÍDO COM SUCESSO!")
-            self.log("=" * 60)
-            
-            return True
+            self.execute_step(self.step_1_backup_database, "PASSO 1: BACKUP DO BANCO DE DADOS")
+            self.execute_step(self.step_2_optimize_images, "PASSO 2: OTIMIZAÇÃO DE IMAGENS")
+            self.execute_step(self.step_3_run_tests, "PASSO 3: EXECUÇÃO DA SUÍTE DE TESTES")
+            self.execute_step(self.step_4_gcloud_deploy, "PASSO 4: DEPLOY NO GOOGLE APP ENGINE")
+            self.execute_step(self.step_5_validate_deployment, "PASSO 5: VALIDAÇÃO PÓS-DEPLOY")
             
         except Exception as e:
-            self.log(f"✗ Erro fatal: {str(e)}", "ERROR")
+            self.log(f"Erro fatal durante o deploy: {str(e)}", "CRITICAL")
             self.report["errors"].append({
                 "command": "deploy_complete",
                 "error": str(e)
             })
+            self.generate_report()
             return False
+        
+        self.generate_report()
+        print_header("DEPLOY CONCLUÍDO COM SUCESSO!")
+        return True
 
 if __name__ == "__main__":
-    print("""
-╔══════════════════════════════════════════════════════════════╗
-║                                                              ║
-║     SISTEMA DE DEPLOY PARA PRODUÇÃO                         ║
-║     Belarmino Monteiro Advogado                             ║
-║                                                              ║
-║     Preparando para deploy completo...                      ║
-║                                                              ║
-╚══════════════════════════════════════════════════════════════╝
-    """)
+    print_header("SISTEMA DE DEPLOY PARA PRODUÇÃO - BMA_VF")
     
     deployer = ProductionDeployment()
     success = deployer.run()
     
     if success:
-        print("\n✓ Deploy concluído com sucesso!")
-        print("\nPróximos passos:")
-        print("1. Verifique os arquivos DEPLOY_COMMANDS_*.txt")
-        print("2. Execute os comandos no PythonAnywhere")
-        print("3. Teste o site em produção")
+        print(f"\n{Colors.GREEN}✓ Deploy finalizado com sucesso!{Colors.END}")
+        print("Verifique o relatório gerado para mais detalhes.")
         sys.exit(0)
     else:
-        print("\n✗ Deploy falhou! Verifique o relatório.")
+        print(f"\n{Colors.RED}✗ Deploy falhou! Verifique o relatório e os logs de erro.{Colors.END}")
         sys.exit(1)

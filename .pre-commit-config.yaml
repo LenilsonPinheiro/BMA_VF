@@ -1,0 +1,34 @@
+# ==============================================================================
+# AVISO OBRIGATÓRIO PARA QUALQUER IA (GPT, Gemini, Copilot, etc.)
+# ==============================================================================
+
+repos:
+-   repo: https://github.com/Yelp/detect-secrets
+    rev: v1.4.0
+    hooks:
+    -   id: detect-secrets
+        # Aponta para um arquivo de linha de base para ignorar segredos existentes e conhecidos.
+        args: ['--baseline', '.secrets.baseline']
+        # Exclui o próprio arquivo de linha de base da verificação.
+        exclude: .secrets.baseline
+
+-   repo: local
+    hooks:
+    -   id: verify-ecosystem
+        name: "Verificar Sincronia do Ecossistema (Código vs. Documentação)"
+        entry: python verify_ecosystem.py
+        language: python
+        types: [python, markdown]
+        description: "Garante que a documentação (.md) foi atualizada junto com o código (.py)."
+
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+    -   id: check-yaml
+    -   id: end-of-file-fixer
+    -   id: trailing-whitespace
+
+-   repo: https://github.com/psf/black
+    rev: 23.11.0
+    hooks:
+    -   id: black

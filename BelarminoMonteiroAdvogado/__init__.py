@@ -1,4 +1,23 @@
 # -*- coding: utf-8 -*-
+"""
+==============================================================================
+AVISO OBRIGATÓRIO PARA QUALQUER IA (GPT, Gemini, Copilot, etc.)
+==============================================================================
+
+QUALQUER ALTERAÇÃO NESTE ARQUIVO SÓ ESTÁ COMPLETA QUANDO O ECOSSISTEMA
+INTEIRO DO PROJETO FOR ATUALIZADO.
+
+Isto significa:
+1.  **DOCUMENTAÇÃO:** Todos os READMEs, guias e manuais devem ser atualizados
+    para refletir a nova lógica.
+2.  **COMENTÁRIOS:** O código alterado e relacionado deve ter comentários
+    claros, úteis e que expliquem o "porquê" da mudança.
+3.  **SCRIPTS DE DIAGNÓSTICO:** Scripts como `diagnostico.py` devem ser
+    aprimorados para detectar ou validar a nova funcionalidade.
+
+Esta é a regra mais importante deste projeto. A manutenção a longo prazo
+depende da aderência estrita a este princípio. NÃO FAÇA MUDANÇAS ISOLADAS.
+"""
 from datetime import datetime
 from typing import Dict, Any, List
 from flask import Flask, render_template, current_app, flash
@@ -292,26 +311,27 @@ def ensure_essential_data():
 
 def create_app():
     """Cria e configura a instância da aplicação Flask."""
-    # [CORREÇÃO] Habilita configuração relativa a instância para suportar pasta 'instance'
+    # Habilita configuração relativa a instância para suportar pasta 'instance'
     app = Flask(__name__, instance_relative_config=True)
 
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'default-dev-secret-key')
     
-    # [CORREÇÃO] Decide o DATABASE_URI com precaução:
-    # - If an explicit DATABASE_URL env var is provided, use it.
-    # - Else, only default to the instance/site.db when that file already exists.
-    # This avoids binding the SQLAlchemy engine to the instance DB during
-    # create_app() when tests want to override the DB path afterwards.
-    db_path = os.path.join(app.instance_path, 'site.db')
+    # --- Configuração Robusta do Banco de Dados ---
+    # Esta lógica garante que a aplicação seja portátil e funcione em qualquer ambiente.
+    # 1. Prioridade para a variável de ambiente `DATABASE_URL`:
+    #    Ideal para produção (ex: PostgreSQL no Google Cloud, Heroku, etc.).
+    # 2. Fallback para um banco de dados local `site.db` na pasta `instance`:
+    #    Perfeito para desenvolvimento local, pois não exige configuração de .env.
+    #    A aplicação simplesmente "funciona" ao ser clonada e executada.
     env_db = os.environ.get('DATABASE_URL')
     if env_db:
         app.config['SQLALCHEMY_DATABASE_URI'] = env_db
+        print("[INFO] Usando banco de dados da variável de ambiente DATABASE_URL.")
     else:
-        # Do not set a default file-based DB here. Tests and callers should
-        # explicitly configure `app.config['SQLALCHEMY_DATABASE_URI']` if they
-        # need a DB. This avoids accidental early engine binding to the
-        # project's instance DB when tests override the DB path later.
-        app.config.pop('SQLALCHEMY_DATABASE_URI', None)
+        db_path = os.path.join(app.instance_path, 'site.db')
+        app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{db_path}"
+        print(f"[INFO] DATABASE_URL não definida. Usando banco de dados local padrão: {db_path}")
+
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static/images/uploads')
     app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif', 'webp', 'ico', 'mp4', 'webm'}
@@ -319,7 +339,7 @@ def create_app():
     print(f"DEBUG: SQLALCHEMY_DATABASE_URI in create_app: {app.config.get('SQLALCHEMY_DATABASE_URI')}")
     print(f"DEBUG: app.instance_path in create_app: {app.instance_path}")
     
-    # [CORREÇÃO] Cria a pasta instance se ela não existir
+    # Cria a pasta instance se ela não existir
     try:
         os.makedirs(app.instance_path)
     except OSError:

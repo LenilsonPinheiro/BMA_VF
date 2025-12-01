@@ -106,28 +106,38 @@ def print_header(title):
     print(title.center(80))
     print("="*80 + "\n")
 
+def print_progress_bar(iteration, total, start_time, prefix='Progresso', suffix='Completo', length=50, fill='█'):
+    """
+    Imprime uma barra de progresso dinâmica no terminal, incluindo percentual e ETA.
+    """
+    if total == 0:
+        return
+
+    percent = ("{0:.1f}").format(100 * (iteration / float(total)))
+    filled_length = int(length * iteration // total)
+    bar = fill * filled_length + '-' * (length - filled_length)
+
+    # Calcular ETA
+    elapsed_time = time.time() - start_time
+    if iteration > 0:
+        avg_time_per_test = elapsed_time / iteration
+        remaining_tests = total - iteration
+        eta_seconds = remaining_tests * avg_time_per_test
+        eta_str = time.strftime('%M:%S', time.gmtime(eta_seconds))
+    else:
+        eta_str = "??:??"
+
+    # Montar a string de progresso
+    progress_str = f'\r{prefix}: |{bar}| {iteration}/{total} ({percent}%) {suffix} | ETA: {eta_str}'
+    
+    # Usar sys.stdout.write para imprimir na mesma linha
+    sys.stdout.write(progress_str)
+    sys.stdout.flush()
+
+
 def run_test_file(test_file, description):
     """
     Executa um arquivo de teste individual e retorna os resultados.
-    
-    DEPENDÊNCIAS:
-      - Arquivo test_file deve existir
-      - Deve ser executável com: python test_file
-      - Suporta timeout de 60s por arquivo
-    
-    RETORNA:
-      dict com keys: status (PASS/FAIL/SKIP), returncode, output
-      
-    LOGS GERADOS:
-      [INFO] run_all_tests: starting {description} ({test_file})
-      [INFO] run_all_tests: {test_file} finished with rc={returncode}
-      [ERROR] run_all_tests: timeout running {test_file}
-      [ERROR] run_all_tests: error running {test_file}: {exception}
-    
-    EXEMPLOS DE LOG:
-      [INFO] run_all_tests: starting test_app.py (test_app.py)
-      [INFO] run_all_tests: test_app.py finished with rc=0  (sucesso)
-      [ERROR] run_all_tests: timeout running test_admin_routes.py (excedeu 60s)
     """
     print_header(f"EXECUTANDO: {description}")
     print(f"Arquivo: {test_file}")
@@ -230,33 +240,6 @@ def run_test_file(test_file, description):
 def main():
     """
     Função principal que orquestra a execução de todos os testes.
-    
-    FLUXO EXECUTIVO:
-      1. Define lista de testes (críticos e não-críticos)
-      2. Executa cada teste sequencialmente (timeout 60s por teste)
-      3. Coleta resultado de cada arquivo (PASS/FAIL/SKIP/ERROR/TIMEOUT)
-      4. Gera relatório estatístico completo
-      5. Decide se deploy é liberado ou bloqueado
-      6. Retorna exit code apropriado (0 = ok, 1 = bloqueado)
-    
-    TESTES CRÍTICOS (bloqueiam deploy se falharem):
-      - test_pre_deploy_completo_v2.py: Modelos, rotas, templates
-      - test_database_schema.py: Integridade do banco de dados
-    
-    TESTES NÃO-CRÍTICOS (apenas warning, não bloqueiam):
-      - test_app.py: Fixtures básicas
-      - test_admin_routes.py: Funcionalidade admin
-      - test_all_routes_complete.py: Todas as rotas públicas
-      - test_all_themes_complete.py: Validação de 8 temas
-    
-    LOGS GERADOS (estruturado para CI/CD):
-      [INFO] run_all_tests: starting test run in {cwd}
-      [INFO] run_all_tests: running test_X.py (N/total)
-      [INFO] run_all_tests: finished in Xs - passed=N failed=M
-    
-    EXIT CODES:
-      0 = Todos os críticos passaram (deploy OK)
-      1 = Críticos falharam (deploy BLOQUEADO)
     """
     print_header("BATERIA COMPLETA DE TESTES - BELARMINO MONTEIRO ADVOGADO")
     print(f"Data/Hora: {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
@@ -265,9 +248,11 @@ def main():
     #   --full         : imprime o output completo de cada teste no console
     #   --start-server : inicia o servidor Flask (flask run) em background antes dos testes
     #   --install-deps : instala dependências via `pip install -r requirements.txt` antes dos testes
+    #   --fast         : executa apenas os testes marcados como 'críticos'
     show_full = '--full' in sys.argv
     start_server = '--start-server' in sys.argv
     install_deps = '--install-deps' in sys.argv
+    fast_mode = '--fast' in sys.argv
     try:
         logger.info("run_all_tests: starting test run in %s", os.getcwd())
     except Exception:
@@ -275,42 +260,32 @@ def main():
     
     # ========================================================================
     # LISTA DE TESTES PARA EXECUTAR
+    # O script agora descobre automaticamente os testes.
+    # Apenas os testes CRÍTICOS precisam ser listados aqui.
     # ========================================================================
-    # Cada teste tem:
-    #   'file': nome do arquivo test_*.py
-    #   'description': descrição amigável
-    #   'critical': True se falhar bloqueia deploy, False apenas warning
-    # ========================================================================
-    tests = [
-        {
-            'file': 'test_pre_deploy_completo_v2.py',
-            'description': 'Testes Pré-Deploy (Modelos, Rotas, Templates)',
-            'critical': True
-        },
-        {
-            'file': 'test_database_schema.py',
-            'description': 'Testes de Schema do Banco de Dados',
-            'critical': True
-        },
-        {
-            'file': 'test_all_themes_complete.py',
-            'description': 'Testes de Todos os Temas Visuais',
-            'critical': False
-        },
-        {
-            'file': 'test_all_routes_complete.py',
-            'description': 'Testes de Todas as Rotas',
-            'critical': False
-        },
-        {
-            'file': 'test_admin_routes.py',
-            'description': 'Testes de Rotas Administrativas',
-            'critical': False
-        }
-    ]
+    CRITICAL_TESTS = {
+        'test_pre_deploy_completo.py',
+        'test_database_schema.py',
+        'test_producao_completo.py'
+    }
+
+    # Descoberta automática de arquivos de teste
+    discovered_files = sorted([f for f in os.listdir('.') if f.startswith('test_') and f.endswith('.py')])
+    logger.info("run_all_tests: %d arquivos de teste descobertos.", len(discovered_files))
+
+    tests_to_run = []
+    for test_file in discovered_files:
+        description = test_file.replace('_', ' ').replace('.py', '').replace('test ', '').capitalize()
+        is_critical = test_file in CRITICAL_TESTS
+        tests_to_run.append({'file': test_file, 'description': description, 'critical': is_critical})
+    
+    if fast_mode:
+        tests_to_run = [t for t in tests_to_run if t['critical']]
+        logger.info("run_all_tests: Modo rápido ativado. Executando apenas %d testes críticos.", len(tests_to_run))
     
     results = []
     start_time = time.time()
+    total_tests_count = len(tests_to_run)
 
     # Executar cada teste
     server_proc = None
@@ -372,9 +347,12 @@ def main():
             else:
                 print(f"[INFO] Servidor Flask respondeu em {waited}s. Logs em {server_log}")
     except Exception as e:
-        print(f"[WARN] falha durante setup de pré-teste: {e}")
+        print(f"[WARN] Falha durante setup de pré-teste: {e}")
 
-    for test in tests:
+    for i, test in enumerate(tests_to_run):
+        # Imprime a barra de progresso antes de cada teste
+        print_progress_bar(i, total_tests_count, start_time)
+
         result = run_test_file(test['file'], test['description'])
         result['file'] = test['file']
         result['description'] = test['description']
@@ -389,6 +367,9 @@ def main():
         time.sleep(0.5)
     
     end_time = time.time()
+    # Imprime a barra de progresso final (100%)
+    print_progress_bar(total_tests_count, total_tests_count, start_time)
+    print() # Nova linha após a barra de progresso
     duration = end_time - start_time
     
     # Gerar relatório final

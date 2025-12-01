@@ -1,0 +1,1 @@
+ERROR: (gcloud.app.domain-mappings.create) Apps instance [belarmino-monteiro-advogado] not found: App does not exist. This command is authenticated as lenilsonpinheiro@gmail.com which is the active account specified by the [core/account] property.

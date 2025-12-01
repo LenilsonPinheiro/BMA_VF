@@ -12,7 +12,12 @@ try:
     app = create_app()
     
     print(f"[INFO] Caminho da Instancia (app.instance_path): {app.instance_path}")
-    print(f"[INFO] URI do Banco de Dados: {app.config.get('SQLALCHEMY_DATABASE_URI')}")
+    
+    # Informa a origem da configuração do DB
+    if os.environ.get('DATABASE_URL'):
+        print(f"[INFO] URI do Banco de Dados (via DATABASE_URL): {app.config.get('SQLALCHEMY_DATABASE_URI')}")
+    else:
+        print(f"[INFO] URI do Banco de Dados (padrão local): {app.config.get('SQLALCHEMY_DATABASE_URI')}")
     
     # Verifica onde o SQLite vai tentar escrever
     uri = app.config.get('SQLALCHEMY_DATABASE_URI', '')

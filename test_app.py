@@ -2,13 +2,13 @@ import pytest
 from BelarminoMonteiroAdvogado import create_app, db
 from BelarminoMonteiroAdvogado.models import User, AreaAtuacao
 from werkzeug.security import generate_password_hash
-
 @pytest.fixture
 def app():
-    """Cria uma instância da aplicação configurada para testes."""
-
-Autor: Lenilson Pinheiro
-Data: Janeiro 2025
+    """
+    Cria uma instância da aplicação configurada para testes.
+    Autor: Lenilson Pinheiro
+    Data: Janeiro 2025
+    """
 
     app = create_app()
     app.config.update({
