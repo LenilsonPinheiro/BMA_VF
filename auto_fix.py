@@ -18,6 +18,47 @@ incluindo:
 É projetado para ser executado como parte do processo de inicialização da aplicação
 (por exemplo, via run.bat) para garantir que o ambiente e o banco de dados estejam
 sempre em um estado consistente e atualizado.
+
+==============================================================================
+COMO USAR ESTE SCRIPT
+==============================================================================
+
+PROPÓSITO:
+  Este script é chamado automaticamente por run.ps1 no startup da aplicação.
+  Sua função é garantir consistência do BD e ambiente antes da app iniciar.
+
+DEPENDÊNCIAS:
+  - Python 3.11+ (com venv ativado)
+  - Flask e extensões (instaladas via requirements.txt)
+  - Alembic/Flask-Migrate (para migrações de DB)
+  - Permissão de leitura/escrita em instance/ e migrations/ folders
+
+USO:
+  Uso automático:   python auto_fix.py (via run.ps1)
+  Uso manual:       python auto_fix.py
+  Reset completo:   python auto_fix.py clean
+
+ARQUIVOS DE LOG:
+  Todos os eventos são registrados em: run_log.txt (raiz do projeto)
+  Também aparecem no console (stdout/stderr)
+
+FLUXOS DE AUTOMAÇÃO QUE USA ESTE SCRIPT:
+  - Startup (Dev Local): run.ps1 → auto_fix.py → flask init-db → dev server
+  - Recovery (BD Corrompido): backup_db.py → auto_fix.py → verify
+  - Reset (Limpo Completo): backup_db.py → auto_fix.py clean → run.ps1
+
+LOGS ESPERADOS (sucesso):
+  [INFO] auto_fix: starting maintenance run
+  [INFO] auto_fix: backup created at instance/backups/...
+  [INFO] auto_fix: flask db upgrade succeeded
+  [INFO] auto_fix: completed successfully
+
+LOGS ESPERADOS (erro):
+  [ERROR] auto_fix: unrecoverable error: {msg}
+  Ver run_log.txt para detalhes completos
+  Exit code: 2 (erro não recuperável)
+
+==============================================================================
 """
 import os
 import sys
@@ -52,6 +93,11 @@ logging.basicConfig(
     format='[%(asctime)s] %(levelname)s %(message)s',
     datefmt='%d/%m/%Y %H:%M:%S'
 )
+
+# Module-level logger to use alongside the existing print->log wrapper.
+# Using a named logger lets CI and other tools filter or redirect logs if needed.
+logger = logging.getLogger('bma_vf')
+logger.setLevel(logging.INFO)
 
 # Preserva a função 'print' original e a substitui por uma que também loga.
 _original_print = builtins.print
@@ -377,6 +423,13 @@ def main(argv: list) -> int:
         remove_db = True
         remove_migrations = True
 
+    # Log de início (adicional ao print que já grava em run_log.txt)
+    try:
+        logger.info("auto_fix: starting maintenance run. argv=%s", argv)
+    except Exception:
+        # Se logger falhar, continuamos com prints já existentes
+        pass
+
     # Garante que a variável FLASK_APP esteja definida no ambiente, necessária para comandos 'flask'.
     env = os.environ.copy()
     if 'FLASK_APP' not in env:
@@ -384,12 +437,20 @@ def main(argv: list) -> int:
         return 1 # Erro fatal se FLASK_APP não estiver definida.
     print(f"[INFO] FLASK_APP está definido no ambiente como: {env['FLASK_APP']}.")
 
+    # Registro complementar
+    try:
+        logger.info("auto_fix: FLASK_APP=%s", env.get('FLASK_APP'))
+    except Exception:
+        pass
+
     ensure_instance() # Garante que a pasta 'instance' exista.
+    logger.info("auto_fix: ensuring instance and running backup_db (remove_db=%s, remove_migrations=%s)", remove_db, remove_migrations)
     backup_db(remove_db=remove_db, remove_migrations=remove_migrations) # Realiza backup e opcionalmente limpa.
 
     # Garante que as migrações do Alembic estejam inicializadas.
     rc = ensure_migrations_initialized(env)
     if rc != 0:
+        logger.error("auto_fix: ensure_migrations_initialized failed with rc=%s", rc)
         print("[ERROR] Falha ao inicializar migrações. Abortando auto_fix.py.")
         return rc
 
@@ -399,6 +460,7 @@ def main(argv: list) -> int:
         print("[INFO] Nenhuma revisão de migração encontrada. Estampando o banco de dados com 'head'.")
         rc_stamp, _, _ = run_cmd(['python', '-m', 'flask', 'db', 'stamp', 'head'], env=env)
         if rc_stamp != 0:
+            logger.error("auto_fix: flask db stamp head failed with rc=%s", rc_stamp)
             print(f"[ERROR] Falha ao executar 'flask db stamp head'. Código: {rc_stamp}.")
             return rc_stamp
         print("[SUCESSO] Banco de dados estampado com 'head'.")
@@ -407,6 +469,7 @@ def main(argv: list) -> int:
     print("[INFO] Tentando gerar nova migração com 'flask db migrate -m \"auto migration\"'.")
     rc_migrate, out_migrate, err_migrate = run_cmd(['python', '-m', 'flask', 'db', 'migrate', '-m', 'auto migration'], env=env)
     if rc_migrate != 0:
+        logger.warning("auto_fix: flask db migrate returned rc=%s", rc_migrate)
         print(f"[WARN] 'flask db migrate' retornou um erro ({rc_migrate}). Saída: {err_migrate.strip() or out_migrate.strip()}")
         # Se migrate falhar aqui, pode ser um problema de contexto ou modelo,
         # mas não deve ser por "Can't locate revision" se o stamp head funcionou.
@@ -419,11 +482,14 @@ def main(argv: list) -> int:
     print("[INFO] Aplicando todas as migrações pendentes com 'flask db upgrade'.")
     rc_up, out_up, err_up = run_cmd(['python', '-m', 'flask', 'db', 'upgrade'], env=env)
     if rc_up != 0:
+        logger.error("auto_fix: flask db upgrade failed with rc=%s", rc_up)
         print(f"[ERROR] 'flask db upgrade' falhou. Código: {rc_up}. Saída: {err_up.strip() or out_up.strip()}")
         return 2 # Erro crítico se o upgrade não puder ser aplicado.
     else:
+        logger.info("auto_fix: flask db upgrade succeeded")
         print("[SUCESSO] Migrações aplicadas com sucesso.")
 
+    logger.info("auto_fix: completed successfully")
     print("[SUCESSO] auto_fix.py concluído. Banco de dados está atualizado.")
     return 0
 
