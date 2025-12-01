@@ -3,7 +3,8 @@
     {% if theme == 'option1' or theme == 'default' or not theme %}
         
         <div class="hero-video-container">
-            <video autoplay muted loop playsinline class="hero-video" poster="{{ url_for('static', filename='images/Escolhidas Escritorio/3S5A1373.jpg') }}">
+            {# CORREÇÃO: Poster apontando para imagem existente e segura #}
+            <video autoplay muted loop playsinline class="hero-video" poster="{{ url_for('static', filename='images/banners/inner_bg_default.jpg') }}">
                 <source src="{{ url_for('static', filename='videos/maior-1.webm') }}" type="video/webm">
                 <source src="{{ url_for('static', filename='videos/maior-1.mp4') }}" type="video/mp4">
             </video>
@@ -124,7 +125,8 @@
         {# TEMAS V2 (Options 5-8) - Usa o mesmo estilo do Option 1 (Cinematic) como base #}
         
         <div class="hero-video-container">
-            <video autoplay muted loop playsinline class="hero-video" poster="{{ url_for('static', filename='images/Escolhidas Escritorio/3S5A1373.jpg') }}">
+            {# CORREÇÃO: Poster apontando para imagem existente e segura #}
+            <video autoplay muted loop playsinline class="hero-video" poster="{{ url_for('static', filename='images/banners/inner_bg_default.jpg') }}">
                 <source src="{{ url_for('static', filename='videos/maior-1.webm') }}" type="video/webm">
                 <source src="{{ url_for('static', filename='videos/maior-1.mp4') }}" type="video/mp4">
             </video>
