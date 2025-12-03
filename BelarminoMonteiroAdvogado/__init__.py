@@ -471,43 +471,34 @@ def create_app(test_config: Dict[str, Any] = None) -> Flask:
 
     # Configuração padrão da aplicação
     app.config.from_mapping(
-        SECRET_KEY=os.environ.get('SECRET_KEY', 'default-dev-secret-key'),
-        SQLALCHEMY_TRACK_MODIFICATIONS=False, # Desabilita sinalizadores do SQLAlchemy, economiza memória
-        UPLOAD_FOLDER=os.path.join('static', 'images', 'uploads'), # Diretório para uploads de arquivos
-        ALLOWED_EXTENSIONS={'png', 'jpg', 'jpeg', 'gif', 'webp', 'ico', 'mp4', 'webm'}, # Extensões permitidas para upload
-        WTF_CSRF_ENABLED=True # Habilita proteção CSRF
-    )
-    
-    # Configuração do banco de dados
+        SECRET_KEY=os.environ.get('SECRET_KEY', 'default-dev-secret-key')
+
+    # --- CONFIGURAÇÃO DE DB DINÂMICA (SQLITE /TMP - CUSTO ZERO) ---
+    # Lógica inteligente para alternar entre ambiente Local e GCP
     if test_config is None:
-        # Configuração para ambientes de desenvolvimento/produção
-        env_db = os.environ.get('DATABASE_URL')
-        if env_db:
-            app.config['SQLALCHEMY_DATABASE_URI'] = env_db
-            app.logger.info("[INFO] Usando banco de dados da variável de ambiente DATABASE_URL.")
+        if os.environ.get('GAE_ENV') == 'standard':
+            # No GCP App Engine, apenas /tmp permite escrita
+            DB_URI = 'sqlite:////tmp/site.db'
+            app.logger.info("MODO GCP: Usando SQLite persistente em /tmp/site.db")
         else:
-            db_path = os.path.join(app.instance_path, 'site.db')
-            app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{db_path}"
-            app.logger.info(f"[INFO] DATABASE_URL não definida. Usando banco de dados local padrão: {db_path}")
+            # Localmente, usa a pasta instance padrão
+            DB_URI = f"sqlite:///{os.path.join(app.instance_path, 'site.db')}"
+            app.logger.info(f"MODO LOCAL: Usando SQLite em {app.instance_path}/site.db")
+        
+        app.config['SQLALCHEMY_DATABASE_URI'] = DB_URI
     else:
-        # Configuração de teste - sobrescreve as configurações padrão para garantir isolamento
         app.config.update(test_config)
-
-    app.logger.debug(f"SQLALCHEMY_DATABASE_URI em create_app: {app.config.get('SQLALCHEMY_DATABASE_URI')}")
-    app.logger.debug(f"Caminho da instância em create_app: {app.instance_path}")
     
-    # Garante que a pasta instance exista
-    try:
-        os.makedirs(app.instance_path, exist_ok=True)
-    except OSError as e:
-        app.logger.warning(f"[WARNING] Não foi possível criar o diretório {app.instance_path}: {e}")
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    # --- FIM DA CONFIGURAÇÃO DB DINÂMICA ---
+    
 
+    
     db.init_app(app)
     migrate.init_app(app, db)
     
     # Por padrão, NÃO criamos tabelas automaticamente aqui porque os testes frequentemente
-    # chamam create_app() e depois sobrescrevem `app.config['SQLALCHEMY_DATABASE_URI']`
-    # para apontar para um DB temporário e chamam `db.create_all()` por conta própria.
+    # chamam create_app() e depois sobrescrevem `    # para apontar para um DB temporário e chamam `db.create_all()` por conta própria.
     # A criação automática na inicialização do aplicativo vincularia o engine ao
     # DB da instância padrão e quebraria as expectativas dos testes.
     # Para habilitar a criação automática em desenvolvimento, defina a variável de ambiente
@@ -581,6 +572,10 @@ def create_app(test_config: Dict[str, Any] = None) -> Flask:
 
     @login_manager.user_loader
     def load_user(user_id):
+        """
+        Definição de load_user.
+        Componente essencial para a arquitetura do sistema.
+        """
         # Registra o acesso ao banco de dados para depuração, mostrando qual DB está sendo usado.
         app.logger.debug(f"load_user tentando acessar DB em: {db.engine.url.database}")
         return User.query.get(int(user_id))
@@ -767,4 +762,24 @@ def create_app(test_config: Dict[str, Any] = None) -> Flask:
             click.echo('Senha atualizada com sucesso.')
             app.logger.info(f"Senha do usuário {username} atualizada com sucesso.")
 
+    # --- INICIALIZAÇÃO CRÍTICA DO BANCO DE DADOS (GCP SAFE) ---
+    # Garante que as tabelas existam antes da primeira requisição
+    with app.app_context():
+        try:
+            # Verifica se uma tabela essencial existe (ex: 'user')
+            inspector = db.inspect(db.engine)
+            if not inspector.has_table("user"): 
+                app.logger.info("Inicialização: Tabela 'user' não encontrada. Criando DB...")
+                db.create_all()
+                # Tenta popular dados apenas se a função existir no escopo
+                if 'ensure_essential_data' in locals() or 'ensure_essential_data' in globals():
+                    ensure_essential_data()
+                app.logger.info("Inicialização: DB criado e populado com sucesso.")
+            else:
+                app.logger.info("Inicialização: DB já existe. Pulando criação.")
+        except Exception as e:
+            app.logger.error(f"FALHA NA INICIALIZAÇÃO DO DB: {e}")
+            # Não aborta para permitir tentativa de recuperação pelo Flask
+            
     return app
+    

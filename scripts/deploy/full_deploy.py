@@ -16,6 +16,10 @@ print("🚀 DEPLOY AUTOMÁTICO COMPLETO - PYTHONANYWHERE")
 print("=" * 80)
 
 def api_call(method, endpoint, data=None):
+    """
+    Definição de api_call.
+    Componente essencial para a arquitetura do sistema.
+    """
     url = f'https://{PA_HOST}/api/v0/user/{PA_USERNAME}/{endpoint}'
     headers = {'Authorization': f'Token {PA_TOKEN}'}
     

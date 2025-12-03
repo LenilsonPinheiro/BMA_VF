@@ -14,6 +14,10 @@ import re
 BASE_URL = "http://localhost:5000"
 
 class Colors:
+    """
+    Definição de Colors.
+    Componente essencial para a arquitetura do sistema.
+    """
     RED = '\033[91m'
     GREEN = '\033[92m'
     YELLOW = '\033[93m'
@@ -23,21 +27,41 @@ class Colors:
     BOLD = '\033[1m'
 
 def print_header(text):
+    """
+    Definição de print_header.
+    Componente essencial para a arquitetura do sistema.
+    """
     print(f"\n{Colors.BLUE}{Colors.BOLD}{'='*80}{Colors.END}")
     print(f"{Colors.BLUE}{Colors.BOLD}{text.center(80)}{Colors.END}")
     print(f"{Colors.BLUE}{Colors.BOLD}{'='*80}{Colors.END}\n")
 
 def print_section(text):
+    """
+    Definição de print_section.
+    Componente essencial para a arquitetura do sistema.
+    """
     print(f"\n{Colors.CYAN}{Colors.BOLD}{text}{Colors.END}")
     print(f"{Colors.CYAN}{'─'*80}{Colors.END}")
 
 def print_success(text):
+    """
+    Definição de print_success.
+    Componente essencial para a arquitetura do sistema.
+    """
     print(f"{Colors.GREEN}{Colors.END} {text}")
 
 def print_error(text):
+    """
+    Definição de print_error.
+    Componente essencial para a arquitetura do sistema.
+    """
     print(f"{Colors.RED}{Colors.END} {text}")
 
 def print_warning(text):
+    """
+    Definição de print_warning.
+    Componente essencial para a arquitetura do sistema.
+    """
     print(f"{Colors.YELLOW}⚠{Colors.END} {text}")
 
 def test_theme_homepage(theme_num):

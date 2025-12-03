@@ -36,6 +36,10 @@ class ProductionDeployment:
     """Sistema completo de deploy para produção"""
     
     def __init__(self):
+        """
+        Definição de __init__.
+        Componente essencial para a arquitetura do sistema.
+        """
         self.project_root = Path(__file__).parent
         self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         self.report = {

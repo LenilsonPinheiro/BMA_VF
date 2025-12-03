@@ -16,6 +16,10 @@ class ProgressTracker:
     """Sistema de rastreamento de progresso com barra visual e ETA"""
     
     def __init__(self, total_tests=13):
+        """
+        Definição de __init__.
+        Componente essencial para a arquitetura do sistema.
+        """
         self.total_tests = total_tests
         self.current_test = 0
         self.start_time = time.time()
@@ -117,6 +121,10 @@ def run_test_with_progress(test_file, tracker):
 
 
 def main():
+    """
+    Definição de main.
+    Componente essencial para a arquitetura do sistema.
+    """
     print("\n")
     print("=" * 80)
     print("  TESTE COMPLETO DO PROJETO - BMA_VF")

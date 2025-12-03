@@ -13,6 +13,10 @@ class DeployMonitor:
     """Monitora o progresso de deploy com dashboard HTML"""
     
     def __init__(self):
+        """
+        Definição de __init__.
+        Componente essencial para a arquitetura do sistema.
+        """
         self.state = {
             "status": "iniciando",
             "current_step": 0,

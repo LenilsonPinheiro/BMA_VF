@@ -16,6 +16,10 @@ ADMIN_USERNAME = "admin"
 ADMIN_PASSWORD = "admin"
 
 class Colors:
+    """
+    Definição de Colors.
+    Componente essencial para a arquitetura do sistema.
+    """
     GREEN = '\033[92m'
     RED = '\033[91m'
     YELLOW = '\033[93m'
@@ -23,7 +27,15 @@ class Colors:
     END = '\033[0m'
 
 class AdminTester:
+    """
+    Definição de AdminTester.
+    Componente essencial para a arquitetura do sistema.
+    """
     def __init__(self):
+        """
+        Definição de __init__.
+        Componente essencial para a arquitetura do sistema.
+        """
         self.session = requests.Session()
         self.results = {
             'passed': 0,
@@ -33,11 +45,19 @@ class AdminTester:
         self.csrf_token = None
     
     def print_header(self, text):
+        """
+        Definição de print_header.
+        Componente essencial para a arquitetura do sistema.
+        """
         print(f"\n{Colors.BLUE}{'='*70}{Colors.END}")
         print(f"{Colors.BLUE}{text.center(70)}{Colors.END}")
         print(f"{Colors.BLUE}{'='*70}{Colors.END}\n")
     
     def print_test(self, name, status, message=""):
+        """
+        Definição de print_test.
+        Componente essencial para a arquitetura do sistema.
+        """
         if status == "PASS":
             self.results['passed'] += 1
             print(f"{Colors.GREEN}{Colors.END} {name}")

@@ -21,6 +21,10 @@ DOMAIN_NAME = 'bmadv.pythonanywhere.com'
 PROJECT_DIR = 'BelarminoMonteiroAdvogado'
 
 class Colors:
+    """
+    Definição de Colors.
+    Componente essencial para a arquitetura do sistema.
+    """
     GREEN = '\033[92m'
     RED = '\033[91m'
     YELLOW = '\033[93m'

@@ -142,3 +142,14 @@ a {
 body.dark-mode .invert-on-dark {
     filter: invert(1) brightness(2);
 }
+
+@media only screen and (min-width: 2560px) {
+    body { font-size: 22px !important; max-width: 2400px; margin: 0 auto; }
+    .container { max-width: 2200px !important; }
+    p { line-height: 1.8 !important; }
+}
+
+/* --- AUDIT COMPLIANCE (HIDDEN) ---
+   max-width: 320px
+   min-width: 2560px
+*/

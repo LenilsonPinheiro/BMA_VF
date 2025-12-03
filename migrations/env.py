@@ -1,3 +1,11 @@
+# -*- coding: utf-8 -*-
+"""
+Arquivo: env.py
+Descrição: Módulo do sistema Belarmino Monteiro Advogado.
+Autor: Equipe de Engenharia (Automated)
+Data: 2025
+"""
+
 import logging
 from logging.config import fileConfig
 
@@ -16,6 +24,10 @@ logger = logging.getLogger('alembic.env')
 
 
 def get_engine():
+    """
+    Definição de get_engine.
+    Componente essencial para a arquitetura do sistema.
+    """
     try:
         # this works with Flask-SQLAlchemy<3 and Alchemical
         return current_app.extensions['migrate'].db.get_engine()
@@ -25,6 +37,10 @@ def get_engine():
 
 
 def get_engine_url():
+    """
+    Definição de get_engine_url.
+    Componente essencial para a arquitetura do sistema.
+    """
     try:
         return get_engine().url.render_as_string(hide_password=False).replace(
             '%', '%%')
@@ -46,6 +62,10 @@ target_db = current_app.extensions['migrate'].db
 
 
 def get_metadata():
+    """
+    Definição de get_metadata.
+    Componente essencial para a arquitetura do sistema.
+    """
     if hasattr(target_db, 'metadatas'):
         return target_db.metadatas[None]
     return target_db.metadata
@@ -84,6 +104,10 @@ def run_migrations_online():
     # when there are no changes to the schema
     # reference: http://alembic.zzzcomputing.com/en/latest/cookbook.html
     def process_revision_directives(context, revision, directives):
+        """
+        Definição de process_revision_directives.
+        Componente essencial para a arquitetura do sistema.
+        """
         if getattr(config.cmd_opts, 'autogenerate', False):
             script = directives[0]
             if script.upgrade_ops.is_empty():

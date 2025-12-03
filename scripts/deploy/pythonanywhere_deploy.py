@@ -79,6 +79,10 @@ def verify_deployment():
         return False
 
 def main():
+    """
+    Definição de main.
+    Componente essencial para a arquitetura do sistema.
+    """
     print("""
     ╔══════════════════════════════════════════════════════════╗
     ║   DEPLOY AUTOMÁTICO PARA PYTHONANYWHERE                 ║

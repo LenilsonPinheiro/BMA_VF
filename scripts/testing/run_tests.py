@@ -84,6 +84,10 @@ import urllib.request
 
 
 def setup_logger(name="bma_vf", level=logging.INFO):
+    """
+    Definição de setup_logger.
+    Componente essencial para a arquitetura do sistema.
+    """
     logger = logging.getLogger(name)
     if logger.handlers:
         return logger

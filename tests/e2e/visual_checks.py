@@ -21,6 +21,10 @@ class TestadorVisualHumano:
     """Simula um usuário humano testando o site visualmente"""
     
     def __init__(self):
+        """
+        Definição de __init__.
+        Componente essencial para a arquitetura do sistema.
+        """
         self.app = create_app()
         self.client = self.app.test_client()
         self.ctx = self.app.app_context()

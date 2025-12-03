@@ -1,3 +1,11 @@
+# -*- coding: utf-8 -*-
+"""
+Arquivo: health_check.py
+Descrição: Módulo do sistema Belarmino Monteiro Advogado.
+Autor: Equipe de Engenharia (Automated)
+Data: 2025
+"""
+
 import os
 import sys
 import traceback

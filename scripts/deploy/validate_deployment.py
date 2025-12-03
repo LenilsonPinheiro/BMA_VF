@@ -17,6 +17,10 @@ from pathlib import Path
 
 # Cores para output
 class Colors:
+    """
+    Definição de Colors.
+    Componente essencial para a arquitetura do sistema.
+    """
     GREEN = '\033[92m'
     YELLOW = '\033[93m'
     RED = '\033[91m'
@@ -25,20 +29,40 @@ class Colors:
     END = '\033[0m'
 
 def print_header(text):
+    """
+    Definição de print_header.
+    Componente essencial para a arquitetura do sistema.
+    """
     print(f"\n{Colors.BOLD}{Colors.BLUE}{'='*60}{Colors.END}")
     print(f"{Colors.BOLD}{Colors.BLUE}{text.center(60)}{Colors.END}")
     print(f"{Colors.BOLD}{Colors.BLUE}{'='*60}{Colors.END}\n")
 
 def print_success(text):
+    """
+    Definição de print_success.
+    Componente essencial para a arquitetura do sistema.
+    """
     print(f"{Colors.GREEN} {text}{Colors.END}")
 
 def print_warning(text):
+    """
+    Definição de print_warning.
+    Componente essencial para a arquitetura do sistema.
+    """
     print(f"{Colors.YELLOW}⚠ {text}{Colors.END}")
 
 def print_error(text):
+    """
+    Definição de print_error.
+    Componente essencial para a arquitetura do sistema.
+    """
     print(f"{Colors.RED} {text}{Colors.END}")
 
 def print_info(text):
+    """
+    Definição de print_info.
+    Componente essencial para a arquitetura do sistema.
+    """
     print(f"{Colors.BLUE} {text}{Colors.END}")
 
 # Contadores

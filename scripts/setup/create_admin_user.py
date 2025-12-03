@@ -1,3 +1,11 @@
+# -*- coding: utf-8 -*-
+"""
+Arquivo: create_admin_user.py
+Descrição: Módulo do sistema Belarmino Monteiro Advogado.
+Autor: Equipe de Engenharia (Automated)
+Data: 2025
+"""
+
 import sys
 import getpass
 import importlib
@@ -6,6 +14,10 @@ from pathlib import Path
 BASE = Path(__file__).resolve().parent
 
 def try_import(path):
+    """
+    Definição de try_import.
+    Componente essencial para a arquitetura do sistema.
+    """
     try:
         return importlib.import_module(path)
     except Exception:

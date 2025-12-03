@@ -1,3 +1,11 @@
+# -*- coding: utf-8 -*-
+"""
+Arquivo: alembic_repair.py
+Descrição: Módulo do sistema Belarmino Monteiro Advogado.
+Autor: Equipe de Engenharia (Automated)
+Data: 2025
+"""
+
 import os
 import sqlite3
 import sys
@@ -8,6 +16,10 @@ DB = os.path.join(BASE, 'instance', 'site.db')
 VERSIONS_DIR = os.path.join(BASE, 'migrations', 'versions')
 
 def list_available_revisions():
+    """
+    Definição de list_available_revisions.
+    Componente essencial para a arquitetura do sistema.
+    """
     revs = []
     if os.path.isdir(VERSIONS_DIR):
         for p in glob.glob(os.path.join(VERSIONS_DIR, '*.py')):
@@ -20,6 +32,10 @@ def list_available_revisions():
     return [r for r,_ in revs]
 
 def get_current_db_revision(conn):
+    """
+    Definição de get_current_db_revision.
+    Componente essencial para a arquitetura do sistema.
+    """
     cur = conn.cursor()
     cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='alembic_version'")
     if not cur.fetchone():
@@ -44,6 +60,10 @@ def get_current_db_revision(conn):
     return None
 
 def set_db_revision(conn, new_rev):
+    """
+    Definição de set_db_revision.
+    Componente essencial para a arquitetura do sistema.
+    """
     cur = conn.cursor()
     # drop/create canonical table with column version_num to be consistent
     try:
@@ -59,6 +79,10 @@ def set_db_revision(conn, new_rev):
         return False
 
 def remove_db_revision_table(conn):
+    """
+    Definição de remove_db_revision_table.
+    Componente essencial para a arquitetura do sistema.
+    """
     try:
         cur = conn.cursor()
         cur.execute("DROP TABLE IF EXISTS alembic_version")
@@ -71,6 +95,10 @@ def remove_db_revision_table(conn):
         return False
 
 def main():
+    """
+    Definição de main.
+    Componente essencial para a arquitetura do sistema.
+    """
     if not os.path.exists(DB):
         print(f"[ERROR] Banco nao encontrado em {DB}")
         sys.exit(10)

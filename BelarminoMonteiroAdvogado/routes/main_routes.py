@@ -121,17 +121,29 @@ def home():
 
 @main_bp.route('/politica-de-privacidade')
 def politica_privacidade():
+    """
+    Definição de politica_privacidade.
+    Componente essencial para a arquitetura do sistema.
+    """
     current_app.logger.info("Acessando a página de Política de Privacidade.")
     return render_page('politica_privacidade.html', 'politica_privacidade')
 
 @main_bp.route('/areas-de-atuacao')
 def todas_areas_atuacao():
+    """
+    Definição de todas_areas_atuacao.
+    Componente essencial para a arquitetura do sistema.
+    """
     current_app.logger.info("Acessando a página 'Todas as Áreas de Atuação'.")
     areas = AreaAtuacao.query.order_by(AreaAtuacao.ordem).all()
     return render_page('areas_atuacao/todas_areas.html', 'todas_areas', areas=areas, disable_scroll_snap=True)
 
 @main_bp.route('/contato', methods=['GET', 'POST'])
 def pagina_contato():
+    """
+    Definição de pagina_contato.
+    Componente essencial para a arquitetura do sistema.
+    """
     form = ContactForm()
     
     if form.validate_on_submit():
@@ -193,6 +205,10 @@ IP: {request.remote_addr}
 
 @main_bp.route('/search')
 def search():
+    """
+    Definição de search.
+    Componente essencial para a arquitetura do sistema.
+    """
     query = request.args.get('q', '').strip()
     current_app.logger.info(f"Busca realizada: '{query}'")
     results = []
@@ -301,6 +317,10 @@ def submit_depoimento(token: str):
 
 @main_bp.route('/<path:slug>')
 def pagina_dinamica(slug: str):
+    """
+    Definição de pagina_dinamica.
+    Componente essencial para a arquitetura do sistema.
+    """
     page = Pagina.query.filter_by(slug=slug, ativo=True).first_or_404()
     
     if not page.template_path:

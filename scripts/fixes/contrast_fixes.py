@@ -352,6 +352,10 @@ body.option{theme_num}.dark-mode .hero-subtitle {{
     return css_content
 
 def main():
+    """
+    Definição de main.
+    Componente essencial para a arquitetura do sistema.
+    """
     print(" CORRIGINDO PROBLEMAS DE CONTRASTE EM TODOS OS TEMAS...")
     print("="*80)
     

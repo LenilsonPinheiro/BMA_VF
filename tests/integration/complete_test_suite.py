@@ -27,6 +27,10 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 # Cores para output
 class Colors:
+    """
+    Definição de Colors.
+    Componente essencial para a arquitetura do sistema.
+    """
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
     OKCYAN = '\033[96m'
@@ -38,20 +42,40 @@ class Colors:
     UNDERLINE = '\033[4m'
 
 def print_header(text):
+    """
+    Definição de print_header.
+    Componente essencial para a arquitetura do sistema.
+    """
     print(f"\n{Colors.HEADER}{'='*80}{Colors.ENDC}")
     print(f"{Colors.HEADER}{text.center(80)}{Colors.ENDC}")
     print(f"{Colors.HEADER}{'='*80}{Colors.ENDC}\n")
 
 def print_success(text):
+    """
+    Definição de print_success.
+    Componente essencial para a arquitetura do sistema.
+    """
     print(f"{Colors.OKGREEN} {text}{Colors.ENDC}")
 
 def print_error(text):
+    """
+    Definição de print_error.
+    Componente essencial para a arquitetura do sistema.
+    """
     print(f"{Colors.FAIL} {text}{Colors.ENDC}")
 
 def print_warning(text):
+    """
+    Definição de print_warning.
+    Componente essencial para a arquitetura do sistema.
+    """
     print(f"{Colors.WARNING}⚠ {text}{Colors.ENDC}")
 
 def print_info(text):
+    """
+    Definição de print_info.
+    Componente essencial para a arquitetura do sistema.
+    """
     print(f"{Colors.OKCYAN} {text}{Colors.ENDC}")
 
 # Contadores globais
@@ -88,6 +112,10 @@ def run_test(test_name, test_func):
 def calculate_luminance(r, g, b):
     """Calcula a luminância relativa de uma cor RGB"""
     def adjust(c):
+        """
+        Definição de adjust.
+        Componente essencial para a arquitetura do sistema.
+        """
         c = c / 255.0
         if c <= 0.03928:
             return c / 12.92

@@ -181,6 +181,10 @@ window.addEventListener('load', function() {
     print(f"[OK] JavaScript corrigido!")
 
 def main():
+    """
+    Definição de main.
+    Componente essencial para a arquitetura do sistema.
+    """
     print("=" * 60)
     print("CORREÇÃO DE VÍDEOS INVISÍVEIS")
     print("=" * 60)

@@ -204,6 +204,10 @@ class AreaAtuacao(db.Model):
                      comment="Número para definir a ordem de exibição (menor valor primeiro).")
 
     def __repr__(self):
+        """
+        Definição de __repr__.
+        Componente essencial para a arquitetura do sistema.
+        """
         return f'<AreaAtuacao {self.titulo}>'
 
 @event.listens_for(AreaAtuacao, 'before_update')
@@ -234,6 +238,10 @@ class MembroEquipe(db.Model):
                      comment="Número para definir a ordem de exibição na lista de equipe (menor valor primeiro).")
 
     def __repr__(self):
+        """
+        Definição de __repr__.
+        Componente essencial para a arquitetura do sistema.
+        """
         return f'<MembroEquipe {self.nome}>'
 
 class Pagina(db.Model):
@@ -265,6 +273,10 @@ class Pagina(db.Model):
     children = db.relationship('Pagina', backref=db.backref('parent', remote_side=[id]), lazy='joined', order_by='Pagina.ordem')
 
     def __repr__(self):
+        """
+        Definição de __repr__.
+        Componente essencial para a arquitetura do sistema.
+        """
         return f'<Pagina {self.slug}>'
 
 class User(db.Model, UserMixin):
@@ -299,6 +311,10 @@ class User(db.Model, UserMixin):
         return check_password_hash(self.password_hash, password)
 
     def __repr__(self):
+        """
+        Definição de __repr__.
+        Componente essencial para a arquitetura do sistema.
+        """
         return f'<User {self.username}>'
 
 class ConteudoGeral(db.Model):
@@ -326,6 +342,10 @@ class ConteudoGeral(db.Model):
                         comment="O conteúdo real armazenado, que pode ser texto, URL de imagem, HTML, valor booleano, etc.")
 
     def __repr__(self):
+        """
+        Definição de __repr__.
+        Componente essencial para a arquitetura do sistema.
+        """
         return f'<ConteudoGeral {self.pagina}/{self.secao}>'
 
 @event.listens_for(ConteudoGeral, 'before_update')
@@ -368,6 +388,10 @@ class Depoimento(db.Model):
                              comment="Timestamp da data e hora em que o depoimento foi criado.")
 
     def __repr__(self):
+        """
+        Definição de __repr__.
+        Componente essencial para a arquitetura do sistema.
+        """
         return f'<Depoimento {self.nome_cliente}>'
 
 class ClienteParceiro(db.Model):
@@ -383,6 +407,10 @@ class ClienteParceiro(db.Model):
     ordem = db.Column(db.Integer, default=99, comment="Número para definir a ordem de exibição na listagem de clientes/parceiros.")
 
     def __repr__(self):
+        """
+        Definição de __repr__.
+        Componente essencial para a arquitetura do sistema.
+        """
         return f'<ClienteParceiro {self.nome}>'
 
 class SetorAtendido(db.Model):
@@ -397,6 +425,10 @@ class SetorAtendido(db.Model):
     ordem = db.Column(db.Integer, default=99, comment="Número para definir a ordem de exibição dos setores.")
 
     def __repr__(self):
+        """
+        Definição de __repr__.
+        Componente essencial para a arquitetura do sistema.
+        """
         return f'<SetorAtendido {self.titulo}>'
 
 class HomePageSection(db.Model):
@@ -418,6 +450,10 @@ class HomePageSection(db.Model):
     content = db.Column(db.Text, nullable=True, comment="Conteúdo HTML customizado para a seção (opcional).")
 
     def __repr__(self):
+        """
+        Definição de __repr__.
+        Componente essencial para a arquitetura do sistema.
+        """
         return f'<HomePageSection {self.section_type}>'
 
 class CustomHomeSection(db.Model):
@@ -437,6 +473,10 @@ class CustomHomeSection(db.Model):
     media_position = db.Column(db.String(20), default='right', comment="Posição da mídia em relação ao texto ('left' ou 'right').")
 
     def __repr__(self):
+        """
+        Definição de __repr__.
+        Componente essencial para a arquitetura do sistema.
+        """
         return f'<CustomHomeSection {self.title}>'
 
 class ThemeSettings(db.Model):
@@ -474,6 +514,10 @@ class ThemeSettings(db.Model):
                              comment="Caminho para a imagem do QR Code para vCard no footer.")
 
     def __repr__(self):
+        """
+        Definição de __repr__.
+        Componente essencial para a arquitetura do sistema.
+        """
         return f'<ThemeSettings {self.theme}>'
 
 
