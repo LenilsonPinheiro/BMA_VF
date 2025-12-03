@@ -1,4 +1,30 @@
 # -*- coding: utf-8 -*-
+"""
+==============================================================================
+Rotas Públicas Principais
+==============================================================================
+
+Este módulo define o Blueprint para as rotas públicas e principais do site,
+como a página inicial, páginas de conteúdo dinâmico, formulário de contato,
+política de privacidade, e outras páginas acessíveis a todos os visitantes.
+
+Funcionalidades do Blueprint:
+-----------------------------
+- **Página Inicial (`/`):** Renderiza a home page, selecionando dinamicamente o
+  template correto com base na configuração de tema ativa.
+- **Páginas Dinâmicas (`/<slug>`):** Uma rota "catch-all" que busca uma página
+  no banco de dados pelo seu `slug` e a renderiza com o template associado.
+  É a espinha dorsal do sistema de gerenciamento de conteúdo.
+- **Contato (`/contato`):** Apresenta e processa o formulário de contato,
+  enviando um e-mail para o administrador com as informações submetidas.
+- **SEO e Indexação:** Inclui rotas para `robots.txt` e `sitemap.xml`,
+  essenciais para a otimização de mecanismos de busca.
+- **Service Worker:** Rota para servir o arquivo do service worker, fundamental
+  para funcionalidades de PWA (Progressive Web App).
+
+Toda a renderização de páginas é feita através da função `render_page`, que
+centraliza a busca de conteúdo no banco de dados, garantindo consistência.
+"""
 import logging
 import traceback
 import os
@@ -23,12 +49,8 @@ from ..forms import ContactForm
 # Configuração do Logger
 logger = logging.getLogger(__name__)
 
-# --- 1. DEFINIÇÃO DO BLUEPRINT (DEVE VIR ANTES DAS ROTAS) ---
+# --- 1. DEFINIÇÃO DO BLUEPRINT ---
 main_bp = Blueprint('main', __name__)
-"""
-Blueprint para rotas principais e públicas do site.
-Controla o fluxo de navegação, carregamento de conteúdo dinâmico e interação com formulários públicos.
-"""
 
 # --- 2. ROTA DE SHOWCASE V5 (X-TUDO) ---
 @main_bp.route('/xtudo')
@@ -45,9 +67,8 @@ def showcase_v5():
         return render_template('home/home_option9.html', theme='option9')
         
     except Exception as e:
-        # TRATAMENTO DE ERRO COM TRACEBACK (Política 2.1)
-        logger.error(f"[MAIN::XTUDO] Erro crítico ao renderizar X-Tudo: {str(e)}")
-        traceback.print_exc() # Imprime stack trace no console
+        # TRATAMENTO DE ERRO COM LOG DETALHADO (Política 2.1)
+        logger.exception(f"[MAIN::XTUDO] Erro crítico ao renderizar X-Tudo: {str(e)}")
         return render_template('500.html'), 500
 
 # --- 3. FUNÇÕES AUXILIARES ---
@@ -188,6 +209,13 @@ def search():
 
 @main_bp.route('/service-worker.js')
 def service_worker():
+    """
+    Serve o arquivo JavaScript do Service Worker.
+    
+    Esta rota é essencial para as funcionalidades de Progressive Web App (PWA),
+    como caching offline e notificações. Os headers da resposta são ajustados
+    para garantir que o navegador trate o arquivo corretamente.
+    """
     response = current_app.send_static_file('service-worker.js')
     response.headers['Content-Type'] = 'application/javascript'
     response.headers['Service-Worker-Allowed'] = '/'
@@ -196,10 +224,23 @@ def service_worker():
 
 @main_bp.route('/robots.txt')
 def robots_txt():
+    """
+    Gera e serve o arquivo robots.txt para os mecanismos de busca.
+    
+    Renderiza o template 'robots.txt' e o serve como texto plano, instruindo
+    os crawlers (como o do Google) sobre quais páginas eles podem ou não indexar.
+    """
     return Response(render_template('robots.txt'), mimetype='text/plain')
 
 @main_bp.route('/sitemap.xml')
 def sitemap():
+    """
+    Gera dinamicamente o sitemap.xml do site.
+    
+    Busca todas as páginas ativas no banco de dados e cria um mapa do site
+    em formato XML. Isso ajuda os mecanismos de busca a descobrir e indexar
+    todas as páginas importantes do site de forma mais eficiente.
+    """
     urls = []
     today = datetime.now().strftime('%Y-%m-%d')
     pages = Pagina.query.filter_by(ativo=True).all()
@@ -223,6 +264,15 @@ def sitemap():
 
 @main_bp.route('/depoimento/submit/<token>', methods=['GET', 'POST'])
 def submit_depoimento(token: str):
+    """
+    Processa a submissão de um depoimento de cliente através de um link único.
+    
+    Valida o token de segurança, exibe o formulário de submissão (GET) e
+    processa os dados enviados (POST), incluindo o upload opcional de um logotipo.
+    
+    Args:
+        token (str): O token de segurança único que autoriza a submissão.
+    """
     depoimento_entry = Depoimento.query.filter_by(token_submissao=token, aprovado=False).first()
 
     if not depoimento_entry:

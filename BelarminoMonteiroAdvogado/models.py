@@ -1,4 +1,38 @@
 # -*- coding: utf-8 -*-
+"""
+==============================================================================
+Definição dos Modelos de Dados (SQLAlchemy)
+==============================================================================
+
+Este arquivo contém a definição de todos os modelos de banco de dados da
+aplicação, utilizando a extensão Flask-SQLAlchemy. Cada classe neste arquivo
+representa uma tabela no banco de dados e define suas colunas, relacionamentos
+e comportamentos.
+
+Modelos Principais:
+-------------------
+- **User:** Representa um usuário administrador com credenciais para acessar o
+        painel de controle.
+- **Pagina:** Modelo flexível para criar páginas de conteúdo dinâmico,
+          controlando sua exibição, ordem e hierarquia no menu.
+- **AreaAtuacao:** Define os serviços jurídicos oferecidos pelo escritório.
+- **MembroEquipe:** Armazena informações sobre os advogados e outros membros
+               da equipe.
+- **ConteudoGeral:** Um modelo chave-valor genérico para armazenar qualquer
+                 tipo de conteúdo (textos, links de imagens, configurações)
+                 associado a uma página ou seção.
+- **Depoimento:** Armazena depoimentos de clientes.
+- **ClienteParceiro:** Gerencia os logos e links de clientes ou parceiros.
+- **HomePageSection:** Controla a visibilidade e ordem das seções na página
+                     inicial.
+- **ThemeSettings:** Armazena as configurações de design, como o tema ativo e
+                 a paleta de cores.
+
+Além dos modelos, este arquivo também inicializa as instâncias `db`
+(SQLAlchemy) and `migrate` (Flask-Migrate) e inclui lógica de compatibilidade
+e listeners de eventos para garantir a integridade dos dados e o funcionamento
+correto de funcionalidades específicas.
+"""
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -20,13 +54,29 @@ migrate = Migrate()
 _original_create_all = db.create_all
 def _safe_create_all(*args, **kwargs):
     """
-    Wrapper para `db.create_all` que garante que as tabelas sejam criadas no banco de dados correto.
-    
-    Este método é crucial para ambientes de teste, onde a URI do banco de dados pode ser
-    alterada dinamicamente via `app.config`. Ele descarta engines existentes se a URI
-    configurada for diferente, forçando a criação de um novo engine para o DB pretendido.
-    Também tenta criar as tabelas diretamente no DB desejado antes de chamar o
-    `db.create_all` original, para maior robustez.
+    Wrapper robusto para `db.create_all` que garante a criação de tabelas
+    no banco de dados correto, especialmente em ambientes de teste dinâmicos.
+
+    Problema Resolvido:
+    --------------------
+    Em testes, a URI do banco de dados (`SQLALCHEMY_DATABASE_URI`) é frequentemente
+    modificada após a criação da aplicação. O engine padrão do Flask-SQLAlchemy
+    pode permanecer "preso" ao banco de dados original, fazendo com que
+    `db.create_all()` opere no arquivo errado.
+
+    Estratégia:
+    -----------
+    1.  **Verificação de URI:** Compara a URI do engine atual com a URI
+        desejada no `current_app.config`.
+    2.  **Descarte de Engine:** Se as URIs forem diferentes, o engine existente
+        é descartado (`dispose()`), forçando o SQLAlchemy a criar um novo na
+        próxima operação.
+    3.  **Criação Proativa:** Tenta criar as tabelas diretamente no banco de
+        dados de destino usando um engine temporário. Isso serve como uma
+        garantia de que o schema seja aplicado corretamente.
+    4.  **Fallback:** Se a chamada original a `db.create_all()` falhar,
+        uma última tentativa de criação de metadados é feita antes de
+        relançar a exceção original.
     """
     try:
         from flask import current_app
@@ -253,9 +303,17 @@ class User(db.Model, UserMixin):
 
 class ConteudoGeral(db.Model):
     """
-    Modelo genérico para armazenar qualquer tipo de conteúdo textual ou de mídia.
-    Usado para gerenciar textos, imagens, vídeos, meta tags, etc., de forma flexível
-    para diferentes seções ou páginas do site.
+    Modelo chave-valor para armazenar qualquer tipo de conteúdo dinâmico.
+
+    Esta é uma das tabelas mais importantes, pois permite que o conteúdo de
+    quase todo o site seja editável através do painel de administração sem
+    a necessidade de alterar o código. Funciona como um grande dicionário
+    persistente.
+
+    Exemplos de uso:
+    - `pagina='home', secao='hero_title', conteudo='Bem-vindo ao nosso site'`
+    - `pagina='configuracoes_gerais', secao='logo_path', conteudo='/static/img/logo.png'`
+    - `pagina='sobre-nos', secao='meta_description', conteudo='Conheça nossa história.'`
     """
     id = db.Column(db.Integer, primary_key=True)
     pagina = db.Column(db.String(100), nullable=False, index=True,

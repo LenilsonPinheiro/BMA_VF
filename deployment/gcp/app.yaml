@@ -24,7 +24,28 @@ automatic_scaling:
   target_cpu_utilization: 0.65
 
 env_variables:
-  SECRET_KEY: '51d32510bca5950c17a81ba979a2e02aedf502081c3d173a7948f89063aaeb0f'
+  # IMPORTANT: As seguintes variáveis devem ser configuradas de forma segura no ambiente do GCP,
+  # preferencialmente usando o Google Secret Manager.
+  # https://cloud.google.com/secret-manager
+  #
+  # Execute os seguintes comandos no seu terminal local, substituindo os valores de exemplo:
+  #
+  # 1. Crie os segredos:
+  #    gcloud secrets create bma_secret_key --replication-policy="automatic"
+  #    gcloud secrets create bma_database_url --replication-policy="automatic"
+  #
+  # 2. Adicione as versões dos segredos (substitua 'SEU_VALOR_REAL' pelos valores corretos):
+  #    printf "SEU_VALOR_REAL_DA_SECRET_KEY" | gcloud secrets versions add bma_secret_key --data-file=-
+  #    printf "SEU_VALOR_REAL_DO_DATABASE_URL" | gcloud secrets versions add bma_database_url --data-file=-
+  #
+  # 3. Na seção 'env_variables' do seu app.yaml, use os placeholders abaixo. O App Engine
+  #    os substituirá pelos valores reais durante o deploy se o acesso for concedido.
+  #
+  #    Para mais detalhes sobre como integrar, veja a documentação do App Engine:
+  #    https://cloud.google.com/appengine/docs/standard/python3/configuring-appcfg#env_variables
+  
+  SECRET_KEY: 'BMA_SECRET_KEY' # Placeholder - Será substituído pelo Secret Manager
+  DATABASE_URL: 'BMA_DATABASE_URL' # Placeholder - Será substituído pelo Secret Manager
   FLASK_ENV: 'production'
   
 handlers:

@@ -1,17 +1,37 @@
 # -*- coding: utf-8 -*-
 """
-BelarminoMonteiroAdvogado/image_processor.py
+==============================================================================
+Módulo de Processamento e Otimização de Imagens
+==============================================================================
 
-Módulo para processamento e otimização automática de imagens.
-Garanta qualidade visual máxima e performance ao lidar com uploads de imagens.
+Este módulo fornece uma classe `ImageProcessor` e funções auxiliares para
+lidar com o upload, otimização e gerenciamento de imagens na aplicação.
+O objetivo é garantir a máxima qualidade visual com o menor tamanho de
+arquivo possível, melhorando a performance do site.
 
 Funcionalidades Principais:
-1.  **Otimização Automática:** Comprime imagens de forma inteligente.
-2.  **Qualidade Visual:** Mantém 95% da qualidade (imperceptível ao olho humano) por padrão.
-3.  **Conversão para WebP:** Converte imagens para o formato WebP para melhor performance web.
-4.  **Redimensionamento Inteligente:** Redimensiona imagens grandes para uma largura máxima definida, mantendo proporções.
-5.  **Backup Automático:** Cria backups das imagens originais antes da otimização.
-6.  **Correção de Orientação EXIF:** Ajusta automaticamente a orientação de imagens baseada em metadados EXIF.
+---------------------------
+1.  **Otimização Automática:** Comprime imagens (JPG, PNG, etc.) de forma
+    inteligente, convertendo-as para o formato WebP, que é altamente
+    eficiente para a web.
+2.  **Controle de Qualidade:** Permite definir um nível de qualidade (padrão 95),
+    encontrando um equilíbrio entre tamanho do arquivo e fidelidade visual.
+3.  **Redimensionamento Inteligente:** Redimensiona imagens que excedem uma
+    largura máxima definida (padrão 2560px), mantendo a proporção original
+    para evitar distorções.
+4.  **Correção de Orientação EXIF:** Lê os metadados EXIF de fotos (comuns
+    em celulares) e rotaciona a imagem automaticamente para a orientação
+    correta.
+5.  **Backup Automático:** Cria uma cópia da imagem original em um
+    subdiretório 'originals' antes de qualquer modificação, garantindo que
+    nenhum dado seja perdido.
+6.  **Processamento em Lote:** Oferece um método para otimizar todas as
+    imagens de um diretório de uma só vez.
+
+Uso:
+----
+A instância global `image_processor` pode ser importada e utilizada
+diretamente para processar uploads de formulários ou arquivos existentes.
 
 Autor: Lenilson Pinheiro
 Data: Janeiro 2025
@@ -25,8 +45,12 @@ from flask import current_app # Importar current_app para logging no contexto da
 
 class ImageProcessor:
     """
-    Processador automático de imagens com foco em qualidade e otimização para web.
-    Permite configurar a qualidade de compressão, largura máxima e criação de backups.
+    Encapsula a lógica de otimização de imagens com foco em performance para web.
+
+    Esta classe oferece métodos para otimizar imagens individuais, processar
+    uploads de formulários e otimizar diretórios inteiros (em lote).
+    As configurações como qualidade, dimensões máximas e backups são
+    configuráveis na instanciação.
     """
     
     def __init__(self, quality: int = 95, max_width: int = 2560, create_backup: bool = True):
@@ -54,9 +78,9 @@ class ImageProcessor:
         
         Args:
             input_path (str | Path): Caminho completo para a imagem original.
-            output_path (str | Path, optional): Caminho completo para salvar a imagem otimizada.
-                                              Se None, a imagem será salva no mesmo diretório
-                                              com a extensão `.webp`.
+            output_path (str | Path, optional): Caminho de destino para a imagem otimizada.
+                                              Se omitido, a imagem original será substituída
+                                              por sua versão .webp no mesmo diretório.
                                               Padrão: None.
             
         Returns:
@@ -305,8 +329,9 @@ def optimize_image_file(input_path: str | Path, output_path: str | Path = None) 
     
     Args:
         input_path (str | Path): Caminho para a imagem original.
-        output_path (str | Path, optional): Caminho para salvar a imagem otimizada.
-                                           Se None, será salvo como WebP no mesmo local.
+        output_path (str | Path, optional): Caminho de destino para a imagem otimizada.
+                                           Se omitido, a imagem original será substituída
+                                           por sua versão .webp no mesmo diretório.
         
     Returns:
         tuple: (bool: sucesso, int: tamanho_original, int: tamanho_otimizado, str|None: caminho_saida).

@@ -1,5 +1,58 @@
 # BelarminoMonteiroAdvogado/routes/admin_routes.py
 # -*- coding: utf-8 -*-
+"""
+==============================================================================
+Rotas do Painel Administrativo (`/admin`)
+==============================================================================
+
+Este módulo define todas as rotas relacionadas ao painel de administração
+do site. Ele é registrado como um Blueprint e todas as suas rotas são
+prefixadas com `/admin`.
+
+O acesso a todas as rotas é protegido pela anotação `@login_required`,
+garantindo que apenas usuários autenticados possam acessá-las.
+
+Funcionalidades Principais:
+---------------------------
+- **Dashboard Central:** Uma visão geral que agrega todas as funcionalidades
+  de gerenciamento.
+- **Gerenciamento de Conteúdo:** Rotas para criar, editar, excluir e reordenar
+  entidades como Páginas, Áreas de Atuação, Membros da Equipe, Depoimentos, etc.
+- **Gerenciamento de Aparência:** Rotas para selecionar o tema visual do site
+  e personalizar a paleta de cores.
+- **Configurações:** Gerenciamento de configurações de e-mail e segurança, como
+  a alteração de senha do administrador.
+- **Upload de Arquivos:** Lógica para lidar com o upload de imagens e outros
+  arquivos, incluindo otimização automática.
+- **Rotas de Compatibilidade:** Redirecionamentos de URLs antigas para as novas,
+  garantindo que links legados não quebrem.
+
+A maior parte da lógica de negócios do painel administrativo está contida
+neste arquivo, interagindo diretamente com os modelos do banco de dados
+e os formulários de WTForms.
+"""
+
+from flask import (
+    Blueprint, render_template, request, redirect, url_for, flash, current_app, jsonify
+)
+from flask_login import login_required, current_user
+from flask_wtf import FlaskForm
+from werkzeug.utils import secure_filename
+import secrets
+import json
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from pathlib import Path
+
+from ..models import (
+    db, Pagina, ConteudoGeral, AreaAtuacao, MembroEquipe, User, Depoimento, 
+    ClienteParceiro, HomePageSection, ThemeSettings
+)
+from ..forms import (
+    ChangePasswordForm, ThemeForm, DesignForm, MembroEquipeForm as TeamMemberForm
+)
+from ..image_processor import save_logo, process_and_save_image, image_processor
 
 admin_bp = Blueprint('admin', __name__)
 
@@ -28,16 +81,20 @@ def allowed_file(filename: str) -> bool:
 
 def save_admin_upload(file, secao_name: str, page_identifier: str) -> tuple[bool, str]:
     """
-    Salva um arquivo enviado pelo painel administrativo, processando-o se for uma imagem.
-    Atualiza o ConteudoGeral associado com o caminho do arquivo salvo.
+    Processa e salva um arquivo enviado pelo painel, otimizando se for uma imagem.
+
+    Esta função centraliza a lógica de upload de arquivos para o `ConteudoGeral`.
+    Ela verifica a permissão do arquivo, gera um nome único, utiliza o
+    `ImageProcessor` para otimizar imagens, e atualiza ou cria o registro
+    correspondente no banco de dados com o caminho do novo arquivo.
 
     Args:
-        file (werkzeug.datastructures.FileStorage): O objeto de arquivo enviado do formulário.
-        secao_name (str): O nome da seção de ConteudoGeral a ser atualizada.
-        page_identifier (str): O identificador da página de ConteudoGeral.
+        file (werkzeug.datastructures.FileStorage): O objeto de arquivo do formulário.
+        secao_name (str): O nome da seção de `ConteudoGeral` a ser atualizada.
+        page_identifier (str): O identificador da página (`ConteudoGeral.pagina`).
 
     Returns:
-        tuple: (bool: sucesso do upload, str: mensagem de status/erro).
+        tuple[bool, str]: Uma tupla contendo (sucesso, mensagem de status).
     """
     if not file or not file.filename:
         current_app.logger.warning("Tentativa de salvar upload sem arquivo ou nome de arquivo. Seção: %s, Página: %s", secao_name, page_identifier)

@@ -1,4 +1,26 @@
 # -*- coding: utf-8 -*-
+"""
+==============================================================================
+Definição dos Formulários (WTForms) da Aplicação
+==============================================================================
+
+Este arquivo centraliza a definição de todos os formulários utilizados no
+projeto, organizados por funcionalidade. Ele utiliza a biblioteca Flask-WTF
+para criar classes de formulários que gerenciam a validação de dados,
+a proteção contra CSRF e a renderização de campos no front-end.
+
+Os formulários estão agrupados nas seguintes categorias:
+1.  **Autenticação e Segurança:** Login, registro e alteração de senha.
+2.  **Site Público:** Formulário de contato para visitantes.
+3.  **Gerenciamento de Conteúdo (Admin):** Forms para criar e editar Áreas
+    de Atuação, Membros da Equipe, Depoimentos, etc.
+4.  **Configuração de Tema:** Formulários para seleção e personalização
+    do design visual do site.
+
+Cada classe de formulário define os campos, os validadores associados a
+eles e mensagens de erro personalizadas, garantindo uma experiência de
+usuário robusta e segura.
+"""
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from wtforms import StringField, PasswordField, SubmitField, TextAreaField, SelectField, BooleanField, IntegerField
@@ -184,9 +206,15 @@ class ThemeForm(FlaskForm):
 
 class DesignForm(FlaskForm):
     """
-    Editor visual de cores para os temas globais e variáveis principais.
-    Permite a personalização da paleta de cores primárias, secundárias, texto e fundo,
-    impactando todos os layouts de forma consistente através de variáveis CSS.
+    Editor visual para personalizar a paleta de cores global do site.
+
+    Este formulário permite ao administrador ajustar as cores fundamentais
+    que definem a identidade visual do site, como cores primárias, de texto
+    e de fundo para os modos claro e escuro.
+
+    As alterações são salvas no banco de dados e aplicadas dinamicamente
+    aos templates através de variáveis CSS, garantindo uma personalização
+    consistente em todos os layouts.
     """
     # Cores Primárias/Destaque
     color_primary = StringField('Cor Principal', render_kw={"type": "color"}, description="Define a cor principal de destaque para todo o site.")

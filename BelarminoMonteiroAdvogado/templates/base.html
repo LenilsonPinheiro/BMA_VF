@@ -15,6 +15,13 @@
 {#
    ==========================================================================
    SELETOR DE TEMA (ROTEADOR VISUAL)
+   Esta seção decide qual layout deve ser carregado com base na variável `theme`.
+   Os temas disponíveis são:
+   - V1.0: Opções 1-4 (Legados)
+   - V2.0: Opções 5-8 (Novos layouts modernos)
+   - V5.0: Opção 9 (Framework X-Tudo)
+
+   Caso nenhum tema seja especificado, o layout clássico (opção 1) será carregado por padrão.
    ==========================================================================
 #}
 
@@ -25,37 +32,50 @@
 
 {# --- V2.0: LAYOUTS MODERNOS --- #}
 {% elif theme == 'option8' %}
+    {# Layout moderno baseado em design responsivo avançado #}
     {% extends 'base_option8.html' %}
 
 {% elif theme == 'option7' %}
+    {# Layout moderno com elementos de design minimalista e funcionalidade interativa #}
     {% extends 'base_option7.html' %}
 
 {% elif theme == 'option6' %}
+    {# Layout moderno com foco em usabilidade e navegação intuitiva #}
     {% extends 'base_option6.html' %}
 
 {% elif theme == 'option5' %}
+    {# Layout moderno com design limpo e fácil de usar #}
     {% extends 'base_option5.html' %}
 
 {# --- V1.0: LAYOUTS LEGADOS (MANTER PARA RETROCOMPATIBILIDADE) --- #}
 {% elif theme == 'option4' %}
+    {# Layout legado com design clássico e retrocompatibilidade #}
     {% extends 'base_option4.html' %}
 
 {% elif theme == 'option3' %}
+    {# Layout legado com design mais simples e minimalista #}
     {% extends 'base_option3.html' %}
 
 {% elif theme == 'option2' %}
+    {# Layout legado com foco em simplicidade e facilidade de uso #}
     {% extends 'base_option2.html' %}
 
 {# --- FALLBACK DE SEGURANÇA --- #}
 {% else %}
-    {# Se nenhum tema for definido, carrega o layout clássico #}
+    {# Se nenhum tema for definido, carrega o layout clássico (opção 1) #}
     {% extends 'base_option1.html' %}
 
 {% endif %}
 
 {#
    BLOCO HEAD GLOBAL (PRELOADER & ASSETS CRÍTICOS)
-   Estes recursos são carregados em TODOS os temas para garantir consistência.
+   Este bloco contém recursos essenciais que são necessários para garantir a consistência
+   em todos os temas. Os recursos incluem:
+   - Pré-carregamento de vídeo institucional
+   - Pré-carregamento de imagem de fundo padrão
+   - Estilos do banner de cookies (LGPD)
+   - Sistema de mensagens flash (alertas do sistema)
+   - Estilos dos cabeçalhos internos
 #}
 {% block head %}
     {# Performance: Pré-carregamento de vídeo institucional #}

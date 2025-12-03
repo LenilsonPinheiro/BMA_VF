@@ -1,4 +1,24 @@
 # -*- coding: utf-8 -*-
+"""
+==============================================================================
+ARQUIVO POSSIVELMENTE OBSOLETO - NÃO UTILIZADO
+==============================================================================
+
+ATENÇÃO: Este arquivo (`routes/__init__.py`) parece conter uma implementação
+antiga e duplicada da função `create_app` (Application Factory), que já existe
+de forma mais completa no arquivo principal do projeto (`BelarminoMonteiroAdvogado/__init__.py`).
+
+Este arquivo NÃO é importado ou utilizado pela aplicação principal (`main.py`)
+e sua presença pode causar grande confusão. Ele inicializa suas próprias
+instâncias de extensões (SQLAlchemy, Migrate, LoginManager), o que entraria
+em conflito com as instâncias corretas do projeto.
+
+A recomendação é REMOVER este arquivo para evitar problemas de manutenção.
+
+As documentações e comentários abaixo foram apenas levemente ajustados para
+clareza, mas o conteúdo do arquivo permanece como estava para análise.
+Não se deve basear nenhuma nova implementação neste código.
+"""
 import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
@@ -6,7 +26,7 @@ from flask_login import LoginManager
 from flask_migrate import Migrate
 from datetime import datetime
 
-# Inicialização das Extensões (Global)
+# ATENÇÃO: Estas são instâncias locais e provavelmente em conflito com as globais.
 db = SQLAlchemy()
 login_manager = LoginManager()
 migrate = Migrate()
@@ -14,61 +34,67 @@ migrate = Migrate()
 def create_app():
     """
     Application Factory: Cria e configura a instância da aplicação Flask.
+    (Versão aparentemente obsoleta contida neste arquivo).
     """
     app = Flask(__name__)
 
     # --- 1. CONFIGURAÇÕES ---
-    # Chave secreta para sessões (use variável de ambiente em produção)
-    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev_key_belarmino_advocacia_2025')
+    # Chave secreta para proteção de sessões e CSRF.
+    # Em produção, DEVE ser carregada de uma variável de ambiente.
+    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev_key_belarmino_advocacia_2025_obsolete')
     
-    # Banco de Dados (SQLite para dev, adaptável para PostgreSQL)
+    # Configuração do Banco de Dados. Prefere a variável de ambiente DATABASE_URL,
+    # caso contrário, usa um arquivo SQLite local.
     basedir = os.path.abspath(os.path.dirname(__file__))
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL') or \
         'sqlite:///' + os.path.join(basedir, 'site.db')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    # Uploads
+    # Configuração para upload de arquivos.
     app.config['UPLOAD_FOLDER'] = os.path.join(basedir, 'static/images/uploads')
     app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
     
-    # Limite de Upload (ex: 16MB)
+    # Define um limite para o tamanho dos arquivos de upload (ex: 16MB).
     app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
-    # Garante que a pasta de uploads existe
+    # Garante que o diretório de uploads exista no momento da inicialização.
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
     # --- 2. INICIALIZAÇÃO DE EXTENSÕES ---
     db.init_app(app)
     migrate.init_app(app, db)
     
+    # Configura o Flask-Login.
     login_manager.init_app(app)
-    login_manager.login_view = 'auth.login' # Rota para redirecionar se não logado
+    login_manager.login_view = 'auth.login' # Rota para redirecionar usuários não autenticados.
     login_manager.login_message = 'Por favor, faça login para acessar esta página.'
     login_manager.login_message_category = 'info'
 
-    # --- 3. CONTEXT PROCESSORS (Variáveis Globais para Templates) ---
+    # --- 3. PROCESSADORES DE CONTEXTO (Variáveis Globais para Templates) ---
     @app.context_processor
     def inject_global_vars():
-        # Importar modelos aqui para evitar ciclo
-        from .models import ThemeSettings, ConteudoGeral
+        """
+        Injeta variáveis globais no contexto de todos os templates Jinja2.
+        """
+        # Importação tardia para evitar referência circular.
+        from ..models import ThemeSettings, ConteudoGeral
         
-        # Recupera configurações de tema
+        # Recupera configurações de tema do banco de dados.
         try:
             theme_settings = ThemeSettings.query.first()
             current_theme = theme_settings.theme if theme_settings else 'option1'
             
-            # Recupera configurações gerais do site (título, telefone, etc)
-            # Assumindo que você tem uma tabela ConteudoGeral chave-valor
+            # Recupera configurações gerais do site (título, telefone, etc).
             configs_db = ConteudoGeral.query.all()
             configs = {c.secao: c.conteudo for c in configs_db}
             
-            # Garante valores padrão se o banco estiver vazio
+            # Garante um valor padrão para o título se o banco de dados estiver vazio.
             if 'site_titulo' not in configs: configs['site_titulo'] = 'Belarmino Monteiro Advogado'
             
         except Exception:
-            # Fallback seguro se o banco não estiver pronto
+            # Fallback seguro caso o banco de dados não esteja pronto ou acessível.
             current_theme = 'option1'
-            configs = {}
+            configs = {'site_titulo': 'Belarmino Monteiro Advogado'}
 
         return dict(
             now=datetime.now(),
@@ -77,40 +103,47 @@ def create_app():
             configs=configs
         )
 
-    # --- 4. FUNÇÃO AUXILIAR DE RENDERIZAÇÃO (Theme-Aware) ---
-    # Injetamos essa função no app para ser usada nas rotas
+    # --- 4. FUNÇÕES AUXILIARES PARA TEMPLATES ---
+    
     def render_page(template_name_or_list, page_id=None, **context):
+        """
+        Função auxiliar para renderização de páginas, centralizando a lógica.
+        (Esta é uma implementação local e não a global do projeto).
+        """
         from flask import render_template
-        # Aqui você pode adicionar lógica global antes de renderizar
         return render_template(template_name_or_list, page_id=page_id, **context)
     
-    # Disponibiliza a função 'render_page' globalmente (opcional, ou importe direto nas rotas)
+    # Disponibiliza a função 'render_page' globalmente nos templates.
     app.jinja_env.globals.update(render_page=render_page)
     
-    # Função para versionamento de arquivos estáticos (Cache Busting)
     def get_file_mtime(filename):
+        """
+        Função para versionamento de arquivos estáticos (Cache Busting).
+        Retorna o tempo de modificação de um arquivo para forçar a atualização no navegador.
+        """
         try:
             filepath = os.path.join(app.static_folder, filename)
             return int(os.path.getmtime(filepath))
         except OSError:
+            # Retorna 0 se o arquivo não for encontrado, evitando que o template quebre.
             return 0
             
     app.jinja_env.globals.update(get_file_mtime=get_file_mtime)
 
 
-    # --- 5. REGISTRO DE BLUEPRINTS (Rotas) ---
+    # --- 5. REGISTRO DE BLUEPRINTS (Módulos de Rotas) ---
     with app.app_context():
-        # Importação tardia para evitar Circular Import
-        from .routes.main_routes import main_bp
-        from .routes.auth_routes import auth_bp
-        from .routes.admin_routes import admin_bp
+        # Importação tardia para evitar referência circular com os módulos de rotas.
+        from .main_routes import main_bp
+        from .auth_routes import auth_bp
+        from .admin_routes import admin_bp
 
         app.register_blueprint(main_bp)
         app.register_blueprint(auth_bp)
         app.register_blueprint(admin_bp)
 
-        # Criação das tabelas (Apenas para Dev/SQLite rápido)
-        # Em produção, use Flask-Migrate (flask db upgrade)
+        # A chamada db.create_all() é geralmente desencorajada aqui.
+        # Em um ambiente de produção, as migrações (Flask-Migrate) são o método preferido.
         # db.create_all()
 
     return app

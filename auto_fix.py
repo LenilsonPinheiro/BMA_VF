@@ -1,85 +1,54 @@
+# -*- coding: utf-8 -*-
 """
+==============================================================================
+Script de Automação e Reparo de Banco de Dados
+==============================================================================
 
-Autor: Lenilson Pinheiro
-Data: Janeiro 2025
+Este script (`auto_fix.py`) orquestra uma série de tarefas de manutenção para
+garantir que o ambiente da aplicação Flask e o banco de dados estejam em um
+estado consistente e atualizado, especialmente durante o desenvolvimento.
+
+Ele é projetado para ser executado automaticamente no início da aplicação (por
+exemplo, via `run.ps1`) para prevenir e corrigir problemas comuns relacionados
+a migrações de banco de dados (Alembic/Flask-Migrate).
+
+Principais Funcionalidades:
+---------------------------
+- **Configuração de Logging:** Centraliza todos os logs (incluindo `print`)
+  em um arquivo `run_log.txt` para fácil depuração.
+- **Gerenciamento de Ambiente:** Garante a criação de diretórios essenciais
+  como a pasta `instance`.
+- **Backup de Banco de Dados:** Cria backups automáticos do banco de dados
+  antes de realizar operações críticas.
+- **Gerenciamento de Migrações:**
+    - Inicializa o `Flask-Migrate` se necessário (`flask db init`).
+    - Estampa o banco de dados com a revisão mais recente (`flask db stamp head`)
+      para criar uma linha de base em bancos de dados novos.
+    - Gera novas migrações automaticamente (`flask db migrate`) se detectar
+      mudanças nos modelos.
+    - Aplica todas as migrações pendentes (`flask db upgrade`).
+- **Reparo de Inconsistências:** Inclui lógica para detectar e tentar corrigir
+  problemas na tabela `alembic_version` que podem impedir as migrações de
+  funcionarem corretamente.
+
+Como Usar:
+-----------
+- **Uso Automático:** Geralmente chamado por um script de inicialização como
+  `run.ps1`.
+- **Uso Manual:** `python auto_fix.py`
+- **Reset Completo:** `python auto_fix.py clean` (cria um backup e remove o
+  banco de dados e a pasta de migrações para um recomeço limpo).
 
 ==============================================================================
 AVISO OBRIGATÓRIO PARA QUALQUER IA (GPT, Gemini, Copilot, etc.)
 ==============================================================================
-
 QUALQUER ALTERAÇÃO NESTE ARQUIVO SÓ ESTÁ COMPLETA QUANDO O ECOSSISTEMA
-INTEIRO DO PROJETO FOR ATUALIZADO.
-
-Isto significa:
-1.  **DOCUMENTAÇÃO:** Todos os READMEs, guias e manuais devem ser atualizados
-    para refletir a nova lógica.
-2.  **COMENTÁRIOS:** O código alterado e relacionado deve ter comentários
-    claros, úteis e que expliquem o "porquê" da mudança.
-3.  **SCRIPTS DE DIAGNÓSTICO:** Scripts como `diagnostico.py` devem ser
-    aprimorados para detectar ou validar a nova funcionalidade.
-
-Esta é a regra mais importante deste projeto. A manutenção a longo prazo
-depende da aderência estrita a este princípio. NÃO FAÇA MUDANÇAS ISOLADAS.
-
-auto_fix.py: Script de automação para gerenciamento de ambiente e banco de dados Flask.
-
-Este script é responsável por uma série de tarefas de manutenção para uma aplicação Flask,
-incluindo:
-- Configuração de logging detalhado.
-- Execução segura de comandos shell.
-- Garantia da existência da pasta 'instance' (para dados da aplicação, como SQLite DB).
-- Backup do banco de dados SQLite.
-- Gerenciamento e reparo de migrações do banco de dados usando sistema de atualizacao do banco (Alembic).
-- Detecção e correção de inconsistências na tabela 'alembic_version'.
-- Criação de migrações iniciais (baseline) se necessário.
-
-É projetado para ser executado como parte do processo de inicialização da aplicação
-(por exemplo, via run.bat) para garantir que o ambiente e o banco de dados estejam
-sempre em um estado consistente e atualizado.
-
-Este script depende da configuração da aplicação Flask para determinar o caminho do
-banco de dados, que agora possui um fallback seguro para 'instance/site.db'.
-
-==============================================================================
-COMO USAR ESTE SCRIPT
+INTEIRO DO PROJETO FOR ATUALIZADO. Isso inclui documentação, comentários e
+scripts de diagnóstico. NÃO FAÇA MUDANÇAS ISOLADAS.
 ==============================================================================
 
-PROPÓSITO:
-  Este script é chamado automaticamente por run.ps1 no startup da aplicação.
-  Sua função é garantir consistência do BD e ambiente antes da app iniciar.
-
-DEPENDÊNCIAS:
-  - Python 3.11+ (com venv ativado)
-  - Flask e extensões (instaladas via requirements.txt)
-  - Alembic/Flask-Migrate (para migrações de DB)
-  - Permissão de leitura/escrita em instance/ e migrations/ folders
-
-USO:
-  Uso automático:   python auto_fix.py (via run.ps1)
-  Uso manual:       python auto_fix.py
-  Reset completo:   python auto_fix.py clean
-
-ARQUIVOS DE LOG:
-  Todos os eventos são registrados em: run_log.txt (raiz do projeto)
-  Também aparecem no console (stdout/stderr)
-
-FLUXOS DE AUTOMAÇÃO QUE USA ESTE SCRIPT:
-  - Startup (Dev Local): run.ps1 → auto_fix.py → flask init-db → dev server
-  - Recovery (BD Corrompido): backup_db.py → auto_fix.py → verify
-  - Reset (Limpo Completo): backup_db.py → auto_fix.py clean → run.ps1
-
-LOGS ESPERADOS (sucesso):
-  [INFO] auto_fix: starting maintenance run
-  [INFO] auto_fix: backup created at instance/backups/...
-  [INFO] auto_fix: flask db upgrade succeeded
-  [INFO] auto_fix: completed successfully
-
-LOGS ESPERADOS (erro):
-  [ERROR] auto_fix: unrecoverable error: {msg}
-  Ver run_log.txt para detalhes completos
-  Exit code: 2 (erro não recuperável)
-
-==============================================================================
+Autor: Lenilson Pinheiro
+Data: Janeiro 2025
 """
 import os
 import sys
@@ -93,8 +62,10 @@ import logging
 import builtins
 
 # ===========================================================================
-# Configurações de Caminho
-# Define caminhos absolutos para diretórios e arquivos críticos do projeto.
+# 1. CONFIGURAÇÃO DE CAMINHOS
+# Definição de caminhos absolutos para diretórios e arquivos críticos.
+# Usar caminhos absolutos evita problemas de execução a partir de diferentes
+# diretórios de trabalho.
 # ===========================================================================
 BASE = os.path.abspath(os.path.dirname(__file__))
 LOG_PATH = os.path.join(BASE, 'run_log.txt')
@@ -104,9 +75,12 @@ VERSIONS_DIR = os.path.join(BASE, 'migrations', 'versions')
 MIGRATIONS_DIR = os.path.join(BASE, 'migrations')
 
 # ===========================================================================
-# Configuração de Logging
-# Configura o sistema de logging para gravar em 'run_log.txt' e também
-# exibir no console. A função 'print' é sobrescrita para também logar.
+# 2. CONFIGURAÇÃO DE LOGGING
+# Configura um sistema de logging duplo:
+#   1. Um logger padrão que grava em 'run_log.txt'.
+#   2. A função `print` é sobrescrita (`monkey-patched`) para que todas as
+#      chamadas a `print()` sejam exibidas no console e também enviadas
+#      para o arquivo de log, garantindo a captura de todas as saídas.
 # ===========================================================================
 logging.basicConfig(
     filename=LOG_PATH,
@@ -115,8 +89,7 @@ logging.basicConfig(
     datefmt='%d/%m/%Y %H:%M:%S'
 )
 
-# Module-level logger to use alongside the existing print->log wrapper.
-# Using a named logger lets CI and other tools filter or redirect logs if needed.
+# Logger a nível de módulo para uso explícito, permitindo filtragem por ferramentas de CI.
 logger = logging.getLogger('bma_vf')
 logger.setLevel(logging.INFO)
 
@@ -124,8 +97,10 @@ logger.setLevel(logging.INFO)
 _original_print = builtins.print
 def _print_and_log(*args, **kwargs):
     """
-    Função wrapper para 'print' que também envia a saída para o logger.
-    Garanti que todas as mensagens impressas via 'print' sejam capturadas no run_log.txt.
+    Wrapper para a função `print` que também envia a saída para o logger.
+    
+    Isso garante que todas as mensagens impressas via `print()` em qualquer
+    parte do script sejam capturadas no arquivo de log `run_log.txt`.
     """
     try:
         _original_print(*args, **kwargs)
@@ -142,16 +117,20 @@ builtins.print = _print_and_log
 
 def run_cmd(cmd: list, env: dict = None) -> tuple:
     """
-    Executa um comando shell e captura sua saída, imprimindo-a e retornando
-    o código de retorno, stdout e stderr.
-    
+    Executa um comando de subprocesso de forma segura e captura sua saída.
+
+    Esta função é um wrapper para `subprocess.run` que lida com a captura
+    de stdout/stderr, logging da execução e tratamento de erros comuns como
+    `FileNotFoundError`.
+
     Args:
-        cmd (list): Uma lista de strings representando o comando e seus argumentos.
-        env (dict, optional): Variáveis de ambiente a serem usadas para o comando.
-                              Defaults to None, usando o ambiente atual.
-    
+        cmd (list): O comando e seus argumentos como uma lista de strings.
+        env (dict, optional): Variáveis de ambiente a serem usadas.
+                              Usa o ambiente atual se for None.
+
     Returns:
-        tuple: (returncode, stdout, stderr) do processo executado.
+        tuple[int, str, str]: Uma tupla contendo o código de retorno,
+                              a saída padrão (stdout) e a saída de erro (stderr).
     """
     print(f"[CMD] Executando: {' '.join(cmd)}")
     try:
@@ -172,8 +151,10 @@ def run_cmd(cmd: list, env: dict = None) -> tuple:
 
 def ensure_instance():
     """
-    Garante que a pasta 'instance' exista. Esta pasta é crucial para armazenar
-    arquivos específicos da instância da aplicação, como o banco de dados SQLite.
+    Garante que a pasta 'instance' exista no diretório base do projeto.
+    
+    Esta pasta é crucial para armazenar arquivos específicos da instância da
+    aplicação que não devem ser versionados, como o banco de dados SQLite.
     """
     instance_path = os.path.join(BASE, 'instance')
     if not os.path.isdir(instance_path):
@@ -184,13 +165,13 @@ def ensure_instance():
 
 def backup_db(remove_db: bool = False, remove_migrations: bool = False):
     """
-    Realiza um backup do banco de dados SQLite existente. Opcionalmente, pode
-    remover o banco de dados original e/ou a pasta de migrações após o backup.
-    
+    Cria um backup do banco de dados e, opcionalmente, limpa o ambiente.
+
     Args:
-        remove_db (bool, optional): Se True, remove o arquivo do banco de dados após o backup.
-                                    Defaults to False.
-        remove_migrations (bool, optional): Se True, remove a pasta de migrações após o backup.
+        remove_db (bool, optional): Se True, apaga o arquivo `site.db` original
+                                    após o backup bem-sucedido. Defaults to False.
+        remove_migrations (bool, optional): Se True, apaga a pasta `migrations`
+                                            inteira. Útil para um reset completo.
                                             Defaults to False.
     """
     if os.path.exists(DB_PATH):
@@ -215,11 +196,14 @@ def backup_db(remove_db: bool = False, remove_migrations: bool = False):
 
 def list_available_revisions() -> list:
     """
-    Lista todas as revisões de migração disponíveis na pasta 'migrations/versions',
-    ordenadas por data de modificação.
-    
+    Lista todas as revisões de migração disponíveis no sistema de arquivos.
+
+    Varre o diretório `migrations/versions` e extrai os identificadores de
+    revisão dos nomes dos arquivos, ordenando-os por data de modificação
+    para garantir a ordem cronológica correta.
+
     Returns:
-        list: Uma lista de strings, onde cada string é o identificador da revisão.
+        list[str]: Uma lista ordenada de identificadores de revisão.
     """
     revs = []
     if os.path.isdir(VERSIONS_DIR):
@@ -236,7 +220,7 @@ def list_available_revisions() -> list:
 
 def get_db_connection():
     """
-    Estabelece e retorna uma conexão com o banco de dados SQLite.
+    Estabelece e retorna uma conexão direta com o banco de dados SQLite.
     
     Returns:
         sqlite3.Connection: Objeto de conexão com o banco de dados.
@@ -247,12 +231,15 @@ def get_db_connection():
 def get_current_db_revision(conn: sqlite3.Connection) -> str or None:
     """
     Obtém a revisão atual do banco de dados a partir da tabela 'alembic_version'.
-    
+
+    Tenta ler a coluna `version_num` e, como fallback, outras colunas para
+    maior compatibilidade.
+
     Args:
-        conn (sqlite3.Connection): Objeto de conexão com o banco de dados.
+        conn (sqlite3.Connection): Uma conexão ativa com o banco de dados.
         
     Returns:
-        str or None: O número da revisão atual ou None se a tabela ou revisão não existir.
+        str or None: O identificador da revisão atual ou None se não for encontrado.
     """
     cur = conn.cursor()
     print("[INFO] Verificando a existência da tabela 'alembic_version'.")
@@ -289,15 +276,18 @@ def get_current_db_revision(conn: sqlite3.Connection) -> str or None:
 
 def set_db_revision(conn: sqlite3.Connection, new_rev: str) -> bool:
     """
-    Define a revisão do banco de dados na tabela 'alembic_version'.
-    Remove a tabela existente e a recria para garantir um estado limpo.
-    
+    Define ou redefine a revisão do Alembic no banco de dados.
+
+    Esta função apaga a tabela `alembic_version` existente (se houver) e a
+    recria com um único registro contendo a nova revisão. É uma operação
+    destrutiva usada para forçar o estado de revisão do banco de dados.
+
     Args:
-        conn (sqlite3.Connection): Objeto de conexão com o banco de dados.
-        new_rev (str): O novo número de revisão a ser definido.
+        conn (sqlite3.Connection): Uma conexão ativa com o banco de dados.
+        new_rev (str): O novo identificador de revisão a ser definido.
         
     Returns:
-        bool: True se a revisão foi definida com sucesso, False caso contrário.
+        bool: True se a operação for bem-sucedida, False caso contrário.
     """
     cur = conn.cursor()
     try:
@@ -317,13 +307,16 @@ def set_db_revision(conn: sqlite3.Connection, new_rev: str) -> bool:
 
 def remove_db_revision_table(conn: sqlite3.Connection) -> bool:
     """
-    Remove a tabela 'alembic_version' do banco de dados.
-    
+    Remove a tabela `alembic_version` do banco de dados.
+
+    Usado para limpar o estado de migração do banco de dados, por exemplo,
+    quando nenhuma revisão de migração existe mais no sistema de arquivos.
+
     Args:
-        conn (sqlite3.Connection): Objeto de conexão com o banco de dados.
+        conn (sqlite3.Connection): Uma conexão ativa com o banco de dados.
         
     Returns:
-        bool: True se a tabela foi removida (ou não existia), False caso contrário.
+        bool: True se a tabela foi removida com sucesso ou se já não existia.
     """
     cur = conn.cursor()
     try:
@@ -339,11 +332,15 @@ def remove_db_revision_table(conn: sqlite3.Connection) -> bool:
 
 def repair_alembic() -> int:
     """
-    Tenta reparar o estado do Alembic no banco de dados, alinhando-o com as
-    migrações disponíveis no sistema de arquivos.
-    
+    Tenta reparar o estado do Alembic, alinhando a revisão no banco de dados
+    com as migrações disponíveis no sistema de arquivos.
+
+    Se a revisão do DB for inválida ou não existir, ele a define para a mais
+    recente disponível. Se não houver revisões de migração, ele remove a
+    tabela `alembic_version`.
+
     Returns:
-        int: Código de retorno (0 para sucesso, diferente de 0 para erro).
+        int: Código de saída (0 para sucesso, diferente de 0 para erro).
     """
     if not os.path.exists(DB_PATH):
         print(f"[ERROR] Banco de dados não encontrado em {DB_PATH}. Não é possível reparar o Alembic.")
@@ -402,14 +399,17 @@ def repair_alembic() -> int:
 
 def ensure_migrations_initialized(env: dict) -> int:
     """
-    Garante que a pasta de migrações do Alembic esteja inicializada.
-    Executa 'flask db init' se a pasta 'migrations' não existir.
-    
+    Garante que o diretório de migrações do Flask-Migrate exista.
+
+    Se a pasta `migrations` não for encontrada, executa o comando `flask db init`
+    para criá-la.
+
     Args:
-        env (dict): Variáveis de ambiente a serem passadas para o comando 'flask'.
-        
+        env (dict): O ambiente a ser usado para executar o comando `flask`.
+
     Returns:
-        int: Código de retorno do comando 'flask db init' ou 0 se já inicializado.
+        int: O código de retorno do comando `flask db init` (ou 0 se nada
+             precisou ser feito).
     """
     if not os.path.isdir(MIGRATIONS_DIR):
         print(f"[INFO] Pasta de migrações não encontrada em {MIGRATIONS_DIR}. Inicializando migrações ('flask db init').")
@@ -425,16 +425,20 @@ def ensure_migrations_initialized(env: dict) -> int:
 
 def main(argv: list) -> int:
     """
-    Função principal do script auto_fix.py. Orquestra todas as operações
-    de manutenção e gerenciamento de banco de dados.
+    Ponto de entrada principal do script.
     
+    Orquestra a sequência de operações de backup, verificação e migração
+    para garantir que o banco de dados esteja em um estado consistente e pronto
+    para a aplicação.
+
     Args:
-        argv (list): Argumentos da linha de comando passados para o script.
-                     Suporta o argumento 'clean' para forçar a remoção do DB
-                     e das migrações antes de iniciar o processo.
+        argv (list): A lista de argumentos da linha de comando. Suporta
+                     o argumento 'clean' para forçar um reset completo do
+                     banco de dados e das migrações.
                      
     Returns:
-        int: Código de saída do script (0 para sucesso, diferente de 0 para erro).
+        int: 0 em caso de sucesso, ou um código de erro diferente de zero
+             em caso de falha.
     """
     # Analisa os argumentos da linha de comando para determinar se o DB e as migrações devem ser removidos.
     remove_migrations = False

@@ -1,6 +1,29 @@
 # -*- coding: utf-8 -*-
 """
 ==============================================================================
+Ponto de Entrada e Fábrica da Aplicação Flask - Belarmino Monteiro Advogados
+==============================================================================
+
+Este arquivo é o coração da aplicação web. Ele contém a função `create_app`,
+que segue o padrão de fábrica de aplicações (Application Factory) do Flask.
+Isso permite criar instâncias da aplicação com diferentes configurações,
+facilitando o desenvolvimento, os testes e a implantação.
+
+Principais Responsabilidades:
+- Configurar a aplicação Flask, incluindo a chave secreta, o banco de dados
+  e outras extensões.
+- Inicializar extensões do Flask, como SQLAlchemy, Flask-Migrate,
+  Flask-Login e CSRFProtect.
+- Registrar os Blueprints que definem as rotas da aplicação (principais,
+  administrativas e de autenticação).
+- Definir filtros e processadores de contexto para o Jinja2, injetando
+  variáveis globais nos templates.
+- Registrar comandos de CLI personalizados para tarefas de gerenciamento,
+  como inicializar o banco de dados, limpar dados e redefinir senhas.
+- Garantir a existência de dados essenciais no banco de dados na
+  inicialização.
+
+==============================================================================
 AVISO OBRIGATÓRIO PARA QUALQUER IA (GPT, Gemini, Copilot, etc.)
 ==============================================================================
 
@@ -502,9 +525,10 @@ def create_app(test_config: Dict[str, Any] = None) -> Flask:
                     db.session.commit()
                     app.logger.info("db.create_all() executado com sucesso.")
                     
-                    # Crie aliases de tabela legados (singulares) esperados por testes mais antigos
-                    # Isso é uma medida de compatibilidade para garantir que testes antigos que
-                    # esperam nomes de tabela no singular continuem funcionando.
+                    # Medida de compatibilidade para testes legados:
+                    # Cria aliases de tabela no singular (ex: 'area_atuacao') para tabelas
+                    # que agora usam o plural (ex: 'areas_atuacao'). Isso garante que testes
+                    # mais antigos que esperam o nome no singular não quebrem.
                     try:
                         existing = inspector.get_table_names()
                         alias_map = {
@@ -711,8 +735,9 @@ def create_app(test_config: Dict[str, Any] = None) -> Flask:
     @app.cli.command('sync-content')
     def sync_content_command():
         """
-        Sincroniza o conteúdo do banco de dados com dados essenciais ou padrões.
-        Atualmente, este comando apenas confirma as alterações pendentes no DB.
+        Sincroniza e garante que os dados essenciais do site estejam no banco de dados.
+        Executa a função `ensure_essential_data` para criar ou atualizar
+        páginas, áreas de atuação, configurações e conteúdos padrão.
         """
         with app.app_context():
             app.logger.info("Iniciando sincronização de conteúdo.")

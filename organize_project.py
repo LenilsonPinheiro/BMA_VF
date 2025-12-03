@@ -1,23 +1,35 @@
+# -*- coding: utf-8 -*-
 """
-Script de Organização do Projeto Belarmino Monteiro Advogados
------------------------------------------------------------
+==============================================================================
+Script de Organização da Estrutura do Projeto
+==============================================================================
 
-Este script automatiza a reorganização da estrutura de diretórios e arquivos do projeto
-para melhorar a manutenibilidade e clareza. Ele:
-1. Cria a nova estrutura de diretórios
-2. Move os arquivos para seus respectivos locais
-3. Atualiza os imports necessários
-4. Cria arquivos de documentação
-5. Configura o ambiente CI/CD
+Este script automatiza a reorganização da estrutura de diretórios e arquivos
+do projeto para um formato mais modular e manutenível, seguindo as melhores
+práticas de mercado.
+
+Funcionalidades:
+---------------
+1.  **Criação de Diretórios:** Cria uma estrutura de pastas padronizada para
+    separar responsabilidades (e.g., `scripts/`, `tests/`, `deployment/`).
+2.  **Movimentação de Arquivos:** Move arquivos existentes da raiz do projeto
+    para seus novos diretórios designados, com base em um mapeamento
+    predefinido (`FILE_MAPPING`).
+3.  **Geração de CI/CD:** Cria arquivos de workflow para o GitHub Actions
+    (`.github/workflows/`), configurando um pipeline de integração contínua
+    (testes, linting) e um de deploy para o Google Cloud Platform.
+4.  **Criação de Documentação:** Gera ou atualiza arquivos de documentação
+    essenciais, como o `README.md` e a documentação da API.
+5.  **Logging e Dry Run:** Todas as ações são logadas em um arquivo
+    `project_organization.log`. O script suporta um modo `--dry-run` para
+    visualizar as alterações sem executá-las.
 
 Uso:
-    python organize_project.py [--dry-run] [--verbose]
-
-Argumentos:
-    --dry-run  Mostra as alterações que seriam feitas sem executá-las
-    --verbose  Exibe informações detalhadas durante a execução
+----
+- `python organize_project.py`: Executa a reorganização.
+- `python organize_project.py --dry-run`: Simula a reorganização.
+- `python organize_project.py --verbose`: Exibe logs detalhados durante a execução.
 """
-
 import os
 import shutil
 import sys
@@ -198,29 +210,32 @@ class ProjectOrganizer:
                 logger.error(f"Erro ao mover {src_path} para {dest_path}: {e}")
     
     def _update_imports(self, file_path: Path, old_name: str, new_name: str) -> None:
-        """Atualiza os imports no arquivo movido.
+        """
+        (Placeholder) Atualiza os imports no arquivo movido.
         
-        Args:
-            file_path: Caminho para o arquivo
-            old_name: Nome antigo do arquivo (sem caminho)
-            new_name: Novo nome do arquivo (com caminho relativo)
+        Esta função é um placeholder para futuras implementações que possam
+        atualizar automaticamente os imports relativos nos arquivos movidos.
+        Atualmente, ela não realiza nenhuma modificação.
         """
         try:
             with open(file_path, 'r', encoding='utf-8') as f:
                 content = f.read()
             
-            # Atualiza imports relativos
+            # ATENÇÃO: Lógica de atualização de import não implementada.
+            # A complexidade de analisar e reescrever imports de forma segura
+            # requer uma análise AST (Abstract Syntax Tree) ou regex muito robusto.
+            # Por enquanto, esta é uma operação manual.
             updated_content = content
             
-            # Salva o conteúdo atualizado
+            # Salva o conteúdo (atualmente inalterado)
             with open(file_path, 'w', encoding='utf-8') as f:
                 f.write(updated_content)
                 
             if self.verbose:
-                logger.debug(f"Atualizados imports em: {file_path}")
+                logger.debug(f"Arquivo verificado para atualização de imports (sem modificações): {file_path}")
                 
         except Exception as e:
-            logger.error(f"Erro ao atualizar imports em {file_path}: {e}")
+            logger.error(f"Erro ao tentar processar imports em {file_path}: {e}")
     
     def create_ci_cd_files(self) -> None:
         """Cria os arquivos de CI/CD."""
@@ -554,26 +569,34 @@ Cria uma nova página.
             
             # Relatório final
             if self.dry_run:
-                logger.info("\n=== RELATÓRIO (DRY RUN) ===")
-                logger.info("Nenhuma alteração real foi feita.")
+                logger.info("=" * 50)
+                logger.info("RELATÓRIO DE SIMULAÇÃO (DRY RUN)")
+                logger.info("=" * 50)
+                logger.info("Nenhuma alteração real foi feita no sistema de arquivos.")
+                logger.info("Revise o log acima para ver as ações que seriam executadas.")
             else:
-                logger.info("\n=== RELATÓRIO ===")
+                logger.info("=" * 50)
+                logger.info("RELATÓRIO DE REORGANIZAÇÃO")
+                logger.info("=" * 50)
                 logger.info(f"Diretórios criados: {len(self.created_dirs)}")
                 logger.info(f"Arquivos movidos: {len(self.moved_files)}")
                 
                 if self.verbose and self.moved_files:
-                    logger.info("\nArquivos movidos:")
+                    logger.info("\nDetalhes dos arquivos movidos:")
                     for src, dest in self.moved_files:
-                        logger.info(f"  {src} -> {dest}")
+                        logger.info(f"  - De: {src}")
+                        logger.info(f"    Para: {dest}")
                 
-                logger.info("\nPróximos passos:")
-                logger.info("1. Revise as alterações feitas")
-                logger.info("2. Atualize os imports nos arquivos conforme necessário")
-                logger.info("3. Execute os testes para garantir que tudo está funcionando")
-                logger.info("4. Faça commit das mudanças")
+                logger.info("\n--- PRÓXIMOS PASSOS RECOMENDADOS ---")
+                logger.info("1. Revise as alterações feitas nos diretórios e arquivos.")
+                logger.info("2. ATENÇÃO: Verifique manualmente os `imports` nos arquivos movidos.")
+                logger.info("3. Execute os testes para garantir que a aplicação continua funcionando.")
+                logger.info("4. Faça o commit das novas alterações no controle de versão.")
+                logger.info("   (git add . && git commit -m \"Refactor: Organiza a estrutura do projeto\")")
                 
-                # Cria um arquivo de log com as alterações
-                with open('project_reorganization.log', 'w', encoding='utf-8') as f:
+                # Cria um arquivo de log com o resumo das alterações
+                log_summary_path = self.project_root / 'project_reorganization_summary.log'
+                with open(log_summary_path, 'w', encoding='utf-8') as f:
                     f.write("=== RELATÓRIO DE REORGANIZAÇÃO DO PROJETO ===\n\n")
                     f.write(f"Data: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
                     f.write(f"Diretórios criados ({len(self.created_dirs)}):\n")
@@ -582,9 +605,10 @@ Cria uma nova página.
                     f.write("\nArquivos movidos:\n")
                     for src, dest in self.moved_files:
                         f.write(f"- {src} -> {dest}\n")
+                logger.info(f"\nUm resumo detalhado foi salvo em: {log_summary_path}")
         
         except Exception as e:
-            logger.error(f"Erro durante a reorganização do projeto: {e}", exc_info=True)
+            logger.error(f"Erro fatal durante a reorganização do projeto: {e}", exc_info=True)
             sys.exit(1)
 
 if __name__ == "__main__":

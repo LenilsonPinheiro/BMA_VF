@@ -1,4 +1,24 @@
 # -*- coding: utf-8 -*-
+"""
+==============================================================================
+Rotas de Autenticação (`/auth`)
+==============================================================================
+
+Este módulo, registrado como um Blueprint com o prefixo `/auth`, é responsável
+por todas as funcionalidades de autenticação do painel administrativo.
+
+Funcionalidades:
+----------------
+- **Login:** Apresenta a página de login e processa a submissão do formulário,
+  validando as credenciais do usuário contra as informações no banco de dados.
+- **Logout:** Encerra a sessão do usuário logado de forma segura.
+- **Segurança de Redirecionamento:** Inclui uma função `is_safe_url` para
+  prevenir ataques de "Open Redirect", garantindo que o usuário seja
+  redirecionado apenas para páginas dentro do mesmo domínio após o login.
+
+O `Flask-Login` é a principal extensão utilizada aqui para gerenciar as
+sessões de usuário.
+"""
 from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app
 from flask_login import login_user, logout_user, login_required, current_user
 from urllib.parse import urlparse
@@ -6,12 +26,7 @@ from ..models import User
 from ..forms import LoginForm
 from .. import db
 
-# ADICIONADO url_prefix='/auth' para evitar conflito com rotas do site
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
-"""
-Blueprint para rotas de autenticação de usuários.
-Gerencia o login, logout e garante a segurança contra redirecionamentos maliciosos.
-"""
 
 def is_safe_url(target: str) -> bool:
     """
