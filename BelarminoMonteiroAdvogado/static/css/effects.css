@@ -1,0 +1,192 @@
+/* BelarminoMonteiroAdvogado/static/css/effects.css
+   BIBLIOTECA DE EFEITOS VISUAIS MODULARES (V5.0)
+   -------------------------------------------------
+   Este arquivo contém as classes utilitárias para ativar efeitos modernos.
+   Eles são projetados para serem "mix-and-match" (combináveis).
+*/
+
+:root {
+    /* Cores Base (Devem ser sobrescritas pelo TenantConfig no futuro) */
+    --effect-primary: #d4af37; /* Dourado Padrão */
+    --effect-secondary: #1a1a1a;
+    --effect-glass-bg: rgba(255, 255, 255, 0.05);
+    --effect-glass-border: rgba(255, 255, 255, 0.1);
+    --effect-blur: 16px;
+}
+
+/* --- 1. AURORA BOREALIS BACKGROUND --- */
+/* Fundo animado com gradientes fluidos */
+.effect-aurora-bg {
+    background-color: #000;
+    position: relative;
+    overflow: hidden;
+    z-index: 0;
+}
+
+.effect-aurora-bg::before,
+.effect-aurora-bg::after {
+    content: '';
+    position: absolute;
+    width: 60vw;
+    height: 60vw;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.4;
+    animation: auroraMove 15s infinite alternate ease-in-out;
+    z-index: -1;
+}
+
+.effect-aurora-bg::before {
+    background: radial-gradient(circle, var(--effect-primary), transparent 70%);
+    top: -10%;
+    left: -10%;
+}
+
+.effect-aurora-bg::after {
+    background: radial-gradient(circle, #4a90e2, transparent 70%);
+    bottom: -10%;
+    right: -10%;
+    animation-delay: -5s;
+}
+
+@keyframes auroraMove {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(50px, 50px) scale(1.1); }
+}
+
+/* --- 2. GLASSMORPHISM (VIDRO) --- */
+.effect-glass {
+    background: var(--effect-glass-bg);
+    backdrop-filter: blur(var(--effect-blur));
+    -webkit-backdrop-filter: blur(var(--effect-blur));
+    border: 1px solid var(--effect-glass-border);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
+    color: white;
+}
+
+/* --- 3. NEUMORPHISM (SOFT UI) --- */
+.effect-neumorphism {
+    background: #e0e5ec;
+    border-radius: 20px;
+    box-shadow: 9px 9px 16px rgb(163,177,198,0.6), 
+               -9px -9px 16px rgba(255,255,255, 0.5);
+    color: #4d4d4d;
+    border: none;
+}
+
+/* --- 4. CLAYMORPHISM (3D FOFO) --- */
+.effect-clay {
+    background: white;
+    border-radius: 32px;
+    box-shadow: 8px 8px 16px 0 rgba(0, 0, 0, 0.1),
+                inset -8px -8px 12px 0 rgba(0, 0, 0, 0.05),
+                inset 8px 8px 12px 0 rgba(255, 255, 255, 1);
+    border: 1px solid rgba(255,255,255,0.4);
+}
+
+/* --- 5. GLITCH TEXT (CYBERPUNK) --- */
+.effect-glitch {
+    position: relative;
+    display: inline-block;
+}
+
+.effect-glitch:hover::before,
+.effect-glitch:hover::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: #000; /* Match bg color */
+}
+
+.effect-glitch:hover::before {
+    left: 2px;
+    text-shadow: -1px 0 red;
+    clip: rect(24px, 550px, 90px, 0);
+    animation: glitch-anim-2 3s infinite linear alternate-reverse;
+}
+
+.effect-glitch:hover::after {
+    left: -2px;
+    text-shadow: -1px 0 blue;
+    clip: rect(85px, 550px, 140px, 0);
+    animation: glitch-anim 2.5s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim {
+    0% { clip: rect(11px, 9999px, 81px, 0); }
+    20% { clip: rect(88px, 9999px, 12px, 0); }
+    40% { clip: rect(44px, 9999px, 33px, 0); }
+    60% { clip: rect(22px, 9999px, 66px, 0); }
+    80% { clip: rect(77px, 9999px, 55px, 0); }
+    100% { clip: rect(33px, 9999px, 11px, 0); }
+}
+
+/* --- UTILITÁRIOS DE LAYOUT (GRID BENTO) --- */
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 200px);
+    gap: 1.5rem;
+    padding: 2rem;
+}
+
+.bento-item {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s ease;
+}
+
+.bento-item:hover {
+    transform: scale(1.02);
+    z-index: 10;
+}
+
+.bento-item-large { grid-column: span 2; grid-row: span 2; }
+.bento-item-tall { grid-column: span 1; grid-row: span 2; }
+.bento-item-wide { grid-column: span 2; grid-row: span 1; }
+
+.bento-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+}
+
+.bento-item:hover .bento-content {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* --- KEN BURNS EFFECT --- */
+.ken-burns-bg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    animation: kenBurns 20s infinite alternate;
+}
+
+@keyframes kenBurns {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.2) translate(-2%, -2%); }
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 768px) {
+    .bento-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+    }
+    .bento-item-large, .bento-item-tall, .bento-item-wide {
+        grid-column: span 1;
+        grid-row: span 1;
+        min-height: 250px;
+    }
+}

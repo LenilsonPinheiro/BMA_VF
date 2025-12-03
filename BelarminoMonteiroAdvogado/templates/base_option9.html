@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+{#
+    TEMPLATE BASE - OPTION 9 (X-TUDO)
+    Versão: 5.0
+    Descrição: Estrutura base para o layout com efeitos avançados (Glassmorphism, Aurora).
+    Dependências: effects.css, style-option9.css
+#}
+<html lang="pt-br">
+<head>
+    {# Metatags de SEO, Charset e Viewport #}
+    {% include '_head_meta.html' %}
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/effects.css') }}">
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style-option9.css') }}">
+    
+    {# Bloco para injeção de CSS específico de páginas filhas #}
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body class="effect-aurora-bg text-white">
+
+    {% include '_cookie_consent.html' %}
+
+    {% include '_navigation.html' %}
+
+    <div class="container mt-3" style="position: relative; z-index: 1050;">
+        {% include '_flashes.html' %}
+    </div>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    {% include '_footer.html' ignore missing %}
+    
+    {% include '_scripts_base.html' %}
+    
+    <script>
+        /**
+         * Inicializa o Observer para animações de "Scroll Reveal".
+         * Adiciona classes de visibilidade quando elemento entra na viewport.
+         */
+        document.addEventListener('DOMContentLoaded', function() {
+            const observerOptions = {
+                threshold: 0.1, // Dispara quando 10% do item está visível
+                rootMargin: "0px"
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        // Força estilos inline para garantir animação
+                        entry.target.style.opacity = 1;
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Seleciona todos elementos marcados para animação
+            document.querySelectorAll('.reveal-on-scroll').forEach((el) => {
+                // Estado inicial (invisível e deslocado)
+                el.style.opacity = 0;
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'all 0.8s cubic-bezier(0.5, 0, 0, 1)';
+                observer.observe(el);
+            });
+        });
+    </script>
+    
+    {# Bloco para injeção de Scripts específicos de páginas filhas #}
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

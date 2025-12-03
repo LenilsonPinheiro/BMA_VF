@@ -1,0 +1,84 @@
+/* style-option9.css
+   Estilos específicos para o Tema X-Tudo (Option 9) - BMA Framework V5.0
+   ----------------------------------------------------------------------
+   Este arquivo trabalha em conjunto com effects.css. 
+   Enquanto effects.css fornece as ferramentas visuais (Aurora, Glass),
+   este arquivo aplica as regras de layout estrutural (Navbar, Footer, Tipografia).
+*/
+
+:root {
+    /* Definição de Cores Específicas deste Tema (Sobrescrevendo defaults do Bootstrap) */
+    --effect-primary: #d4af37; /* Dourado Nobre - Usado em botões e destaques */
+    --effect-secondary: #0a0a0a; /* Fundo Profundo - Para contraste */
+}
+
+/* --- NAVBAR (CABEÇALHO) --- */
+/* Torna a barra de navegação translúcida para se fundir com o Hero Section e Aurora BG */
+.navbar {
+    background: rgba(0, 0, 0, 0.3) !important; /* Fundo semi-transparente */
+    backdrop-filter: blur(10px); /* Efeito de desfoque estilo iOS */
+    -webkit-backdrop-filter: blur(10px); /* Suporte Safari */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05); /* Borda sutil */
+    transition: all 0.3s ease;
+}
+
+/* Ajuste dos links da navbar para garantir leitura no fundo escuro */
+.navbar-light .navbar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.85) !important;
+    font-weight: 500;
+}
+
+.navbar-light .navbar-nav .nav-link:hover,
+.navbar-light .navbar-nav .nav-link.active {
+    color: var(--effect-primary) !important;
+}
+
+/* Ajuste da logo na navbar (caso seja texto ou imagem) */
+.navbar-brand {
+    color: white !important;
+}
+
+/* --- FOOTER (RODAPÉ) --- */
+/* Fundo escuro semitransparente para legibilidade sobre o efeito Aurora */
+footer {
+    background: rgba(0, 0, 0, 0.8) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(255,255,255,0.1);
+    color: #ccc;
+    margin-top: 0 !important; /* Remove margens padrão que possam criar buracos */
+}
+
+footer h5 {
+    color: white !important;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
+
+footer a {
+    color: #adb5bd !important;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+footer a:hover {
+    color: var(--effect-primary) !important;
+}
+
+/* --- TIPOGRAFIA & ELEMENTOS GERAIS --- */
+/* Força cor branca em títulos para contraste com o fundo escuro do Aurora */
+h1, h2, h3, h4, h5, h6 {
+    color: white;
+}
+
+/* Ajuste para textos secundários (muted) ficarem legíveis no escuro */
+.text-muted {
+    color: #adb5bd !important; /* Cinza claro em vez do cinza escuro padrão */
+}
+
+/* Ajuste nos cards para garantir que não tenham fundo branco sólido indesejado */
+.card {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+}

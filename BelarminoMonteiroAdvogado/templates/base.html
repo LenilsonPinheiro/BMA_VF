@@ -2,14 +2,14 @@
 {#
    BelarminoMonteiroAdvogado/templates/base.html: Template mestre para despacho de temas (Theme Dispatcher).
 
-   Este template é o ponto de entrada para todas as páginas da aplicação. Ele atua como um
-   "roteador de temas", selecionando qual template base específico de tema (`base_option1.html`,
-   `base_option2.html`, etc.) deve ser estendido com base na variável `theme` (definida globalmente
-   pelas configurações do sistema).
+   Este template é o Roteador Visual Central.
+   REGRA DE NEGÓCIO: Ele decide qual arquivo "base_optionX.html" carregar
+   baseado na variável global `theme`.
 
-   ATUALIZAÇÃO V2.0: Inclui suporte para Options 5, 6, 7 e 8.
-   Os estilos CSS do `cookie_consent.css` são carregados aqui para garantir que o banner
-   apareça em todas as páginas, independentemente do tema ou layout.
+   HISTÓRICO DE VERSÕES:
+   - V1.0: Options 1-4 (Legado)
+   - V2.0: Options 5-8 (Novos Layouts)
+   - V5.0: Option 9 (X-Tudo Framework / God Mode) [ATUAL]
 #}
 
 {#
@@ -18,59 +18,58 @@
    ==========================================================================
 #}
 
-{# --- NOVOS LAYOUTS (V2.0) --- #}
+{# --- V5.0: FRAMEWORK X-TUDO (PRIORIDADE ALTA) --- #}
+{% if theme == 'option9' %}
+    {# Layout Experimental "Omni-Channel" com Efeitos de IA e Aurora Boreal #}
+    {% extends 'base_option9.html' %}
 
-{# Verifica se o tema atual é 'option8' (Tech V2) #}
-{% if theme == 'option8' %}
+{# --- V2.0: LAYOUTS MODERNOS --- #}
+{% elif theme == 'option8' %}
     {% extends 'base_option8.html' %}
 
-{# Verifica se o tema atual é 'option7' (Boutique V2) #}
 {% elif theme == 'option7' %}
     {% extends 'base_option7.html' %}
 
-{# Verifica se o tema atual é 'option6' (Corporativo V2) #}
 {% elif theme == 'option6' %}
     {% extends 'base_option6.html' %}
 
-{# Verifica se o tema atual é 'option5' (Luxo V2) #}
 {% elif theme == 'option5' %}
     {% extends 'base_option5.html' %}
 
-{# --- LAYOUTS ANTIGOS (V1.0 - Preservados) --- #}
-
-{# Verifica se o tema atual é 'option4' #}
+{# --- V1.0: LAYOUTS LEGADOS (MANTER PARA RETROCOMPATIBILIDADE) --- #}
 {% elif theme == 'option4' %}
     {% extends 'base_option4.html' %}
 
-{# Verifica se o tema atual é 'option3' #}
 {% elif theme == 'option3' %}
     {% extends 'base_option3.html' %}
 
-{# Verifica se o tema atual é 'option2' #}
 {% elif theme == 'option2' %}
     {% extends 'base_option2.html' %}
 
-{# Se nenhum tema específico for correspondido ou se o tema for 'option1' (padrão) #}
+{# --- FALLBACK DE SEGURANÇA --- #}
 {% else %}
-    {# Layout Padrão Antigo: Invisible Luxury #}
+    {# Se nenhum tema for definido, carrega o layout clássico #}
     {% extends 'base_option1.html' %}
 
 {% endif %}
 
 {#
-   BLOCO HEAD GLOBAL PARA PRÉ-CARREGAMENTO DE RECURSOS (PRELOAD)
-   O conteúdo deste bloco será injetado no bloco 'head' dos templates filhos.
+   BLOCO HEAD GLOBAL (PRELOADER & ASSETS CRÍTICOS)
+   Estes recursos são carregados em TODOS os temas para garantir consistência.
 #}
 {% block head %}
-    {# Pré-carrega o vídeo institucional em formato WebM, otimizado para navegadores modernos. #}
+    {# Performance: Pré-carregamento de vídeo institucional #}
     <link rel="preload" href="{{ url_for('static', filename='videos/institucional.webm') }}" as="video" type="video/webm">
-    {# Pré-carrega a imagem de banner padrão para páginas internas. #}
+    
+    {# Performance: Pré-carregamento de imagem de fundo padrão #}
     <link rel="preload" href="{{ url_for('static', filename='images/banners/inner_bg_default.jpg') }}" as="image">
-    {# Carrega os estilos globais do banner de consentimento de cookies. #}
+    
+    {# Compliance: Banner de Cookies Obrigatório (LGPD) #}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/cookie_consent.css') }}">
-    {# Carrega os estilos globais das mensagens flash. #}
+    
+    {# UX: Sistema de Mensagens Flash (Alertas do Sistema) #}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/flashes.css') }}">
-    {# Carrega os estilos globais do cabeçalho de páginas internas. #}
+    
+    {# Layout: Cabeçalhos Internos #}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/inner_header.css') }}">
-
 {% endblock %}

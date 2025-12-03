@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{#
+    HOME OPTION 9 - X-TUDO SHOWCASE
+    -------------------------------
+    Implementa as 4 seções obrigatórias do Framework V5:
+    1. Hero: Carrossel/Parallax com Ken Burns.
+    2. Serviços: Bento Grid Dinâmico.
+    3. Galeria: Masonry Layout com Claymorphism.
+    4. História: Timeline Scroll Reveal.
+#}
+
+{% block title %}Início - X-Tudo Framework V5{% endblock %}
+
+{% block content %}
+
+    <section class="hero-section position-relative" style="height: 100vh; overflow: hidden; margin-top: -76px;">
+        
+        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;">
+            <img src="{{ url_for('static', filename='images/banners/areas_bg.jpg') }}" 
+                 class="ken-burns-bg w-100 h-100 object-fit-cover" 
+                 alt="Background Imersivo">
+            <div style="position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(to bottom, rgba(0,0,0,0.3), var(--effect-secondary));"></div>
+        </div>
+
+        <div class="container h-100 d-flex align-items-center justify-content-center text-center">
+            <div class="effect-glass p-5 d-inline-block reveal-on-scroll">
+                <h1 class="display-2 fw-bold effect-glitch mb-3" data-text="BMA FRAMEWORK V5" style="color: white;">
+                    BMA FRAMEWORK V5
+                </h1>
+                <p class="lead text-white mb-4">Advocacia de Alta Performance | Tecnologia | Resultados</p>
+                
+                <div class="d-flex gap-3 justify-content-center">
+                    <a href="#servicos" class="btn btn-lg btn-outline-light rounded-pill px-5">Explorar</a>
+                    <a href="{{ url_for('main.contato') }}" class="btn btn-lg btn-primary rounded-pill px-5 border-0" style="background-color: var(--effect-primary);">Fale Conosco</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="servicos" class="py-5">
+        <div class="container py-5">
+            <div class="text-center mb-5 reveal-on-scroll">
+                <h2 class="display-4 fw-bold text-white">Nossas Áreas</h2>
+                <div style="width: 80px; height: 4px; background: var(--effect-primary); margin: 20px auto;"></div>
+            </div>
+            
+            <div class="bento-grid">
+                
+                <div class="bento-item bento-item-large effect-glass" style="background-image: url('https://source.unsplash.com/800x800/?lawyer'); background-size: cover;">
+                    <div class="bento-content">
+                        <h3 class="text-white">Direito Civil</h3>
+                        <p class="text-white-50">Soluções completas para conflitos e contratos complexos.</p>
+                    </div>
+                </div>
+
+                <div class="bento-item bento-item-tall effect-glass" style="background-image: url('https://source.unsplash.com/400x800/?court'); background-size: cover;">
+                    <div class="bento-content">
+                        <h3 class="text-white">Contencioso</h3>
+                        <p class="text-white-50">Atuação combativa nos tribunais superiores.</p>
+                    </div>
+                </div>
+
+                <div class="bento-item effect-glass d-flex align-items-center justify-content-center" style="background: rgba(255,255,255,0.05);">
+                    <i class="bi bi-scale display-1 text-white"></i>
+                </div>
+
+                <div class="bento-item effect-glass" style="background-image: url('https://source.unsplash.com/400x400/?technology'); background-size: cover;">
+                    <div class="bento-content">
+                        <h3 class="text-white">Direito Digital</h3>
+                    </div>
+                </div>
+
+                <div class="bento-item bento-item-wide effect-glass" style="background-image: url('https://source.unsplash.com/800x400/?meeting'); background-size: cover;">
+                    <div class="bento-content">
+                        <h3 class="text-white">Consultoria Estratégica</h3>
+                        <p class="text-white-50">Compliance e Governança Corporativa para empresas.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="galeria" class="py-5 position-relative">
+        <div class="container">
+            <h2 class="display-4 fw-bold text-center text-white mb-5 reveal-on-scroll">Estrutura Premium</h2>
+            
+            <div class="row g-4" data-masonry='{"percentPosition": true }'>
+                
+                <div class="col-md-4 reveal-on-scroll">
+                    <div class="effect-clay p-4 text-center">
+                        <img src="https://source.unsplash.com/400x300/?office" class="img-fluid rounded-3 mb-3 shadow-sm" alt="Escritório">
+                        <h5 class="fw-bold text-dark">Sede Paulista</h5>
+                        <p class="text-muted small">Localização estratégica no coração financeiro.</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 reveal-on-scroll" style="transition-delay: 0.2s;">
+                    <div class="effect-clay p-4 text-center">
+                        <div class="ratio ratio-1x1 mb-3 rounded-3 overflow-hidden">
+                             <video autoplay loop muted playsinline class="w-100 h-100 object-fit-cover">
+                                <source src="{{ url_for('static', filename='videos/institucional.webm') }}" type="video/webm">
+                                <img src="https://source.unsplash.com/400x400/?digital" alt="Video Placeholder">
+                            </video>
+                        </div>
+                        <h5 class="fw-bold text-dark">Tecnologia & IA</h5>
+                        <p class="text-muted small">Inteligência Artificial aplicada em todos os processos.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4 reveal-on-scroll" style="transition-delay: 0.4s;">
+                    <div class="effect-clay p-4 text-center">
+                        <img src="https://source.unsplash.com/400x500/?meeting-room" class="img-fluid rounded-3 mb-3 shadow-sm" alt="Reunião">
+                        <h5 class="fw-bold text-dark">Salas Privativas</h5>
+                        <p class="text-muted small">Sigilo absoluto e conforto para nossos clientes.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="historia" class="py-5 mb-5">
+        <div class="container">
+            <h2 class="display-4 fw-bold text-center text-white mb-5 reveal-on-scroll">Nossa Trajetória</h2>
+            
+            <div style="position: relative; max-width: 800px; margin: 0 auto; border-left: 3px solid var(--effect-primary); padding-left: 40px;">
+                
+                <div class="mb-5 position-relative reveal-on-scroll">
+                    <div style="position: absolute; left: -51px; top: 0; width: 20px; height: 20px; background: var(--effect-primary); border-radius: 50%; box-shadow: 0 0 10px var(--effect-primary);"></div>
+                    
+                    <div class="effect-glass p-4">
+                        <span class="badge bg-warning text-dark mb-2">2010</span>
+                        <h4 class="text-white">A Fundação</h4>
+                        <p class="text-white-50 mb-0">Início das operações com foco exclusivo em direito civil e familiar.</p>
+                    </div>
+                </div>
+
+                <div class="mb-5 position-relative reveal-on-scroll">
+                    <div style="position: absolute; left: -51px; top: 0; width: 20px; height: 20px; background: var(--effect-primary); border-radius: 50%; box-shadow: 0 0 10px var(--effect-primary);"></div>
+                    
+                    <div class="effect-glass p-4" style="border-color: var(--effect-primary);">
+                        <span class="badge bg-success mb-2">2025</span>
+                        <h4 class="text-white">A Era da IA</h4>
+                        <p class="text-white-50 mb-0">Lançamento do BMA Framework V5.0: O primeiro escritório 100% integrado com Agentes Autônomos.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js" integrity="sha384-GNFwBvfVxBkLMJpYMOABq3c+d3KnQxudP/mGPkzpZSTYykLBNsZEnG2D9G/X/+7D" crossorigin="anonymous" async></script>
+{% endblock %}
