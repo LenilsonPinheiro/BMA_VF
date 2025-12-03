@@ -88,10 +88,10 @@
                 <div class="color-group-title text-success">Novos Temas (V2.0)</div>
                 
                 {% set new_themes_data = [
-                    ('color_opt5_primary', 'Invisible Luxury (Opt 5)', 'cor_primaria_tema5', settings.cor_primaria_tema5 or '#9b1b20', 'Cor de destaque (Vermelho)'),
-                    ('color_opt6_primary', 'Titan Executive (Opt 6)', 'cor_primaria_tema6', settings.cor_primaria_tema6 or '#002F49', 'Cor primária (Navy)'),
-                    ('color_opt7_primary', 'Golden Boutique (Opt 7)', 'cor_primaria_tema7', settings.cor_primaria_tema7 or '#D4AF37', 'Cor Dourada Principal'),
-                    ('color_opt8_primary', 'Future Tech (Opt 8)', 'cor_primaria_tema8', settings.cor_primaria_tema8 or '#FF4D4D', 'Cor Neon (Glow)')
+                    ('color_opt5_primary', 'Invisible Luxury (Opt 5)', 'cor_primaria_tema5', (theme_settings.cor_primaria_tema5 if theme_settings else None) or '#9b1b20', 'Cor de destaque (Vermelho)'),
+                    ('color_opt6_primary', 'Titan Executive (Opt 6)', 'cor_primaria_tema6', (theme_settings.cor_primaria_tema6 if theme_settings else None) or '#002F49', 'Cor primária (Navy)'),
+                    ('color_opt7_primary', 'Golden Boutique (Opt 7)', 'cor_primaria_tema7', (theme_settings.cor_primaria_tema7 if theme_settings else None) or '#D4AF37', 'Cor Dourada Principal'),
+                    ('color_opt8_primary', 'Future Tech (Opt 8)', 'cor_primaria_tema8', (theme_settings.cor_primaria_tema8 if theme_settings else None) or '#FF4D4D', 'Cor Neon (Glow)')
                 ] %}
 
                 {% for field_name, label, setting_key, default_val, help in new_themes_data %}
@@ -119,11 +119,11 @@
                 <div class="color-group-title text-secondary">Temas Clássicos (V1.0)</div>
                 
                 {% set classic_themes_data = [
-                    ('color_opt1_primary', 'Luxo V1 (Opt 1)', 'cor_primaria_tema1', settings.cor_primaria_tema1 or '#9B1B20', 'Vermelho Clássico'),
-                    ('color_opt2_primary', 'Titan V1 (Opt 2)', 'cor_primaria_tema2', settings.cor_primaria_tema2 or '#002F49', 'Navy Corporativo'),
-                    ('color_opt2_secondary', 'Titan Sec. (Opt 2)', 'cor_secundaria_tema2', settings.cor_secundaria_tema2 or '#8A1218', 'Vermelho Secundário'),
-                    ('color_opt3_primary', 'Boutique V1 (Opt 3)', 'cor_primaria_tema3', settings.cor_primaria_tema3 or '#B78C1A', 'Dourado Premium'),
-                    ('color_opt4_primary', 'Tech V1 (Opt 4)', 'cor_primaria_tema4', settings.cor_primaria_tema4 or '#FF4D4D', 'Vermelho Neon')
+                    ('color_opt1_primary', 'Luxo V1 (Opt 1)', 'cor_primaria_tema1', (theme_settings.cor_primaria_tema1 if theme_settings else None) or '#9B1B20', 'Vermelho Clássico'),
+                    ('color_opt2_primary', 'Titan V1 (Opt 2)', 'cor_primaria_tema2', (theme_settings.cor_primaria_tema2 if theme_settings else None) or '#002F49', 'Navy Corporativo'),
+                    ('color_opt2_secondary', 'Titan Sec. (Opt 2)', 'cor_secundaria_tema2', (theme_settings.cor_secundaria_tema2 if theme_settings else None) or '#8A1218', 'Vermelho Secundário'),
+                    ('color_opt3_primary', 'Boutique V1 (Opt 3)', 'cor_primaria_tema3', (theme_settings.cor_primaria_tema3 if theme_settings else None) or '#B78C1A', 'Dourado Premium'),
+                    ('color_opt4_primary', 'Tech V1 (Opt 4)', 'cor_primaria_tema4', (theme_settings.cor_primaria_tema4 if theme_settings else None) or '#FF4D4D', 'Vermelho Neon')
                 ] %}
 
                 {% for field_name, label, setting_key, default_val, help in classic_themes_data %}

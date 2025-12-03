@@ -1,0 +1,6 @@
+:root {
+    --titan-navy: #002F49;
+    --titan-gold: var(--color-primary, #b92027);
+    --font-heading: 'Barlow', sans-serif;
+    --font-body: 'Manrope', sans-serif;
+}

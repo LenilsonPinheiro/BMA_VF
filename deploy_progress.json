@@ -1,0 +1,260 @@
+{
+  "status": "bloqueado",
+  "current_step": 7,
+  "total_steps": 7,
+  "start_time": 1764639266.1772268,
+  "tests_passed": 6,
+  "tests_failed": 7,
+  "tests_total": 13,
+  "messages": [
+    {
+      "time": "22:34:26",
+      "level": "success",
+      "text": "Dashboard gerado: deploy_dashboard.html"
+    },
+    {
+      "time": "22:34:26",
+      "level": "info",
+      "text": "Iniciando: test_app.py"
+    },
+    {
+      "time": "22:34:27",
+      "level": "success",
+      "text": "✓ test_app.py PASSOU"
+    },
+    {
+      "time": "22:34:27",
+      "level": "info",
+      "text": "Iniciando: test_database_schema.py"
+    },
+    {
+      "time": "22:34:28",
+      "level": "error",
+      "text": "✗ test_database_schema.py FALHOU"
+    },
+    {
+      "time": "22:34:28",
+      "level": "warning",
+      "text": "    test_01_create_old_schema (__main__.TestDatabaseSchema.test_01_create_old_schema)"
+    },
+    {
+      "time": "22:34:28",
+      "level": "warning",
+      "text": "    Teste 1: Criar schema antigo (sem cor_texto_dark) ... ERROR"
+    },
+    {
+      "time": "22:34:28",
+      "level": "warning",
+      "text": "    test_02_detect_missing_column (__main__.TestDatabaseSchema.test_02_detect_missing_column)"
+    },
+    {
+      "time": "22:34:28",
+      "level": "info",
+      "text": "Iniciando: test_all_routes_complete.py"
+    },
+    {
+      "time": "22:34:29",
+      "level": "success",
+      "text": "✓ test_all_routes_complete.py PASSOU"
+    },
+    {
+      "time": "22:34:29",
+      "level": "info",
+      "text": "Iniciando: test_admin_routes.py"
+    },
+    {
+      "time": "22:34:31",
+      "level": "error",
+      "text": "✗ test_admin_routes.py FALHOU"
+    },
+    {
+      "time": "22:34:31",
+      "level": "warning",
+      "text": "    Traceback (most recent call last):"
+    },
+    {
+      "time": "22:34:31",
+      "level": "warning",
+      "text": "      File \"D:\\PROJETOS PYTHON 2025\\BMA_VF\\test_admin_routes.py\", line 223, in test_admin_protection"
+    },
+    {
+      "time": "22:34:31",
+      "level": "warning",
+      "text": "        self.print_test(f\"Proteção: {route}\", \"PASS\", \"Redireciona para login\")"
+    },
+    {
+      "time": "22:34:31",
+      "level": "info",
+      "text": "Iniciando: test_all_themes_complete.py"
+    },
+    {
+      "time": "22:34:34",
+      "level": "success",
+      "text": "✓ test_all_themes_complete.py PASSOU"
+    },
+    {
+      "time": "22:34:34",
+      "level": "info",
+      "text": "Iniciando: test_all_themes.py"
+    },
+    {
+      "time": "22:34:39",
+      "level": "success",
+      "text": "✓ test_all_themes.py PASSOU"
+    },
+    {
+      "time": "22:34:39",
+      "level": "info",
+      "text": "Iniciando: test_links_rotas_completo.py"
+    },
+    {
+      "time": "22:34:41",
+      "level": "success",
+      "text": "✓ test_links_rotas_completo.py PASSOU"
+    },
+    {
+      "time": "22:34:41",
+      "level": "info",
+      "text": "Iniciando: test_media_completo.py"
+    },
+    {
+      "time": "22:34:41",
+      "level": "error",
+      "text": "✗ test_media_completo.py FALHOU"
+    },
+    {
+      "time": "22:34:41",
+      "level": "warning",
+      "text": "    Traceback (most recent call last):"
+    },
+    {
+      "time": "22:34:41",
+      "level": "warning",
+      "text": "      File \"D:\\PROJETOS PYTHON 2025\\BMA_VF\\test_media_completo.py\", line 332, in <module>"
+    },
+    {
+      "time": "22:34:41",
+      "level": "warning",
+      "text": "        exit_code = main()"
+    },
+    {
+      "time": "22:34:41",
+      "level": "info",
+      "text": "Iniciando: test_pre_deploy_completo.py"
+    },
+    {
+      "time": "22:34:43",
+      "level": "error",
+      "text": "✗ test_pre_deploy_completo.py FALHOU"
+    },
+    {
+      "time": "22:34:43",
+      "level": "warning",
+      "text": "    Traceback (most recent call last):"
+    },
+    {
+      "time": "22:34:43",
+      "level": "warning",
+      "text": "      File \"D:\\PROJETOS PYTHON 2025\\BMA_VF\\test_pre_deploy_completo.py\", line 736, in <module>"
+    },
+    {
+      "time": "22:34:43",
+      "level": "warning",
+      "text": "        exit_code = main()"
+    },
+    {
+      "time": "22:34:43",
+      "level": "info",
+      "text": "Iniciando: test_pre_deploy_completo_v2.py"
+    },
+    {
+      "time": "22:34:44",
+      "level": "error",
+      "text": "✗ test_pre_deploy_completo_v2.py FALHOU"
+    },
+    {
+      "time": "22:34:44",
+      "level": "warning",
+      "text": "    test_01_import_app (__main__.TestPreDeploy.test_01_import_app)"
+    },
+    {
+      "time": "22:34:44",
+      "level": "warning",
+      "text": "    Teste 1: Importar aplicação ... ERROR"
+    },
+    {
+      "time": "22:34:44",
+      "level": "warning",
+      "text": "    test_02_database_models (__main__.TestPreDeploy.test_02_database_models)"
+    },
+    {
+      "time": "22:34:44",
+      "level": "info",
+      "text": "Iniciando: test_completo_final.py"
+    },
+    {
+      "time": "22:34:45",
+      "level": "error",
+      "text": "✗ test_completo_final.py FALHOU"
+    },
+    {
+      "time": "22:34:45",
+      "level": "warning",
+      "text": "    Traceback (most recent call last):"
+    },
+    {
+      "time": "22:34:45",
+      "level": "warning",
+      "text": "      File \"D:\\PROJETOS PYTHON 2025\\BMA_VF\\test_completo_final.py\", line 424, in <module>"
+    },
+    {
+      "time": "22:34:45",
+      "level": "warning",
+      "text": "        sys.exit(main())"
+    },
+    {
+      "time": "22:34:45",
+      "level": "info",
+      "text": "Iniciando: test_human_simulation.py"
+    },
+    {
+      "time": "22:35:25",
+      "level": "success",
+      "text": "✓ test_human_simulation.py PASSOU"
+    },
+    {
+      "time": "22:35:25",
+      "level": "info",
+      "text": "Iniciando: test_visual_humano_completo.py"
+    },
+    {
+      "time": "22:35:27",
+      "level": "error",
+      "text": "✗ test_visual_humano_completo.py FALHOU"
+    },
+    {
+      "time": "22:35:27",
+      "level": "warning",
+      "text": "    Traceback (most recent call last):"
+    },
+    {
+      "time": "22:35:27",
+      "level": "warning",
+      "text": "      File \"D:\\PROJETOS PYTHON 2025\\BMA_VF\\test_visual_humano_completo.py\", line 406, in executar_teste_completo"
+    },
+    {
+      "time": "22:35:27",
+      "level": "warning",
+      "text": "        self.testar_tema(tema_id)"
+    },
+    {
+      "time": "22:35:27",
+      "level": "error",
+      "text": "Deploy finalizado: 6/13 passaram"
+    }
+  ],
+  "estimated_completion": "2025-12-01T22:35:27.575669",
+  "phase": "Validação Final",
+  "percentage": 100.0,
+  "timestamp": "2025-12-01T22:35:27.577017"
+}

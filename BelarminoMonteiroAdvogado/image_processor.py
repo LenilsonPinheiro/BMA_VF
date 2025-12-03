@@ -2,18 +2,18 @@
 """
 BelarminoMonteiroAdvogado/image_processor.py
 
-Processador AUTOMÁTICO de imagens com QUALIDADE MÁXIMA.
-Otimiza automaticamente todas as imagens enviadas via upload.
+Módulo para processamento e otimização automática de imagens.
+Garanta qualidade visual máxima e performance ao lidar com uploads de imagens.
 
-Funcionalidades:
-1. Otimização automática ao fazer upload
-2. Qualidade 95% (imperceptível ao olho humano)
-3. Conversão para WebP
-4. Redimensionamento inteligente
-5. Backup automático
-6. Correção de orientação EXIF
+Funcionalidades Principais:
+1.  **Otimização Automática:** Comprime imagens de forma inteligente.
+2.  **Qualidade Visual:** Mantém 95% da qualidade (imperceptível ao olho humano) por padrão.
+3.  **Conversão para WebP:** Converte imagens para o formato WebP para melhor performance web.
+4.  **Redimensionamento Inteligente:** Redimensiona imagens grandes para uma largura máxima definida, mantendo proporções.
+5.  **Backup Automático:** Cria backups das imagens originais antes da otimização.
+6.  **Correção de Orientação EXIF:** Ajusta automaticamente a orientação de imagens baseada em metadados EXIF.
 
-Autor: 
+Autor: Lenilson Pinheiro
 Data: Janeiro 2025
 """
 
@@ -21,108 +21,144 @@ from PIL import Image, ImageOps
 from pathlib import Path
 import os
 from datetime import datetime
+from flask import current_app # Importar current_app para logging no contexto da aplicação
 
 class ImageProcessor:
     """
-    Processador automático de imagens com qualidade máxima.
+    Processador automático de imagens com foco em qualidade e otimização para web.
+    Permite configurar a qualidade de compressão, largura máxima e criação de backups.
     """
     
-    def __init__(self, quality=95, max_width=2560, create_backup=True):
+    def __init__(self, quality: int = 95, max_width: int = 2560, create_backup: bool = True):
         """
-        Inicializa o processador de imagens.
+        Inicializa o processador de imagens com as configurações desejadas.
         
         Args:
-            quality (int): Qualidade da compressão WebP (0-100). Padrão: 95 (imperceptível)
-            max_width (int): Largura máxima em pixels. Padrão: 2560
-            create_backup (bool): Se deve criar backup das originais. Padrão: True
+            quality (int): A qualidade de compressão para o formato WebP (0-100).
+                           Valores próximos a 95 são geralmente imperceptíveis em perdas.
+                           Padrão: 95.
+            max_width (int): A largura máxima em pixels para a imagem otimizada.
+                             Imagens maiores serão redimensionadas para esta largura,
+                             mantendo a proporção. Padrão: 2560.
+            create_backup (bool): Se `True`, um backup da imagem original será criado
+                                  em um subdiretório 'originals' antes da otimização.
+                                  Padrão: True.
         """
         self.quality = quality
         self.max_width = max_width
         self.create_backup = create_backup
         
-    def optimize_image(self, input_path, output_path=None):
+    def optimize_image(self, input_path: Path | str, output_path: Path | str = None) -> tuple[bool, int, int, str | None]:
         """
-        Otimiza uma imagem mantendo qualidade visual máxima.
+        Otimiza uma imagem convertendo-a para WebP, redimensionando-a e corrigindo a orientação EXIF.
         
         Args:
-            input_path (str|Path): Caminho da imagem original
-            output_path (str|Path): Caminho de saída (opcional, usa .webp por padrão)
+            input_path (str | Path): Caminho completo para a imagem original.
+            output_path (str | Path, optional): Caminho completo para salvar a imagem otimizada.
+                                              Se None, a imagem será salva no mesmo diretório
+                                              com a extensão `.webp`.
+                                              Padrão: None.
             
         Returns:
-            tuple: (sucesso, tamanho_original, tamanho_otimizado, caminho_saida)
+            tuple: Uma tupla contendo:
+                - bool: `True` se a otimização foi bem-sucedida, `False` caso contrário.
+                - int: Tamanho do arquivo original em bytes.
+                - int: Tamanho do arquivo otimizado em bytes.
+                - str | None: Caminho completo para a imagem otimizada (WebP) ou None em caso de falha.
         """
         try:
             input_path = Path(input_path)
             
-            # Definir caminho de saída
+            # Define o caminho de saída para a imagem otimizada.
             if output_path is None:
                 output_path = input_path.with_suffix('.webp')
             else:
                 output_path = Path(output_path)
             
-            # Criar backup se solicitado
+            # Cria um backup da imagem original, se a opção estiver ativada e o arquivo existir.
             if self.create_backup and input_path.exists():
                 backup_dir = input_path.parent / 'originals'
-                backup_dir.mkdir(exist_ok=True)
+                backup_dir.mkdir(exist_ok=True) # Garante que o diretório de backup exista
                 backup_path = backup_dir / input_path.name
                 
-                # Copiar apenas se backup não existir
+                # Copia o arquivo original para o backup apenas se ele ainda não existir lá.
                 if not backup_path.exists():
                     import shutil
                     shutil.copy2(input_path, backup_path)
+                    current_app.logger.debug(f"Backup de '{input_path.name}' criado em '{backup_path}'.")
             
-            # Abrir e processar imagem
+            # Abre a imagem usando Pillow
             img = Image.open(input_path)
             original_size = input_path.stat().st_size
             
-            # Corrigir orientação EXIF automaticamente
+            # Corrige a orientação da imagem usando dados EXIF (se presentes).
             img = ImageOps.exif_transpose(img)
             
-            # Converter para RGB mantendo qualidade
+            # Converte a imagem para o modo RGB para garantir compatibilidade com WebP e evitar problemas de transparência.
             img = self._convert_to_rgb(img)
             
-            # Redimensionar apenas se muito grande
+            # Redimensiona a imagem de forma inteligente se ela exceder a largura máxima configurada.
             img, resized = self._smart_resize(img)
+            if resized:
+                current_app.logger.debug(f"Imagem '{input_path.name}' redimensionada para largura máxima de {self.max_width}px.")
             
-            # Salvar como WebP com qualidade máxima
+            # Salva a imagem como WebP com a qualidade especificada.
             img.save(
                 output_path,
                 'webp',
                 quality=self.quality,
-                method=6,  # Melhor compressão
-                exact=False  # Permite otimizações
+                method=6,  # 'method=6' otimiza o tempo de compressão versus tamanho do arquivo para WebP.
+                exact=False  # Permite que a Pillow faça otimizações adicionais.
             )
             
             new_size = output_path.stat().st_size
             
+            current_app.logger.info(f"Imagem '{input_path.name}' otimizada para '{output_path.name}'. Original: {original_size} bytes, Otimizado: {new_size} bytes.")
             return True, original_size, new_size, str(output_path)
             
         except Exception as e:
-            print(f"Erro ao otimizar {input_path}: {str(e)}")
+            current_app.logger.error(f"Erro ao otimizar imagem '{input_path}': {str(e)}", exc_info=True)
             return False, 0, 0, None
     
-    def _convert_to_rgb(self, img):
-        """Converte imagem para RGB mantendo qualidade."""
+    def _convert_to_rgb(self, img: Image.Image) -> Image.Image:
+        """
+        Converte uma imagem para o modo RGB, lidando com diferentes modos de imagem e transparência.
+        Garante que a imagem esteja em um formato compatível para salvar como WebP.
+        
+        Args:
+            img (Image.Image): Objeto de imagem PIL.
+
+        Returns:
+            Image.Image: O objeto de imagem PIL convertido para RGB.
+        """
         if img.mode in ('RGBA', 'LA'):
-            # Criar fundo branco de alta qualidade
+            # Cria um fundo branco para imagens com transparência, prevenindo artefatos em WebP sem alfa.
             background = Image.new('RGB', img.size, (255, 255, 255))
             background.paste(img, mask=img.split()[-1])
             return background
-        elif img.mode == 'P':
+        elif img.mode == 'P': # Imagens com paleta
             return img.convert('RGB')
-        elif img.mode not in ('RGB', 'L'):
+        elif img.mode not in ('RGB', 'L'): # Outros modos (CMYK, etc.)
             return img.convert('RGB')
         return img
     
-    def _smart_resize(self, img):
+    def _smart_resize(self, img: Image.Image) -> tuple[Image.Image, bool]:
         """
-        Redimensiona imagem apenas se muito grande.
-        Mantém proporções e usa algoritmo de alta qualidade.
+        Redimensiona a imagem apenas se sua largura exceder 'self.max_width',
+        mantendo a proporção original. Utiliza o algoritmo LANCZOS para alta qualidade.
+        
+        Args:
+            img (Image.Image): Objeto de imagem PIL.
+
+        Returns:
+            tuple: Uma tupla contendo:
+                - Image.Image: O objeto de imagem PIL (redimensionado ou original).
+                - bool: `True` se a imagem foi redimensionada, `False` caso contrário.
         """
         if img.width <= self.max_width and img.height <= self.max_width:
             return img, False
         
-        # Calcular novo tamanho mantendo proporção
+        # Calcula as novas dimensões mantendo a proporção original.
         if img.width > img.height:
             new_width = self.max_width
             new_height = int(img.height * (self.max_width / img.width))
@@ -130,58 +166,69 @@ class ImageProcessor:
             new_height = self.max_width
             new_width = int(img.width * (self.max_width / img.height))
         
-        # Usar LANCZOS (melhor qualidade)
+        # Redimensiona usando o filtro LANCZOS para a melhor qualidade visual.
         img = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
         return img, True
     
-    def process_upload(self, file, upload_folder):
+    def process_upload(self, file, upload_folder: Path | str) -> tuple[bool, str | None, str]:
         """
-        Processa automaticamente uma imagem enviada via upload.
+        Processa automaticamente um arquivo de imagem enviado via upload (e.g., de um formulário Flask).
+        Salva o arquivo temporariamente, otimiza-o e retorna o caminho para a versão WebP otimizada.
         
         Args:
-            file: Arquivo enviado (FileStorage do Flask)
-            upload_folder (str|Path): Pasta de destino
+            file (werkzeug.datastructures.FileStorage): Objeto de arquivo de upload do Flask.
+            upload_folder (str | Path): O diretório de destino para salvar a imagem processada.
             
         Returns:
-            tuple: (sucesso, caminho_webp, mensagem)
+            tuple: Uma tupla contendo:
+                - bool: `True` se o processamento foi bem-sucedido, `False` caso contrário.
+                - str | None: Caminho completo para a imagem otimizada (WebP) ou None em caso de falha.
+                - str: Uma mensagem de status ou erro.
         """
         try:
             upload_folder = Path(upload_folder)
-            upload_folder.mkdir(parents=True, exist_ok=True)
+            upload_folder.mkdir(parents=True, exist_ok=True) # Garante que a pasta de upload exista
             
-            # Gerar nome único
-            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            # Gera um nome de arquivo temporário único para evitar colisões.
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S_%f') # Adicionado microsegundos para maior unicidade
             original_name = Path(file.filename).stem
             temp_path = upload_folder / f"{original_name}_{timestamp}{Path(file.filename).suffix}"
             
-            # Salvar temporariamente
+            # Salva o arquivo enviado temporariamente.
             file.save(str(temp_path))
+            current_app.logger.debug(f"Arquivo temporário salvo em: '{temp_path}'.")
             
-            # Otimizar automaticamente
+            # Otimiza a imagem temporária.
             success, orig_size, new_size, webp_path = self.optimize_image(temp_path)
             
             if success:
-                # Calcular redução
+                # Calcula a redução de tamanho e prepara a mensagem de sucesso.
                 reduction = ((orig_size - new_size) / orig_size * 100) if orig_size > 0 else 0
-                
-                message = f"Imagem otimizada com sucesso! Redução: {reduction:.1f}%"
+                message = f"Imagem otimizada com sucesso! Redução: {reduction:.1f}% para WebP."
+                current_app.logger.info(message)
                 return True, webp_path, message
             else:
-                return False, None, "Erro ao otimizar imagem"
+                message = "Erro ao otimizar imagem durante o processamento de upload."
+                current_app.logger.warning(message)
+                return False, None, message
                 
         except Exception as e:
-            return False, None, f"Erro ao processar upload: {str(e)}"
+            message = f"Erro inesperado ao processar upload da imagem: {str(e)}"
+            current_app.logger.error(message, exc_info=True)
+            return False, None, message
     
-    def batch_optimize(self, directory, extensions=None):
+    def batch_optimize(self, directory: Path | str, extensions: List[str] = None) -> dict:
         """
-        Otimiza todas as imagens em um diretório.
+        Otimiza todas as imagens em um diretório especificado, convertendo-as para WebP.
         
         Args:
-            directory (str|Path): Diretório com imagens
-            extensions (list): Lista de extensões (padrão: ['.jpg', '.jpeg', '.png'])
+            directory (str | Path): O caminho para o diretório contendo as imagens a serem otimizadas.
+            extensions (list, optional): Uma lista de extensões de arquivo a serem consideradas.
+                                        Padrão: ['.jpg', '.jpeg', '.png', '.gif', '.bmp'].
             
         Returns:
-            dict: Estatísticas da otimização
+            dict: Um dicionário contendo estatísticas da operação em lote, incluindo
+                  total de arquivos, sucesso, falhas, tamanhos e detalhes de cada arquivo.
         """
         if extensions is None:
             extensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp']
@@ -189,130 +236,145 @@ class ImageProcessor:
         directory = Path(directory)
         images = []
         
-        # Encontrar todas as imagens
+        # Encontra todas as imagens no diretório e subdiretórios com as extensões especificadas.
         for ext in extensions:
             images.extend(directory.rglob(f'*{ext}'))
-            images.extend(directory.rglob(f'*{ext.upper()}'))
+            images.extend(directory.rglob(f'*{ext.upper()}')) # Inclui extensões em maiúsculas
         
-        # Remover duplicatas
+        # Remove quaisquer duplicatas que possam ter sido adicionadas (e.g., se o glob for sensível a maiúsculas/minúsculas).
         images = list(set(images))
         
-        # Otimizar cada imagem
         stats = {
-            'total': len(images),
-            'success': 0,
-            'failed': 0,
-            'original_size': 0,
-            'optimized_size': 0,
-            'files': []
+            'total_files': len(images),
+            'successful_optimizations': 0,
+            'failed_optimizations': 0,
+            'original_total_size': 0,
+            'optimized_total_size': 0,
+            'files_processed': []
         }
         
+        current_app.logger.info(f"Iniciando otimização em lote de {stats['total_files']} imagens em '{directory}'.")
         for img_path in images:
             success, orig_size, new_size, output_path = self.optimize_image(img_path)
             
             if success:
-                stats['success'] += 1
-                stats['original_size'] += orig_size
-                stats['optimized_size'] += new_size
-                stats['files'].append({
-                    'input': str(img_path),
-                    'output': output_path,
-                    'original_size': orig_size,
-                    'optimized_size': new_size,
-                    'reduction': ((orig_size - new_size) / orig_size * 100) if orig_size > 0 else 0
+                stats['successful_optimizations'] += 1
+                stats['original_total_size'] += orig_size
+                stats['optimized_total_size'] += new_size
+                reduction = ((orig_size - new_size) / orig_size * 100) if orig_size > 0 else 0
+                stats['files_processed'].append({
+                    'input_path': str(img_path),
+                    'output_path': output_path,
+                    'original_size_bytes': orig_size,
+                    'optimized_size_bytes': new_size,
+                    'size_reduction_percent': f"{reduction:.1f}%"
                 })
+                current_app.logger.debug(f"Lote: Otimizado '{img_path.name}'. Redução: {reduction:.1f}%.")
             else:
-                stats['failed'] += 1
+                stats['failed_optimizations'] += 1
+                current_app.logger.warning(f"Lote: Falha ao otimizar '{img_path.name}'.")
         
+        current_app.logger.info(f"Otimização em lote concluída. Sucesso: {stats['successful_optimizations']}, Falhas: {stats['failed_optimizations']}.")
         return stats
 
 
-# Instância global do processador
+# Instância global do processador de imagens para ser reutilizada pela aplicação.
+# Configurado para qualidade de 95%, largura máxima de 2560px e criação de backups.
 image_processor = ImageProcessor(quality=95, max_width=2560, create_backup=True)
 
 
-def optimize_uploaded_image(file, upload_folder):
+def optimize_uploaded_image(file, upload_folder: str | Path) -> tuple[bool, str | None, str]:
     """
-    Função helper para otimizar imagem enviada via upload.
+    Função auxiliar para otimizar um arquivo de imagem recebido via upload de formulário.
+    Encapsula a lógica de `ImageProcessor.process_upload`.
     
     Args:
-        file: Arquivo enviado (FileStorage do Flask)
-        upload_folder (str): Pasta de destino
+        file (werkzeug.datastructures.FileStorage): O objeto de arquivo enviado.
+        upload_folder (str | Path): O diretório onde a imagem otimizada será salva.
         
     Returns:
-        tuple: (sucesso, caminho_webp, mensagem)
+        tuple: (bool: sucesso, str|None: caminho_webp, str: mensagem de status/erro).
     """
     return image_processor.process_upload(file, upload_folder)
 
 
-def optimize_image_file(input_path, output_path=None):
+def optimize_image_file(input_path: str | Path, output_path: str | Path = None) -> tuple[bool, int, int, str | None]:
     """
-    Função helper para otimizar um arquivo de imagem.
+    Função auxiliar para otimizar um arquivo de imagem existente no sistema de arquivos.
+    Encapsula a lógica de `ImageProcessor.optimize_image`.
     
     Args:
-        input_path (str): Caminho da imagem original
-        output_path (str): Caminho de saída (opcional)
+        input_path (str | Path): Caminho para a imagem original.
+        output_path (str | Path, optional): Caminho para salvar a imagem otimizada.
+                                           Se None, será salvo como WebP no mesmo local.
         
     Returns:
-        tuple: (sucesso, tamanho_original, tamanho_otimizado, caminho_saida)
+        tuple: (bool: sucesso, int: tamanho_original, int: tamanho_otimizado, str|None: caminho_saida).
     """
     return image_processor.optimize_image(input_path, output_path)
 
 
-def process_and_save_image(file, upload_folder):
+def process_and_save_image(file, upload_folder: str | Path) -> tuple[bool, str | None, str]:
     """
-    Processa e salva uma imagem enviada via upload.
-    Alias para optimize_uploaded_image para compatibilidade.
+    Função auxiliar para processar e salvar uma imagem de upload.
+    Este é um alias para `optimize_uploaded_image` para compatibilidade com nomes anteriores ou clareza.
     
     Args:
-        file: Arquivo enviado (FileStorage do Flask)
-        upload_folder (str): Pasta de destino
+        file (werkzeug.datastructures.FileStorage): O objeto de arquivo enviado.
+        upload_folder (str | Path): O diretório onde a imagem otimizada será salva.
         
     Returns:
-        tuple: (sucesso, caminho_webp, mensagem)
+        tuple: (bool: sucesso, str|None: caminho_webp, str: mensagem de status/erro).
     """
+    current_app.logger.warning("A função `process_and_save_image` está obsoleta. Use `optimize_uploaded_image` em seu lugar.")
     return optimize_uploaded_image(file, upload_folder)
 
 
-def save_logo(file, filename):
+def save_logo(file, filename: str) -> str | None:
     """
-    Salva um logo/imagem com otimização automática.
+    Salva um arquivo de logo ou imagem, otimizando-o automaticamente.
+    Gera um caminho relativo para ser armazenado no banco de dados.
     
     Args:
-        file: Arquivo enviado (FileStorage do Flask)
-        filename (str): Nome do arquivo (sem extensão)
+        file (werkzeug.datastructures.FileStorage): O objeto de arquivo de upload.
+        filename (str): O nome base do arquivo (sem extensão) para salvar.
         
     Returns:
-        str: Caminho relativo da imagem salva
+        str | None: O caminho relativo da imagem otimizada (WebP) dentro do diretório 'static'
+                    ou o caminho relativo da imagem original se a otimização falhar.
+                    Retorna None se ocorrer um erro insuperável.
     """
     try:
         from flask import current_app
         
-        # Diretório de upload
+        # Define o diretório de upload, usando a configuração da aplicação.
         upload_folder = Path(current_app.config.get('UPLOAD_FOLDER', 'BelarminoMonteiroAdvogado/static/images/uploads'))
-        upload_folder.mkdir(parents=True, exist_ok=True)
+        upload_folder.mkdir(parents=True, exist_ok=True) # Garante que a pasta de upload exista
         
-        # Salvar temporariamente
+        # Salva o arquivo temporariamente com a extensão original.
         ext = Path(file.filename).suffix
         temp_path = upload_folder / f"{filename}{ext}"
         file.save(str(temp_path))
+        current_app.logger.debug(f"Logo '{filename}{ext}' salvo temporariamente para otimização em '{temp_path}'.")
         
-        # Otimizar
+        # Otimiza a imagem salva.
         success, orig_size, new_size, webp_path = image_processor.optimize_image(temp_path)
         
         if success:
-            # Retornar caminho relativo
             webp_path = Path(webp_path)
+            # Retorna o caminho relativo da imagem otimizada.
             relative_path = str(webp_path.relative_to(Path('BelarminoMonteiroAdvogado/static')))
+            current_app.logger.info(f"Logo '{filename}' otimizado e salvo em '{relative_path}'.")
             return relative_path.replace('\\', '/')
         else:
-            # Se falhar, retornar caminho do arquivo original
+            # Se a otimização falhar, retorna o caminho do arquivo original.
+            current_app.logger.warning(f"Falha ao otimizar logo '{filename}'. Retornando caminho do original.")
             relative_path = str(temp_path.relative_to(Path('BelarminoMonteiroAdvogado/static')))
             return relative_path.replace('\\', '/')
             
     except Exception as e:
-        print(f"Erro ao salvar logo: {e}")
-        # Fallback: salvar sem otimização
+        current_app.logger.error(f"Erro inesperado ao salvar logo '{filename}': {e}. Tentando fallback...", exc_info=True)
+        # Fallback: tenta salvar o arquivo original sem otimização em caso de erro.
         try:
             from flask import current_app
             upload_folder = Path(current_app.config.get('UPLOAD_FOLDER', 'BelarminoMonteiroAdvogado/static/images/uploads'))
@@ -323,6 +385,8 @@ def save_logo(file, filename):
             file.save(str(save_path))
             
             relative_path = str(save_path.relative_to(Path('BelarminoMonteiroAdvogado/static')))
+            current_app.logger.info(f"Logo '{filename}' salvo via fallback (sem otimização) em '{relative_path}'.")
             return relative_path.replace('\\', '/')
-        except:
+        except Exception as fallback_e:
+            current_app.logger.error(f"Erro crítico ao tentar fallback para salvar logo '{filename}': {fallback_e}", exc_info=True)
             return None

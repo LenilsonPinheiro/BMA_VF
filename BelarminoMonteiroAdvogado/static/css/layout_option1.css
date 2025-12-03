@@ -1,0 +1,88 @@
+/* ==========================================================================
+   LAYOUT OPTION 1: INVISIBLE LUXURY (CLÁSSICO MODERNO)
+   ==========================================================================
+   Estilos específicos para o layout Option 1, baseado em luxo discreto e minimalismo.
+   Utiliza variáveis globais e complementa com estilos estruturais próprios.
+*/
+
+/* --- 1. ESTILOS CRÍTICOS INLINE (Para evitar FOUC - Flash of Unstyled Content) --- */
+/* Estes estilos garantem que o layout básico seja aplicado antes do carregamento completo do CSS. */
+body { 
+    display: flex; flex-direction: column; min-height: 100vh; 
+    font-family: var(--font-body, 'Open Sans', sans-serif); /* Usa variável global de fonte */
+    overflow-x: hidden;
+}
+main { flex: 1; }
+
+/* --- 2. NAVBAR PREMIUM --- */
+.navbar-premium {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 20px 0;
+    background: transparent; /* Começa transparente */
+}
+
+.navbar-premium.scrolled {
+    background: var(--color-surface, rgba(255, 255, 255, 0.95)); /* Usa variável global de superfície */
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    padding: 10px 0;
+}
+
+/* Dark Mode Navbar Override */
+body.dark-mode .navbar-premium.scrolled,
+[data-theme="dark"] .navbar-premium.scrolled {
+    background: var(--color-surface-dark, rgba(17, 17, 17, 0.95)); /* Usa variável global de superfície dark */
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+/* Logo Sizing */
+.navbar-brand img { height: 55px; transition: 0.3s; }
+.navbar-premium.scrolled .navbar-brand img { height: 45px; }
+
+/* Links de Navegação */
+.nav-link-premium {
+    font-family: var(--font-body, 'Roboto', sans-serif); /* Usa variável global de fonte */
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    color: var(--color-text, #333) !important; /* Usa variável global de texto */
+    padding: 10px 15px !important;
+    position: relative;
+}
+
+body.dark-mode .nav-link-premium, [data-theme="dark"] .nav-link-premium { color: var(--color-text-dark, #f1f1f1) !important; }
+
+/* Efeito Hover (Expansão de Sublinhado) */
+.nav-link-premium::after {
+    content: ''; position: absolute; width: 0; height: 2px;
+    bottom: 5px; left: 50%; 
+    background-color: var(--color-primary, #b92027); /* Usa variável global primária */
+    transition: all 0.3s ease; transform: translateX(-50%);
+}
+.nav-link-premium:hover::after, .nav-link-premium.active::after { width: 80%; }
+
+/* --- 3. FOOTER PREMIUM --- */
+footer.footer-premium {
+    background-color: var(--color-background-dark, #1a1a1a); /* Usa variável global de fundo dark */
+    color: var(--color-text-secondary-dark, #ccc);
+    padding: 80px 0 30px;
+    position: relative;
+    border-top: 5px solid var(--color-primary, #b92027); /* Usa variável global primária */
+}
+
+footer.footer-premium::before {
+    content: ''; position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23333333' fill-opacity='0.1' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3Ccircle cx='13' cy='13' r='3'/%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.1; pointer-events: none;
+}
+
+/* vCard Footer */
+.footer-qr-box {
+    background: var(--color-surface, #fff); /* Usa variável global de superfície */
+    padding: 10px; border-radius: 8px;
+    display: inline-block; transition: transform 0.3s;
+}
+.footer-qr-box:hover { transform: scale(1.05); }
+.footer-qr-img { width: 100px; height: 100px; }
+

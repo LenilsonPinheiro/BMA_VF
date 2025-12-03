@@ -14,3 +14,5 @@ __pycache__/
 .env
 *.sqlite
 *.db
+# Test files should not be uploaded to production
+test_*.py

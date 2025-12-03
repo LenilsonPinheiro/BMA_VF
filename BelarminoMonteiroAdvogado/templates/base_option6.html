@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-br" class="h-100 no-js">
 <head>
-    {% include \'_head_meta.html\' %}
+    {% include '_head_meta.html' %}
 
     <link rel="shortcut icon" href="{{ url_for('static', filename=configs.get('favicon_ico', 'favicon.ico')) }}">
 
@@ -14,25 +14,23 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
     
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    
+    <!-- === THEME STYLES (Variables) === -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme-light.css') }}" media="(prefers-color-scheme: light)">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme-dark.css') }}" media="(prefers-color-scheme: dark)">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme-option6.css') }}">
+
     {% if theme_css %}
         <link rel="stylesheet" href="{{ url_for('static', filename='css/' + theme_css) }}">
-    {% else %}
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/theme-light-option2.css') }}">
     {% endif %}
 
     {% block extra_css %}{% endblock %}
 
     <style>
-        /* --- OPTION 2 PREMIUM OVERRIDES --- */
-        :root {
-            --titan-navy: #002F49;
-            --titan-gold: var(--prm-accent-red, #b92027); /* Mantendo identidade visual vermelha */
-            --font-heading: 'Barlow', sans-serif;
-            --font-body: 'Manrope', sans-serif;
-        }
-
+        /* --- OPTION 6 (identical to 2) PREMIUM OVERRIDES (Structure) --- */
         body { font-family: var(--font-body); }
         h1, h2, h3, h4, h5, h6 { font-family: var(--font-heading); text-transform: uppercase; letter-spacing: -0.5px; }
 

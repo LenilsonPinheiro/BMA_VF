@@ -1,0 +1,111 @@
+/* ==========================================================================
+   COMPONENT: INNER PAGE HEADER (UNIVERSAL)
+   ==========================================================================
+   Estilos para o cabeçalho de páginas internas (com título, subtítulo e breadcrumbs).
+   Utiliza variáveis CSS globais para integração com o sistema de temas e responsividade.
+*/
+
+/* --- 1. VARIÁVEIS LOCAIS (Herdam do Tema Global) --- */
+.inner-header-universal {
+    --hdr-height: 45vh;
+    --hdr-min-height: 350px;
+    --hdr-accent: var(--color-primary, #b92027); /* Usa a variável primária global */
+    --hdr-overlay-gradient: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.7) 60%, rgba(0,0,0,0.9) 100%);
+    --hdr-title-color: var(--color-text-inverted, #fff);
+    --hdr-subtitle-color: rgba(255, 255, 255, 0.85);
+    --hdr-breadcrumb-color: rgba(255,255,255,0.5);
+    --hdr-breadcrumb-active-color: var(--hdr-accent);
+}
+
+/* Não há overrides específicos de 'body.optionX' aqui,
+   o comportamento é controlado pelas variáveis globais no :root ou body.dark-mode */
+
+
+/* --- 2. ESTRUTURA --- */
+.inner-header-universal {
+    height: var(--hdr-height);
+    min-height: var(--hdr-min-height);
+    overflow: hidden;
+    margin-top: 0; /* Base reset */
+    display: flex;
+    align-items: center;
+    background-color: var(--color-background-dark, #111); /* Fallback color */
+}
+
+/* --- 3. LAYERS --- */
+.inner-bg-layer {
+    position: absolute; inset: 0;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* Parallax Desktop */
+    transform: scale(1.05); /* Zoom leve para evitar bordas brancas */
+    z-index: 0;
+}
+
+/* Mobile Parallax Fix (Desativa Fixed para performance e bugs iOS) */
+@media (pointer: coarse) {
+    .inner-bg-layer { background-attachment: scroll; }
+}
+
+.inner-overlay {
+    position: absolute; inset: 0;
+    background: var(--hdr-overlay-gradient);
+    z-index: 1;
+    backdrop-filter: blur(2px); /* Blur sutil na imagem para foco no texto */
+}
+
+/* --- 4. TIPOGRAFIA --- */
+.inner-title {
+    color: var(--hdr-title-color);
+    font-family: var(--font-heading, serif); /* Usa a fonte de título do tema ativo */
+    font-weight: 800;
+    font-size: clamp(2.5rem, 5vw, 3.8rem);
+    letter-spacing: -1px;
+    text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    line-height: 1.2;
+}
+
+.inner-subtitle {
+    color: var(--hdr-subtitle-color);
+    font-family: var(--font-body, sans-serif); /* Usa a fonte do corpo do tema ativo */
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    font-weight: 300;
+    max-width: 700px;
+    margin-left: auto; margin-right: auto;
+    line-height: 1.6;
+}
+
+/* --- 5. DECORAÇÃO --- */
+.inner-decor-line {
+    width: 80px; height: 4px;
+    background-color: var(--hdr-accent);
+    border-radius: 2px;
+    box-shadow: 0 0 15px var(--hdr-accent);
+}
+
+/* --- 6. BREADCRUMBS CUSTOM --- */
+.breadcrumb-item + .breadcrumb-item::before {
+    color: var(--hdr-breadcrumb-color);
+    content: "•"; /* Bullet point minimalista */
+}
+.breadcrumb-item.active {
+    color: var(--hdr-breadcrumb-active-color) !important;
+    font-weight: 700;
+}
+
+/* --- 7. ANIMAÇÕES (AOS Compatible) --- */
+[data-aos="scale-x"] {
+    transform: scaleX(0); transition-property: transform;
+}
+[data-aos="scale-x"].aos-animate {
+    transform: scaleX(1);
+}
+
+/* --- 8. RESPONSIVIDADE --- */
+@media (max-width: 991px) {
+    .inner-header-universal {
+        /* Compensa a navbar fixa mobile */
+        padding-top: 60px;
+        --hdr-height: 40vh;
+    }
+}

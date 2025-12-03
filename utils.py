@@ -6,6 +6,7 @@ from typing import Dict, Any, List
 from flask import current_app, render_template
 from sqlalchemy.orm import joinedload
 from .models import Pagina, ConteudoGeral
+from typing import Any
 
 def from_json_filter(value):
     """Filtro Jinja para carregar uma string JSON."""
@@ -58,3 +59,52 @@ def mostrar_page(modelo de pagina_name: str, page_identifier: str, return_contex
         return context
     
     return render_template(template_name, **context)
+
+def validate_cpf(value: Any) -> bool:
+    """
+    Validates a CPF (Brazilian tax ID number) using the standard validation algorithm.
+    
+    Args:
+        value: The CPF value to be validated. Can be a string, int, or any type that can be converted to string.
+        
+    Returns:
+        bool: True if the CPF is valid, False otherwise.
+        
+    Example:
+        >>> validate_cpf("12345678901")
+        True
+        >>> validate_cpf("00000000000")
+        False
+    """
+    if not isinstance(value, (str, int)):
+        raise TypeError("CPF must be a string or integer")
+    
+    # Convert to string and remove any non-digit characters
+    cpf_str = str(value).replace('.', '').replace('-', '').replace('_', '')
+    
+    # Check if CPF has the correct length (11 digits)
+    if len(cpf_str) != 11 or not cpf_str.isdigit():
+        return False
+    
+    # Check for repeating digits
+    if len(set(cpf_str)) == 1:
+        return False
+    
+    # Calculate the first verification digit
+    total1 = 0
+    for i in range(0, 9):
+        total1 += int(cpf_str[i]) * (10 - i)
+    dv1 = 11 - (total1 % 11)
+    if dv1 >= 10:
+        dv1 = 0
+    
+    # Calculate the second verification digit
+    total2 = 0
+    for i in range(0, 10):
+        total2 += int(cpf_str[i]) * (11 - i)
+    dv2 = 11 - (total2 % 11)
+    if dv2 >= 10:
+        dv2 = 0
+    
+    # Check if both verification digits match
+    return (cpf_str[9] == str(dv1) and cpf_str[10] == str(dv2))

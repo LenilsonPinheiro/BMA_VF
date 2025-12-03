@@ -123,6 +123,10 @@ class TestDatabaseSchema(unittest.TestCase):
         app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
         
         with app.app_context():
+            # [FIX] Force disposal of any existing engine to ensure isolation
+            if hasattr(db, 'engine') and db.engine is not None:
+                db.engine.dispose()
+
             try:
                 # Tentar ler dados (vai falhar se coluna não existir)
                 theme = ThemeSettings.query.first()
@@ -161,6 +165,10 @@ class TestDatabaseSchema(unittest.TestCase):
         app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
         
         with app.app_context():
+            # [FIX] Force disposal of any existing engine to ensure isolation
+            if hasattr(db, 'engine') and db.engine is not None:
+                db.engine.dispose()
+                
             # Criar schema novo
             db.create_all()
             
@@ -272,6 +280,10 @@ class TestDatabaseSchema(unittest.TestCase):
         app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
         
         with app.app_context():
+            # [FIX] Force disposal of any existing engine to ensure isolation
+            if hasattr(db, 'engine') and db.engine is not None:
+                db.engine.dispose()
+                
             theme = ThemeSettings.query.first()
             self.assertIsNotNone(theme)
             self.assertEqual(theme.cor_texto_dark, '#ffffff')

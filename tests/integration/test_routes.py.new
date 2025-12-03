@@ -1,0 +1,81 @@
+"""
+Teste de integração para as rotas da aplicação.
+
+Autor: Lenilson Pinheiro
+Data: Dezembro 2025
+"""
+
+import pytest
+from BelarminoMonteiroAdvogado.models import AreaAtuacao, Pagina, db
+
+def test_homepage(client):
+    """Testa a rota da página inicial."""
+    response = client.get('/')
+    assert response.status_code == 200
+    assert b'<!DOCTYPE html>' in response.data
+
+def test_sobre_nos(client):
+    """Testa a rota Sobre Nós."""
+    response = client.get('/sobre-nos')
+    assert response.status_code == 200
+    assert b'Sobre N' in response.data  # 'Sobre Nós'
+
+def test_contato(client):
+    """Testa a rota de Contato."""
+    response = client.get('/contato')
+    assert response.status_code == 200
+    assert b'Contato' in response.data
+
+def test_areas_atuacao(client):
+    """Testa a rota de Áreas de Atuação."""
+    response = client.get('/areas-de-atuacao')
+    assert response.status_code == 200
+    assert b'Áreas de Atua' in response.data  # 'Áreas de Atuação'
+
+def test_politica_privacidade(client):
+    """Testa a rota de Política de Privacidade."""
+    response = client.get('/politica-de-privacidade')
+    assert response.status_code == 200
+    assert b'Pol' in response.data  # 'Política de Privacidade'
+
+def test_login_page(client):
+    """Testa a rota de Login."""
+    response = client.get('/auth/login')
+    assert response.status_code == 200
+    assert b'Login' in response.data
+
+def test_dynamic_service_routes(client, app):
+    """Testa as rotas dinâmicas de serviços."""
+    with app.app_context():
+        # Cria algumas áreas de atuação de teste
+        areas = [
+            AreaAtuacao(
+                nome="Direito Civil",
+                slug="direito-civil",
+                descricao="Atuação em Direito Civil",
+                icone="balance-scale",
+                ordem=1
+            ),
+            AreaAtuacao(
+                nome="Direito do Consumidor",
+                slug="direito-do-consumidor",
+                descricao="Atuação em Direito do Consumidor",
+                icone="shopping-cart",
+                ordem=2
+            )
+        ]
+        
+        db.session.add_all(areas)
+        db.session.commit()
+        
+        # Testa cada rota dinâmica
+        for area in areas:
+            response = client.get(f'/{area.slug}')
+            assert response.status_code == 200
+            assert area.nome.encode() in response.data
+
+def test_404_page(client):
+    """Testa a página 404 para rotas inexistentes."""
+    response = client.get('/rota-que-nao-existe')
+    assert response.status_code == 404
+    assert b'P' in response.data or b'404' in response.data  # 'Página não encontrada' ou '404'

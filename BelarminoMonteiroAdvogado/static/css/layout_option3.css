@@ -1,0 +1,92 @@
+/* ==========================================================================
+   LAYOUT OPTION 3: GOLDEN BOUTIQUE (ELEGANTE & QUENTE)
+   ==========================================================================
+   Estilos específicos para o layout Option 3, com foco em elegância e tons quentes.
+   Utiliza variáveis globais e complementa com estilos estruturais próprios.
+*/
+
+/* --- 1. VARIÁVEIS LOCAIS DE LAYOUT --- */
+:root {
+    --gold-primary: var(--color-primary, #D4AF37); /* Usa variável global como fallback */
+    --cream-bg: var(--color-background, #F9F7F2); /* Usa variável global como fallback */
+    --text-dark: var(--color-text, #2C2C2C); /* Usa variável global como fallback */
+    --font-heading: 'Playfair Display', serif;
+    --font-body: 'Lato', sans-serif;
+}
+
+/* --- 2. ESTRUTURA E TIPOGRAFIA --- */
+body.option3 {
+    font-family: var(--font-body);
+    background-color: var(--cream-bg);
+    color: var(--text-dark);
+    display: flex; flex-direction: column; min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6 { font-family: var(--font-heading); }
+
+/* --- 3. HEADER BOUTIQUE --- */
+.header-boutique {
+    background-color: var(--color-surface, #fff);
+    box-shadow: 0 2px 15px rgba(0,0,0,0.03);
+    padding: 15px 0;
+    transition: all 0.3s ease;
+}
+.header-boutique.scrolled {
+    padding: 10px 0;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+/* Dark Mode Header */
+body.dark-mode .header-boutique, [data-theme="dark"] .header-boutique {
+    background-color: var(--color-surface-dark, #1a1a1a);
+    border-bottom: 1px solid rgba(var(--color-primary-rgb, 212, 175, 55), 0.2);
+}
+
+.navbar-brand img { height: 65px; transition: 0.3s; }
+.header-boutique.scrolled .navbar-brand img { height: 50px; }
+/* Logo Dark Mode Filter */
+body.dark-mode .navbar-brand img, [data-theme="dark"] .navbar-brand img { filter: brightness(0) invert(1); }
+
+.nav-link {
+    font-family: var(--font-body); font-weight: 400; text-transform: uppercase;
+    letter-spacing: 2px; font-size: 0.8rem; color: var(--color-text-secondary, #555) !important;
+    padding: 10px 15px !important; transition: 0.3s;
+}
+.nav-link:hover, .nav-link.active { color: var(--gold-primary) !important; }
+
+body.dark-mode .nav-link, [data-theme="dark"] .nav-link { color: var(--color-text-dark, #ccc) !important; }
+body.dark-mode .nav-link:hover, [data-theme="dark"] .nav-link:hover { color: var(--gold-primary) !important; }
+
+/* --- 4. FOOTER BOUTIQUE --- */
+.footer-boutique {
+    background-color: var(--color-background-dark, #222);
+    color: var(--color-text-inverted, #fff);
+    padding: 70px 0 30px; border-top: 3px solid var(--gold-primary);
+}
+.footer-brand span { font-family: var(--font-heading); font-size: 1.8rem; line-height: 1; }
+.brand-line-1 { color: var(--color-text-inverted, #fff); font-weight: 400; font-style: italic; }
+.brand-line-2 { color: var(--gold-primary); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+
+.footer-heading {
+    font-family: var(--font-body); text-transform: uppercase; letter-spacing: 2px;
+    font-size: 0.85rem; color: var(--gold-primary); margin-bottom: 20px;
+}
+
+.footer-links li a {
+    color: var(--color-text-muted, #999); text-decoration: none; transition: 0.3s; font-size: 0.95rem;
+    display: block; margin-bottom: 8px;
+}
+.footer-links li a:hover { color: var(--color-text-inverted, #fff); padding-left: 5px; }
+
+/* --- 5. THEME TOGGLE (Discrete) --- */
+.theme-toggle-minimal {
+    background: transparent; border: 1px solid var(--color-border, #ddd);
+    color: var(--color-text-secondary, #555); width: 35px; height: 35px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    transition: 0.3s; cursor: pointer;
+}
+.theme-toggle-minimal:hover { border-color: var(--gold-primary); color: var(--gold-primary); }
+
+body.dark-mode .theme-toggle-minimal, [data-theme="dark"] .theme-toggle-minimal {
+    border-color: var(--color-border-dark, #444); color: var(--color-text-dark, #ccc);
+}

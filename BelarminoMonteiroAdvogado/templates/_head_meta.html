@@ -1,3 +1,12 @@
+{#-*- coding: utf-8 -*-#}
+{#
+   BelarminoMonteiroAdvogado/templates/_head_meta.html: Metadados e links CSS/JS para a seção <head>.
+
+   Este arquivo é incluído nos templates base e contém meta tags, links para fontes,
+   CDNs de frameworks CSS/JS, e o carregamento dos arquivos CSS globais da aplicação.
+   Ele centraliza recursos comuns para todos os layouts.
+#}
+
 {# ========================================
    SISTEMA COMPLETO DE SEO E META TAGS
    ======================================== #}
@@ -6,42 +15,68 @@
 {# ========================================
    FONTES (Google Fonts)
    ======================================== #}
+{# Inclui todas as fontes necessárias. Nota: idealmente, as fontes deveriam ser carregadas
+   apenas as necessárias para o tema/layout específico para otimização de performance. #}
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@600;700;800&family=Lato:wght@300;400;700&family=Manrope:wght@400;500;700&family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@400;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
 {# ========================================
    CDNs DE CSS
    ======================================== #}
+{# Bootstrap CSS para a estrutura e componentes UI/UX. #}
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+{# Bootstrap Icons para uma biblioteca de ícones rica. #}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" integrity="sha384-4LISF5TTJX/fLmGSxO53rV4miRxdg84mZsxmO8Rx5jGtp/LbrixFETvWa5a6sESd" crossorigin="anonymous">
+{# AOS (Animate On Scroll) para animações suaves ao rolar. #}
 <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+{# Swiper CSS para carrosséis e sliders responsivos. #}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
 {# ========================================
-   CSS GLOBAL DO SITE E TEMA DINÂMICO
+   CSS DO SITE (BASE E TEMAS)
    ======================================== #}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v={{ get_file_mtime('css/style.css') }}">
+{# base.css: Contém a estrutura fundamental e estilos compartilhados por todos os layouts. #}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}?v={{ get_file_mtime('css/base.css') }}">
 
-{% if theme_css %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/' + theme_css) }}?v={{ get_file_mtime('css/' + theme_css) }}">
-{% else %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme-light.css') }}?v={{ get_file_mtime('css/theme-light.css') }}" id="theme-css">
-{% endif %}
+{# theme-light.css e theme-dark.css: Definem as variáveis de cor para os modos claro e escuro. #}
+{# Carregados com media queries para "prefers-color-scheme" para suporte nativo a temas do sistema. #}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/theme-light.css') }}?v={{ get_file_mtime('css/theme-light.css') }}" media="(prefers-color-scheme: light)">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/theme-dark.css') }}?v={{ get_file_mtime('css/theme-dark.css') }}" media="(prefers-color-scheme: dark)">
 
-{# ========================================
-   OTIMIZAÇÃO DE VÍDEOS
-   ======================================== #}
+{# css/cta.css: Estilos para a seção de Call To Action. #}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/cta.css') }}?v={{ get_file_mtime('css/cta.css') }}">
+{# css/flashes.css: Estilos para as mensagens flash (toasts). #}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/flashes.css') }}?v={{ get_file_mtime('css/flashes.css') }}">
+{# css/video-optimizer.css: Estilos específicos para otimização de vídeo. #}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/video-optimizer.css') }}?v={{ get_file_mtime('css/video-optimizer.css') }}">
+{# css/ui-improvements.css: Ajustes e melhorias de UI/UX gerais. #}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/ui-improvements.css') }}?v={{ get_file_mtime('css/ui-improvements.css') }}">
+{# css/error_pages.css: Estilos para as páginas de erro (ex: 404, 500). #}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/error_pages.css') }}?v={{ get_file_mtime('css/error_pages.css') }}">
+{# css/layout_option1.css: Estilos específicos para o Layout Option 1. #}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/layout_option1.css') }}?v={{ get_file_mtime('css/layout_option1.css') }}">
+{# css/layout_option2.css: Estilos específicos para o Layout Option 2. #}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/layout_option2.css') }}?v={{ get_file_mtime('css/layout_option2.css') }}">
+{# css/layout_option3.css: Estilos específicos para o Layout Option 3. #}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/layout_option3.css') }}?v={{ get_file_mtime('css/layout_option3.css') }}">
+{# css/layout_option4.css: Estilos específicos para o Layout Option 4. #}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/layout_option4.css') }}?v={{ get_file_mtime('css/layout_option4.css') }}">
+{# css/layout_option5.css: Estilos específicos para o Layout Option 5. #}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/layout_option5.css') }}?v={{ get_file_mtime('css/layout_option5.css') }}">
 
 {# ========================================
    PRELOAD DE RECURSOS CRÍTICOS
    ======================================== #}
-<link rel="preload" href="{{ url_for('static', filename='css/style.css') }}" as="style">
+{# Pré-carrega o CSS principal para renderização mais rápida. #}
+<link rel="preload" href="{{ url_for('static', filename='css/base.css') }}" as="style">
+{# Pré-carrega a imagem do logo principal (assumindo que seja comum a muitos layouts). #}
 <link rel="preload" href="{{ url_for('static', filename='images/BM.png') }}" as="image">
+{# Pré-carrega o CSS do Bootstrap, essencial para a estrutura. #}
 <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" as="style">
 
 {# ========================================
    RESOURCE HINTS PARA PERFORMANCE
    ======================================== #}
+{# dns-prefetch para domínios externos usados, para acelerar a resolução de DNS. #}
 <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="dns-prefetch" href="https://www.google-analytics.com">

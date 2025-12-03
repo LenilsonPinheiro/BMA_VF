@@ -1,47 +1,74 @@
+{#-*- coding: utf-8 -*-#}
+{#
+   BelarminoMonteiroAdvogado/templates/_scripts_base.html: Inclui todos os scripts JavaScript globais da aplicação.
+
+   Este template parcial é responsável por carregar os arquivos JavaScript de bibliotecas externas (CDNs),
+   scripts customizados do projeto e scripts de rastreamento (Google Analytics, Facebook Pixel),
+   garantindo que todas as funcionalidades interativas e de análise de dados estejam disponíveis.
+   É fundamental para a performance e interatividade do site.
+#}
+
 {# ========================================
-   CDNs DE JAVASCRIPT
+   CDNs DE JAVASCRIPT EXTERNOS
    ======================================== #}
+{# Bootstrap JS: Contém todos os plugins JavaScript do Bootstrap. #}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+{# AOS (Animate On Scroll) JS: Biblioteca para animações baseadas na rolagem. #}
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+{# Swiper JS: Biblioteca para sliders e carrosséis modernos. #}
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
 {# ========================================
-   SCRIPTS CUSTOMIZADOS
+   SCRIPTS CUSTOMIZADOS DO PROJETO
    ======================================== #}
+{# aggressive-cache.js: Scripts para otimização de cache agressiva. #}
 <script src="{{ url_for('static', filename='js/aggressive-cache.js') }}?v={{ get_file_mtime('js/aggressive-cache.js') }}"></script>
+{# cookie_consent.js: Lógica JavaScript para o banner de consentimento de cookies. #}
 <script src="{{ url_for('static', filename='js/cookie_consent.js') }}?v={{ get_file_mtime('js/cookie_consent.js') }}"></script>
+{# resource-preloader.js: Scripts para pré-carregamento de recursos, otimizando a percepção de velocidade. #}
 <script src="{{ url_for('static', filename='js/resource-preloader.js') }}?v={{ get_file_mtime('js/resource-preloader.js') }}"></script>
+{# video-optimizer.js: Scripts para otimização e controle de vídeos. #}
 <script src="{{ url_for('static', filename='js/video-optimizer.js') }}?v={{ get_file_mtime('js/video-optimizer.js') }}"></script>
+{# layout_option1.js: Scripts JavaScript específicos para o Layout Option 1. #}
+<script src="{{ url_for('static', filename='js/layout_option1.js') }}?v={{ get_file_mtime('js/layout_option1.js') }}"></script>
+{# layout_option2.js: Scripts JavaScript específicos para o Layout Option 2. #}
+<script src="{{ url_for('static', filename='js/layout_option2.js') }}?v={{ get_file_mtime('js/layout_option2.js') }}"></script>
+{# layout_option3.js: Scripts JavaScript específicos para o Layout Option 3. #}
+<script src="{{ url_for('static', filename='js/layout_option3.js') }}?v={{ get_file_mtime('js/layout_option3.js') }}"></script>
+{# layout_option4.js: Scripts JavaScript específicos para o Layout Option 4. #}
+<script src="{{ url_for('static', filename='js/layout_option4.js') }}?v={{ get_file_mtime('js/layout_option4.js') }}"></script>
 
 {# ========================================
-   INICIALIZAÇÃO DE BIBLIOTECAS
+   INICIALIZAÇÃO DE BIBLIOTECAS E SCRIPTS GLOBAIS
    ======================================== #}
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // Inicializa a biblioteca de animações AOS
+        // Inicializa a biblioteca de animações AOS (Animate On Scroll).
+        // Configurações como duração, uma única execução por elemento, offset e easing.
         if (typeof AOS !== 'undefined') {
             AOS.init({ 
                 duration: 800, 
-                once: true,
-                offset: 100,
-                easing: 'ease-in-out'
+                once: true, // Anima apenas uma vez ao entrar na viewport.
+                offset: 100, // Começa a animação 100px antes de atingir o topo da tela.
+                easing: 'ease-in-out' // Curva de animação.
             });
         }
 
-        // Log de informações do preloader
+        // Event listener para o fim do pré-carregamento de recursos, útil para depuração.
         window.addEventListener('preloadComplete', (event) => {
-            console.log(' Preload concluído:', event.detail);
+            console.log('Preload concluído:', event.detail);
+            // Aqui poderiam ser adicionadas lógicas pós-preload, como exibir conteúdo escondido.
         });
 
-        // Adicione outras inicializações globais aqui se necessário
+        // Adicione outras inicializações globais de JavaScript aqui, se necessário.
     });
 </script>
 
 {# ========================================
-   GOOGLE ANALYTICS (se configurado)
+   GOOGLE ANALYTICS (se configurado via painel)
    ======================================== #}
 {% if configs.get('google_analytics_id') %}
-<!-- Google tag (gtag.js) -->
+<!-- Google tag (gtag.js) - Código de acompanhamento do Google Analytics 4. -->
 <script async src="https://www.googletagmanager.com/gtag/js?id={{ configs.get('google_analytics_id') }}"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -52,10 +79,10 @@
 {% endif %}
 
 {# ========================================
-   FACEBOOK PIXEL (se configurado)
+   FACEBOOK PIXEL (se configurado via painel)
    ======================================== #}
 {% if configs.get('facebook_pixel_id') %}
-<!-- Facebook Pixel Code -->
+<!-- Facebook Pixel Code - Código de acompanhamento para marketing do Facebook. -->
 <script>
 !function(f,b,e,v,n,t,s)
 {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -75,8 +102,9 @@ src="https://www.facebook.com/tr?id={{ configs.get('facebook_pixel_id') }}&ev=Pa
 {% endif %}
 
 {# ========================================
-   SCRIPTS PERSONALIZADOS DO HEAD (Admin)
+   SCRIPTS PERSONALIZADOS INJETADOS DO ADMIN (Corpo)
    ======================================== #}
+{# Permite que o administrador injete scripts adicionais diretamente no corpo da página via painel. #}
 {% if configs.get('seo_body_scripts') %}
 {{ configs.get('seo_body_scripts') | safe }}
 {% endif %}

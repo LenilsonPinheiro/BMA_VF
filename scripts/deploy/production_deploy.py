@@ -12,6 +12,7 @@ import os
 import sys
 import subprocess
 import json
+import time
 from datetime import datetime
 from pathlib import Path
 
@@ -43,6 +44,13 @@ class ProductionDeployment:
             "errors": [],
             "warnings": []
         }
+        self.steps = [
+            (self.step_1_backup_database, "BACKUP DO BANCO DE DADOS"),
+            (self.step_2_optimize_images, "OTIMIZAÇÃO DE IMAGENS"),
+            (self.step_3_run_tests, "EXECUÇÃO DA SUÍTE DE TESTES"),
+            (self.step_4_gcloud_deploy, "DEPLOY NO GOOGLE APP ENGINE"),
+            (self.step_5_validate_deployment, "VALIDAÇÃO PÓS-DEPLOY")
+        ]
     
     def log(self, message, level="INFO"):
         """Log de mensagens"""
@@ -75,17 +83,47 @@ class ProductionDeployment:
                     "error": result.stderr.strip()
                 })
                 return False, result.stderr
+        except subprocess.TimeoutExpired:
+            error_msg = "Comando excedeu o tempo limite de 5 minutos."
+            self.log(f"FALHA - {description} - {error_msg}", "ERROR")
+            self.report["errors"].append({
+                "command": command,
+                "error": error_msg
+            })
+            return False, error_msg
         except Exception as e:
-            self.log(f"✗ {description} - Exceção: {str(e)}", "ERROR")
+            self.log(f"FALHA - {description} - Exceção: {str(e)}", "ERROR")
             self.report["errors"].append({
                 "command": command,
                 "error": str(e)
             })
             return False, str(e)
     
-    def execute_step(self, step_func, step_name):
+    def print_progress(self, step, total_steps, start_time):
+        """Imprime a barra de progresso, percentual e ETA."""
+        if step == 0:
+            return 
+        
+        percentage = (step / total_steps) * 100
+        bar_length = 40
+        filled_length = int(bar_length * step // total_steps)
+        bar = '█' * filled_length + '-' * (bar_length - filled_length)
+
+        elapsed_time = time.time() - start_time
+        avg_time_per_step = elapsed_time / step
+        eta = (total_steps - step) * avg_time_per_step
+        
+        elapsed_str = time.strftime("%M:%S", time.gmtime(elapsed_time))
+        eta_str = time.strftime("%M:%S", time.gmtime(eta))
+
+        print(f"\n{Colors.BOLD}Progresso: |{bar}| {percentage:.1f}% completo{Colors.END}")
+        print(f"{Colors.YELLOW}Tempo decorrido: {elapsed_str} | ETA: {eta_str}{Colors.END}")
+
+    def execute_step(self, step_func, step_name, current_step, total_steps):
         """Executa um passo e lida com o resultado."""
-        print_header(step_name)
+        header_text = f"PASSO {current_step} de {total_steps}: {step_name}"
+        print_header(header_text)
+        self.log(header_text, "STEP")
         success = step_func()
         if not success:
             self.log(f"FALHA no passo: {step_name}", "CRITICAL")
@@ -96,27 +134,26 @@ class ProductionDeployment:
     def step_1_backup_database(self):
         """Passo 1: Backup do banco de dados"""
         return self.run_command(
-            f"{sys.executable} backup_db.py",
+            f'"{sys.executable}" backup_db.py',
             "Backup do Banco de Dados"
         )[0]
 
     def step_2_optimize_images(self):
         """Passo 2: Otimização de imagens"""
         return self.run_command(
-            f"{sys.executable} otimizar_imagens.py",
+            f'"{sys.executable}" otimizar_imagens.py',
             "Otimização de Imagens para WebP"
         )[0]
 
     def step_3_run_tests(self):
         """Passo 3: Executar suíte completa de testes"""
         return self.run_command(
-            f"{sys.executable} run_all_tests.py",
+            f'"{sys.executable}" run_all_tests.py',
             "Execução da Suíte Completa de Testes"
         )[0]
 
     def step_4_gcloud_deploy(self):
         """Passo 4: Deploy para Google App Engine"""
-        # Verifica se gcloud está instalado
         gcloud_check = subprocess.run("where gcloud", shell=True, capture_output=True)
         if gcloud_check.returncode != 0:
             self.log("Google Cloud SDK (gcloud) não encontrado no PATH.", "CRITICAL")
@@ -130,7 +167,7 @@ class ProductionDeployment:
     def step_5_validate_deployment(self):
         """Passo 5: Validar o deploy em produção"""
         return self.run_command(
-            f"{sys.executable} validar_deploy.py",
+            f'"{sys.executable}" validar_deploy.py',
             "Validação Pós-Deploy"
         )[0]
 
@@ -182,13 +219,13 @@ class ProductionDeployment:
     def run(self):
         """Executar deploy completo"""
         print_header("INICIANDO DEPLOY COMPLETO PARA PRODUÇÃO (GOOGLE APP ENGINE)")
+        start_time = time.time()
+        total_steps = len(self.steps)
         
         try:
-            self.execute_step(self.step_1_backup_database, "PASSO 1: BACKUP DO BANCO DE DADOS")
-            self.execute_step(self.step_2_optimize_images, "PASSO 2: OTIMIZAÇÃO DE IMAGENS")
-            self.execute_step(self.step_3_run_tests, "PASSO 3: EXECUÇÃO DA SUÍTE DE TESTES")
-            self.execute_step(self.step_4_gcloud_deploy, "PASSO 4: DEPLOY NO GOOGLE APP ENGINE")
-            self.execute_step(self.step_5_validate_deployment, "PASSO 5: VALIDAÇÃO PÓS-DEPLOY")
+            for i, (step_func, step_name) in enumerate(self.steps):
+                self.execute_step(step_func, step_name, current_step=i + 1, total_steps=total_steps)
+                self.print_progress(i + 1, total_steps, start_time)
             
         except Exception as e:
             self.log(f"Erro fatal durante o deploy: {str(e)}", "CRITICAL")

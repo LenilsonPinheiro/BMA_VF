@@ -1,0 +1,8 @@
+:root {
+    --tech-primary: var(--color-primary, #b92027);
+    --tech-dark: #0f172a; /* Slate 900 */
+    --tech-surface: #ffffff;
+    --glass-nav: rgba(255, 255, 255, 0.85);
+    --font-heading: 'Montserrat', sans-serif;
+    --font-body: 'Open Sans', sans-serif;
+}

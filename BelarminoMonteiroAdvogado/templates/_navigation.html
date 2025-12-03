@@ -29,12 +29,15 @@
 
 {# Link da marca (logo) que aponta para a página inicial. O logo é carregado dinamicamente das configurações. #}
 <a class="navbar-brand" href="{{ url_for('main.home') }}">
+    {# A imagem do logo é configurável via ConteudoGeral no painel administrativo. #}
     <img src="{{ url_for('static', filename=configs.get('logo_principal', 'images/BM.png')) }}" 
          alt="{{ configs.get('site_titulo', 'Belarmino Monteiro') }}" 
          class="img-fluid"
-         width="180" height="60"> </a>
+         width="180" height="60"> 
+</a>
 
 {# Botão para alternar a visibilidade do menu de navegação em dispositivos móveis. #}
+{# Classes Bootstrap são usadas para controle responsivo. #}
 <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbarCollapse" aria-controls="mainNavbarCollapse" aria-expanded="false" aria-label="Abrir navegação">
     <span class="navbar-toggler-icon"></span>
 </button>
@@ -50,7 +53,7 @@
             </a>
         </li>
 
-        {# Item de navegação para a página "O Escritório" (Sobre Nós). O status "active" é definido se 'sobre' estiver na URL. #}
+        {# Item de navegação para a página "O Escritório" (Sobre Nós). O status "active" é definido se 'sobre' estiver na URL da rota. #}
         <li class="nav-item">
             <a class="nav-link {% if 'sobre' in request.path %}active{% endif %}" href="{{ url_for('main.pagina_dinamica', slug='sobre-nos') }}">
                 O Escritório

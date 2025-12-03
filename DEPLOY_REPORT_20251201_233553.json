@@ -1,0 +1,37 @@
+{
+  "timestamp": "20251201_233553",
+  "steps": [
+    {
+      "time": "23:35:53",
+      "level": "STEP",
+      "message": "PASSO 1 de 5: BACKUP DO BANCO DE DADOS"
+    },
+    {
+      "time": "23:35:53",
+      "level": "INFO",
+      "message": "Executando: Backup do Banco de Dados..."
+    },
+    {
+      "time": "23:35:53",
+      "level": "ERROR",
+      "message": "FALHA - Backup do Banco de Dados"
+    },
+    {
+      "time": "23:35:53",
+      "level": "CRITICAL",
+      "message": "FALHA no passo: BACKUP DO BANCO DE DADOS"
+    },
+    {
+      "time": "23:35:53",
+      "level": "INFO",
+      "message": "✓ Relatório salvo em: DEPLOY_REPORT_20251201_233553.md"
+    }
+  ],
+  "errors": [
+    {
+      "command": "D:\\PROJETOS PYTHON 2025\\BMA_VF\\venv\\Scripts\\python.exe backup_db.py",
+      "error": "'D:\\PROJETOS' nÆo ‚ reconhecido como um comando interno\nou externo, um programa oper vel ou um arquivo em lotes."
+    }
+  ],
+  "warnings": []
+}

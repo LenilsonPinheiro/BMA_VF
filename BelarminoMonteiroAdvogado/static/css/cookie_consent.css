@@ -2,61 +2,32 @@
    COMPONENT: COOKIE CONSENT (PRIVACY GUARDIAN)
    ==========================================================================
    Estilos para o banner de consentimento LGPD/GDPR.
-   Suporta Glassmorphism, Temas (1-4) e Dark Mode via variáveis CSS.
+   Utiliza variáveis CSS globais para integração perfeita com o sistema de temas.
 */
 
 /* --- 1. VARIÁVEIS LOCAIS (Escopadas no ID) --- */
+/* Estas variáveis servem como defaults e podem ser sobrescritas por estilos globais ou temas. */
 #cookie-consent-banner {
-    /* Default (Option 1 - Luxury) */
-    --cc-bg: rgba(255, 255, 255, 0.95);
-    --cc-border: rgba(255, 255, 255, 0.8);
-    --cc-text: #333333;
-    --cc-text-muted: #666666;
-    --cc-accent: var(--prm-accent-red, #b92027);
-    --cc-shadow: 0 15px 40px rgba(0,0,0,0.12);
+    --cc-bg: var(--color-surface, rgba(255, 255, 255, 0.95));
+    --cc-border: var(--color-border, rgba(255, 255, 255, 0.8));
+    --cc-text: var(--color-text, #333333);
+    --cc-text-muted: var(--color-text-secondary, #666666);
+    --cc-accent: var(--color-primary, #b92027); /* Herda a cor primária do tema principal */
+    --cc-shadow: var(--shadow-md, 0 15px 40px rgba(0,0,0,0.12));
     --cc-radius: 16px;
     --cc-z-index: 10000;
     --cc-btn-text: #ffffff;
 }
 
-/* --- ADAPTAÇÃO DE TEMAS --- */
-
-/* Option 2 (Corporativo - Navy/Green) */
-body.option2 #cookie-consent-banner {
-    --cc-radius: 4px; /* Quadrado */
-    --cc-accent: #002F49; /* Navy */
-}
-
-/* Option 3 (Boutique - Gold/Cream) */
-body.option3 #cookie-consent-banner {
-    --cc-bg: #F9F7F2; /* Creme Sólido (Menos vidro) */
-    --cc-accent: #D4AF37; /* Gold */
-    --cc-border: rgba(212, 175, 55, 0.3);
-}
-
-/* Option 4 (Tech - Future) */
-body.option4 #cookie-consent-banner {
-    --cc-bg: rgba(255, 255, 255, 0.8);
-    --cc-radius: 24px; /* Bem redondo */
-    --cc-accent: var(--prm-accent-red, #b92027);
-    --cc-border: rgba(255, 255, 255, 0.5);
-}
-
-/* --- DARK MODE ENGINE --- */
+/* --- ADAPTAÇÃO PARA DARK MODE --- */
+/* Sobrescreve as variáveis locais para o modo escuro, usando variáveis globais quando possível. */
 body.dark-mode #cookie-consent-banner,
 [data-theme="dark"] #cookie-consent-banner {
-    --cc-bg: rgba(25, 25, 25, 0.95);
-    --cc-border: rgba(255, 255, 255, 0.1);
-    --cc-text: #f1f1f1;
-    --cc-text-muted: #aaaaaa;
-    --cc-shadow: 0 20px 60px rgba(0,0,0,0.6);
-    --cc-btn-text: #ffffff;
-}
-
-/* Ajuste específico Tech Dark */
-body.option4.dark-mode #cookie-consent-banner {
-    --cc-bg: rgba(15, 23, 42, 0.9); /* Slate Deep */
-    --cc-border: rgba(255, 255, 255, 0.05);
+    --cc-bg: var(--color-surface-dark, rgba(25, 25, 25, 0.95)); /* Usar cor de superfície do tema escuro */
+    --cc-border: var(--color-border-dark, rgba(255, 255, 255, 0.1));
+    --cc-text: var(--color-text-dark, #f1f1f1);
+    --cc-text-muted: var(--color-text-secondary-dark, #aaaaaa);
+    --cc-shadow: var(--shadow-dark-md, 0 20px 60px rgba(0,0,0,0.6));
 }
 
 
@@ -71,7 +42,7 @@ body.option4.dark-mode #cookie-consent-banner {
     width: 100%;
     max-width: 400px;
     z-index: var(--cc-z-index);
-    font-family: var(--font-body, sans-serif);
+    font-family: var(--font-body, sans-serif); /* Usar fonte do corpo do tema */
     
     /* Estado Inicial (Oculto) */
     opacity: 0;

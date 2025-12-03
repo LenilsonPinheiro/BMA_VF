@@ -8,6 +8,8 @@
    pelas configurações do sistema).
 
    ATUALIZAÇÃO V2.0: Inclui suporte para Options 5, 6, 7 e 8.
+   Os estilos CSS do `cookie_consent.css` são carregados aqui para garantir que o banner
+   apareça em todas as páginas, independentemente do tema ou layout.
 #}
 
 {#
@@ -64,4 +66,11 @@
     <link rel="preload" href="{{ url_for('static', filename='videos/institucional.webm') }}" as="video" type="video/webm">
     {# Pré-carrega a imagem de banner padrão para páginas internas. #}
     <link rel="preload" href="{{ url_for('static', filename='images/banners/inner_bg_default.jpg') }}" as="image">
+    {# Carrega os estilos globais do banner de consentimento de cookies. #}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/cookie_consent.css') }}">
+    {# Carrega os estilos globais das mensagens flash. #}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/flashes.css') }}">
+    {# Carrega os estilos globais do cabeçalho de páginas internas. #}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/inner_header.css') }}">
+
 {% endblock %}

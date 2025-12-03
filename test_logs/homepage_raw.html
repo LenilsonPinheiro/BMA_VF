@@ -1,0 +1,1685 @@
+
+
+
+
+
+
+
+
+
+    
+    <!DOCTYPE html>
+<html lang="pt-br" class="no-js">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    
+    <title>Belarmino Monteiro - Tradição e Excelência Jurídica</title>
+    <meta name="description" content="Advocacia de alto padrão com foco em resultados sólidos e atendimento personalizado.">
+    <meta name="author" content="Belarmino Monteiro">
+    <meta name="theme-color" content="#b92027">
+
+    <link rel="icon" type="image/png" href="/static/images/favicon.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;500;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+    
+    <link rel="stylesheet" href="/static/css/style.css">
+    
+    
+        <link rel="stylesheet" href="/static/css/theme-light.css" id="theme-css">
+    
+
+    <!-- UI/UX Improvements -->
+    <link rel="stylesheet" href="/static/css/ui-improvements.css">
+
+    
+    
+    <link rel="preload" href="/static/videos/institucional.webm" as="video" type="video/webm">
+    
+    <link rel="preload" href="/static/images/banners/inner_bg_default.jpg" as="image">
+
+
+    <style>
+        /* --- ESTILOS CRÍTICOS INLINE (Para evitar FOUC - Flash of Unstyled Content) --- */
+        body { 
+            display: flex; flex-direction: column; min-height: 100vh; 
+            font-family: 'Open Sans', sans-serif;
+            overflow-x: hidden;
+        }
+        main { flex: 1; }
+        
+        /* Navbar Premium Transition */
+        .navbar-premium {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 20px 0;
+            background: transparent; /* Começa transparente */
+        }
+        
+        .navbar-premium.scrolled {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            padding: 10px 0;
+        }
+
+        /* Dark Mode Navbar */
+        body.dark-mode .navbar-premium.scrolled,
+        [data-theme="dark"] .navbar-premium.scrolled {
+            background: rgba(17, 17, 17, 0.95);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        /* Logo Sizing */
+        .navbar-brand img { height: 55px; transition: 0.3s; }
+        .navbar-premium.scrolled .navbar-brand img { height: 45px; }
+
+        /* Links */
+        .nav-link-premium {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            color: #333 !important;
+            padding: 10px 15px !important;
+            position: relative;
+        }
+        
+        body.dark-mode .nav-link-premium, [data-theme="dark"] .nav-link-premium { color: #f1f1f1 !important; }
+
+        /* Hover Effect (Underline Expansion) */
+        .nav-link-premium::after {
+            content: ''; position: absolute; width: 0; height: 2px;
+            bottom: 5px; left: 50%; background-color: var(--prm-accent-red, #b92027);
+            transition: all 0.3s ease; transform: translateX(-50%);
+        }
+        .nav-link-premium:hover::after, .nav-link-premium.active::after { width: 80%; }
+
+        /* Footer Texture */
+        footer.footer-premium {
+            background-color: #1a1a1a;
+            color: #ccc;
+            padding: 0;
+            position: relative;
+            border-top: 5px solid var(--prm-accent-red, #b92027);
+        }
+        
+        footer.footer-premium::before {
+            content: ''; position: absolute; inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23333333' fill-opacity='0.1' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3Ccircle cx='13' cy='13' r='3'/%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.1; pointer-events: none;
+        }
+
+        /* vCard Footer */
+        .footer-qr-box {
+            background: #fff; padding: 10px; border-radius: 8px;
+            display: inline-block; transition: transform 0.3s;
+        }
+        .footer-qr-box:hover { transform: scale(1.05); }
+        .footer-qr-img { width: 100px; height: 100px; }
+
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg fixed-top navbar-premium" id="mainNav">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <img src="/static/images/BM.svg" alt="Belarmino Monteiro" id="navLogo">
+            </a>
+
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse justify-content-end" id="navbarContent">
+                <ul class="navbar-nav align-items-center gap-3">
+                    <li class="nav-item"><a class="nav-link nav-link-premium" href="/">Início</a></li>
+                    
+                    <li class="nav-item dropdown">
+                        <a class="nav-link nav-link-premium dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Atuação</a>
+                        <ul class="dropdown-menu shadow-lg border-0 rounded-0 mt-3 p-0 overflow-hidden">
+                            <li><a class="dropdown-item py-3 px-4 border-bottom" href="/areas-de-atuacao">Todas as Áreas</a></li>
+                            
+                                
+                                <li><a class="dropdown-item py-2 px-4" href="/direito-civil">Direito Civil</a></li>
+                                
+                                <li><a class="dropdown-item py-2 px-4" href="/direito-do-consumidor">Direito do Consumidor</a></li>
+                                
+                                <li><a class="dropdown-item py-2 px-4" href="/direito-previdenciario">Direito Previdenciário</a></li>
+                                
+                                <li><a class="dropdown-item py-2 px-4" href="/direito-de-familia">Direito de Família</a></li>
+                                
+                            
+                        </ul>
+                    </li>
+
+                    <li class="nav-item"><a class="nav-link nav-link-premium" href="/sobre-nos">Sobre</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-premium" href="/contato">Contato</a></li>
+                    
+                    <li class="nav-item ms-lg-3">
+                        <a href="https://wa.me/558597698475" target="_blank" class="btn btn-outline-danger rounded-pill px-4 fw-bold">
+                            <i class="bi bi-whatsapp me-2"></i> Agendar
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div style="position: fixed; top: 100px; right: 20px; z-index: 10000; max-width: 400px;">
+        
+    
+
+
+<style>
+    /* --- VARIÁVEIS --- */
+    :root {
+        --flash-success: #28a745;
+        --flash-error: #dc3545;
+        --flash-warning: #fd7e14;
+        --flash-info: #17a2b8;
+        --flash-bg: rgba(255, 255, 255, 0.95);
+        --flash-text: #333;
+        --flash-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    }
+
+    /* Dark Mode Support */
+    body.dark-mode, [data-theme="dark"], @media (prefers-color-scheme: dark) {
+        :root {
+            --flash-bg: rgba(30, 35, 40, 0.95);
+            --flash-text: #f1f1f1;
+            --flash-shadow: 0 15px 50px rgba(0,0,0,0.5);
+        }
+    }
+
+    /* --- CONTAINER FLUTUANTE --- */
+    .flash-container {
+        position: fixed;
+        top: 100px; /* Abaixo da Navbar */
+        right: 20px;
+        z-index: 10000;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        pointer-events: none; /* Permite clicar no site através do container vazio */
+        max-width: 400px;
+        width: 100%;
+    }
+
+    /* --- TOAST CARD --- */
+    .flash-toast {
+        background: var(--flash-bg);
+        backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        color: var(--flash-text);
+        padding: 16px 20px;
+        border-radius: 12px;
+        border-left: 5px solid var(--toast-accent);
+        box-shadow: var(--flash-shadow);
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        pointer-events: all;
+        position: relative;
+        overflow: hidden;
+        animation: slideInRight 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        transform: translateX(120%); /* Estado inicial para animação */
+    }
+
+    /* Ícone */
+    .flash-icon {
+        font-size: 1.5rem;
+        color: var(--toast-accent);
+        display: flex; align-items: center;
+    }
+
+    /* Texto */
+    .flash-content { flex: 1; }
+    .flash-message {
+        font-size: 0.95rem;
+        font-weight: 500;
+        line-height: 1.4;
+        display: block;
+    }
+
+    /* Botão Fechar */
+    .flash-close {
+        background: none; border: none;
+        color: var(--flash-text); opacity: 0.5;
+        font-size: 1.2rem; cursor: pointer;
+        padding: 0; display: flex; align-items: center;
+        transition: 0.2s;
+    }
+    .flash-close:hover { opacity: 1; transform: scale(1.1); }
+
+    /* Barra de Progresso */
+    .flash-progress {
+        position: absolute; bottom: 0; left: 0; height: 3px;
+        background: var(--toast-accent);
+        width: 100%;
+        animation: progressLinear 5s linear forwards;
+        opacity: 0.7;
+    }
+
+    /* --- ANIMAÇÕES --- */
+    @keyframes slideInRight {
+        from { transform: translateX(120%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes slideOutRight {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(120%); opacity: 0; }
+    }
+
+    @keyframes progressLinear {
+        from { width: 100%; }
+        to { width: 0%; }
+    }
+
+    /* --- RESPONSIVIDADE --- */
+    @media (max-width: 576px) {
+        .flash-container {
+            right: 0; left: 0; top: auto; bottom: 20px;
+            padding: 0 15px;
+            align-items: center;
+        }
+        .flash-toast {
+            width: 100%;
+            animation: slideInUp 0.5s forwards;
+            transform: translateY(100%);
+        }
+        @keyframes slideInUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes slideOutDown {
+            from { transform: translateY(0); opacity: 1; }
+            to { transform: translateY(100%); opacity: 0; }
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const toasts = document.querySelectorAll('.flash-toast');
+        
+        toasts.forEach(toast => {
+            // Auto remove após 5 segundos (tempo da animação da barra)
+            setTimeout(() => {
+                closeToast(toast);
+            }, 5000);
+        });
+    });
+
+    function closeToast(element) {
+        // Decide a animação de saída baseada na largura da tela
+        if (window.innerWidth <= 576) {
+            element.style.animation = 'slideOutDown 0.5s forwards';
+        } else {
+            element.style.animation = 'slideOutRight 0.5s forwards';
+        }
+        
+        // Remove do DOM após a animação terminar
+        setTimeout(() => {
+            if(element.parentElement) {
+                element.remove();
+            }
+        }, 500);
+    }
+</script>
+    </div>
+
+    <main>
+        
+
+<style>
+    /* --- VARIÁVEIS LOCAIS (Herdam do Tema 1) --- */
+    .luxury-wrapper {
+        --lux-gold: var(--prm-accent-red, #b92027); /* Usando a cor da marca como acento nobre */
+        --lux-dark: #111;
+        --lux-light: #fdfdfd;
+        --lux-gray: #f4f4f4;
+        --lux-text: #333;
+        --lux-font-serif: 'Playfair Display', serif;
+        --lux-font-sans: 'Open Sans', sans-serif;
+    }
+
+    /* Dark Mode Engine */
+    body.dark-mode .luxury-wrapper,
+    [data-theme="dark"] .luxury-wrapper {
+        --lux-light: #0f1215;
+        --lux-gray: #1a1d21;
+        --lux-text: #f1f1f1;
+        --lux-dark: #000;
+    }
+
+    /* --- 1. HERO CINEMATIC --- */
+    .hero-luxury {
+        position: relative;
+        height: 100vh;
+        min-height: 600px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        color: #fff;
+        text-align: center;
+    }
+    
+    /* FIX CRÍTICO: Garante que os títulos e subtítulos sejam brancos contra o fundo escuro do vídeo */
+    .hero-content .hero-pre-title,
+    .hero-content .hero-title,
+    .hero-content .hero-subtitle {
+        color: #fff; 
+    }
+
+    .hero-video-bg {
+        position: absolute; inset: 0;
+        width: 100%; height: 100%;
+        object-fit: cover;
+        z-index: 0;
+        filter: brightness(0.4); /* Escurece para legibilidade */
+    }
+
+    .hero-content {
+        position: relative; z-index: 2;
+        max-width: 900px; padding: 0 20px;
+    }
+
+    .hero-pre-title {
+        font-family: var(--lux-font-sans);
+        text-transform: uppercase; letter-spacing: 4px;
+        font-size: 0.9rem; margin-bottom: 20px;
+        opacity: 0.8; display: block;
+    }
+
+    .hero-title {
+        font-family: var(--lux-font-serif);
+        font-size: clamp(3rem, 7vw, 5.5rem);
+        font-weight: 700; margin-bottom: 20px;
+        line-height: 1.1;
+    }
+
+    .hero-subtitle {
+        font-family: var(--lux-font-sans);
+        font-size: clamp(1rem, 2vw, 1.25rem);
+        font-weight: 300; opacity: 0.9;
+        max-width: 600px; margin: 0 auto 40px;
+        line-height: 1.6;
+    }
+
+    .btn-luxury {
+        background: transparent; color: #fff;
+        border: 1px solid rgba(255,255,255,0.3);
+        padding: 18px 45px;
+        font-family: var(--lux-font-sans);
+        text-transform: uppercase; letter-spacing: 2px;
+        font-size: 0.8rem; transition: 0.4s ease;
+        position: relative; overflow: hidden;
+    }
+    .btn-luxury:hover {
+        background: #fff; color: #000;
+        padding-left: 60px; padding-right: 60px;
+    }
+
+    /* Scroll Indicator */
+    .scroll-down {
+        position: absolute; bottom: 40px; left: 50%;
+        transform: translateX(-50%);
+        animation: bounce 2s infinite; opacity: 0.7;
+    }
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {transform: translateX(-50%) translateY(0);}
+        40% {transform: translateX(-50%) translateY(-10px);}
+        60% {transform: translateX(-50%) translateY(-5px);}
+    }
+
+    /* --- 2. INTRODUÇÃO (A Essência) --- */
+    .intro-luxury {
+        padding: 120px 0;
+        background-color: var(--lux-light);
+    }
+
+    .intro-text-large {
+        font-family: var(--lux-font-serif);
+        font-size: clamp(1.8rem, 3vw, 2.5rem);
+        line-height: 1.5; color: var(--lux-text);
+        text-align: center; max-width: 900px; margin: 0 auto;
+    }
+    .intro-highlight { color: var(--lux-gold); font-style: italic; }
+
+    /* --- 3. SERVIÇOS (Cards Flutuantes) --- */
+    .services-luxury {
+        padding: 100px 0;
+        background-color: var(--lux-gray);
+    }
+
+    .section-header-lux {
+        margin-bottom: 60px; text-align: center;
+    }
+    .section-label {
+        font-family: var(--lux-font-sans);
+        text-transform: uppercase; letter-spacing: 2px;
+        font-size: 0.75rem; color: var(--lux-gold);
+        margin-bottom: 10px; display: block;
+    }
+    .section-title {
+        font-family: var(--lux-font-serif);
+        font-size: 2.5rem; color: var(--lux-text);
+    }
+
+    .card-lux {
+        background: var(--lux-light);
+        padding: 40px; height: 100%;
+        transition: all 0.4s ease;
+        border: 1px solid transparent;
+        position: relative;
+    }
+    .card-lux:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.05);
+        border-color: rgba(0,0,0,0.05);
+    }
+    body.dark-mode .card-lux:hover { border-color: rgba(255,255,255,0.1); }
+
+    .card-icon {
+        font-size: 2rem; color: var(--lux-gold);
+        margin-bottom: 25px; display: block;
+    }
+    .card-title {
+        font-family: var(--lux-font-serif);
+        font-size: 1.5rem; margin-bottom: 15px; color: var(--lux-text);
+    }
+    .card-desc {
+        font-family: var(--lux-font-sans);
+        font-size: 0.95rem; color: var(--lux-text);
+        opacity: 0.7; line-height: 1.6; margin-bottom: 25px;
+    }
+    .card-link {
+        font-size: 0.8rem; text-transform: uppercase;
+        letter-spacing: 1px; color: var(--lux-text);
+        text-decoration: none; border-bottom: 1px solid var(--lux-gold);
+        padding-bottom: 2px; transition: 0.2s;
+    }
+    .card-link:hover { opacity: 0.6; }
+
+    /* --- 4. SOBRE (Split Layout) --- */
+    .about-luxury { padding: 0; overflow: hidden; }
+    
+    .about-img-col {
+        min-height: 600px;
+        background-size: cover; background-position: center top;
+        position: relative;
+    }
+    .about-text-col {
+        background-color: var(--lux-dark);
+        color: #fff; padding: 80px;
+        display: flex; align-items: center;
+    }
+
+    .about-quote {
+        font-family: var(--lux-font-serif);
+        font-size: 1.8rem; margin-bottom: 30px;
+        border-left: 3px solid var(--lux-gold);
+        padding-left: 30px; line-height: 1.5;
+    }
+
+    /* RESPONSIVIDADE */
+    @media (max-width: 991px) {
+        .about-text-col { padding: 50px 25px; }
+        .about-img-col { min-height: 300px; }
+    }
+</style>
+
+
+<div class="luxury-wrapper">
+
+    
+    <section class="hero-luxury">
+        
+        <video autoplay muted loop playsinline class="hero-video-bg" poster="/static/images/Escolhidas%20Escritorio/3S5A1373.jpg">
+            <source src="/static/videos/maior-1.mp4" type="video/mp4">
+            <source src="/static/videos/maior-1.webm" type="video/webm">
+            Seu navegador não suporta vídeos HTML5.
+        </video>
+
+        
+        <div class="hero-content">
+            <span class="hero-pre-title" data-aos="fade-down" data-aos-delay="200">Belarmino Monteiro</span>
+            <h1 class="hero-title" data-aos="fade-up" data-aos-delay="400">
+                A Arte de Advogar.
+            </h1>
+            <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="600">
+                Compromisso com a ética, excelência técnica e resultados que constroem legados.
+            </p>
+            
+            <a href="#intro" class="btn-luxury" data-aos="fade-up" data-aos-delay="800">
+                Conheça Nossa Visão
+            </a>
+        </div>
+
+        
+        <a href="#intro" class="scroll-down text-white">
+            <i class="bi bi-arrow-down"></i>
+        </a>
+    </section>
+
+    
+    <section id="intro" class="intro-luxury">
+        <div class="container" data-aos="fade-up">
+            <p class="intro-text-large">
+                Acreditamos que cada caso é uma história única que merece ser ouvida e defendida com <span class="intro-highlight">rigor absoluto</span>. Nossa advocacia combina a tradição dos grandes juristas com a agilidade do mundo moderno.
+            </p>
+        </div>
+    </section>
+
+    
+    <section class="services-luxury">
+        <div class="container">
+            
+            <div class="section-header-lux" data-aos="fade-up">
+                <span class="section-label">Áreas de Prática</span>
+                <h2 class="section-title">Expertise Jurídica</h2>
+            </div>
+
+            <div class="row g-4">
+                
+                
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="card-lux">
+                        
+                        <i class="bi bi-bank card-icon"></i>
+                        <h3 class="card-title">Direito Civil</h3>
+                        
+                        <p class="card-desc">Soluções para questões de obrigações, contratos, responsabilidade civil e direitos reais....</p>
+                        
+                        <a href="/direito-civil" class="card-link">Saiba Mais</a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="card-lux">
+                        
+                        <i class="bi bi-shield-check card-icon"></i>
+                        <h3 class="card-title">Direito do Consumidor</h3>
+                        
+                        <p class="card-desc">Atuação em conflitos nas relações de consumo, buscando a reparação de danos....</p>
+                        
+                        <a href="/direito-do-consumidor" class="card-link">Saiba Mais</a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+                    <div class="card-lux">
+                        
+                        <i class="bi bi-person-workspace card-icon"></i>
+                        <h3 class="card-title">Direito Previdenciário</h3>
+                        
+                        <p class="card-desc">Assessoria em questões de aposentadoria, pensões e benefícios previdenciários....</p>
+                        
+                        <a href="/direito-previdenciario" class="card-link">Saiba Mais</a>
+                    </div>
+                </div>
+                
+                
+                
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
+                    <div class="card-lux d-flex flex-column align-items-center justify-content-center text-center">
+                        <h3 class="card-title mb-3">Atuação Completa</h3>
+                        <p class="card-desc mb-4">Explore todas as nossas áreas de especialização.</p>
+                        
+                        <a href="/areas-de-atuacao" class="btn btn-outline-dark rounded-0 px-4">Ver Portfolio</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+    <section class="about-luxury">
+        <div class="row g-0">
+            
+            <div class="col-lg-6 about-img-col" 
+                 style="background-image: url('/static/images/Belarmino.png');">
+            </div>
+            
+            
+            <div class="col-lg-6 about-text-col">
+                <div data-aos="fade-left">
+                    <span class="section-label text-white-50">Sobre o Escritório</span>
+                    <h2 class="section-title text-white mb-4">Liderança & Estratégia</h2>
+                    <blockquote class="about-quote">
+                        "A justiça não é apenas um conceito abstrato, é o resultado de trabalho árduo, conhecimento profundo e estratégia impecável."
+                    </blockquote>
+                    <p class="opacity-75 mb-4">
+                        Fundado pelo Dr. Belarmino Monteiro, nosso escritório se consolidou como uma referência em advocacia estratégica, atendendo empresas e indivíduos que buscam segurança jurídica e resultados expressivos.
+                    </p>
+                    
+                    <a href="/sobre-nos" class="text-white text-decoration-underline small text-uppercase ls-1">
+                        Ler História Completa
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+    <section id="team" class="team-universal-wrapper" data-aos="fade-up">
+    <div class="container">
+        
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-8 text-center">
+                <div class="section-header">
+                    <span class="section-badge">Nosso Time</span>
+                    <h2 class="section-title">
+                        Especialistas Dedicados
+                    </h2>
+                    <div class="section-line mx-auto mt-3"></div>
+                    
+                    <p class="section-subtitle mt-4">
+                        A inteligência jurídica por trás de cada vitória estratégica.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 justify-content-center">
+            
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
+                
+                <div class="team-card">
+                    <div class="team-img-wrapper">
+                        
+                            <img src="/static/images/Belarmino.png?v=3" 
+                                 alt="Belarmino Monteiro" class="team-img">
+                        
+                        
+                        <div class="team-overlay">
+                            <span class="view-profile-btn">Ver Perfil</span>
+                        </div>
+                    </div>
+                    
+                    <div class="team-info">
+                        <h3 class="member-name">Belarmino Monteiro</h3>
+                        <span class="member-role">Advogado</span>
+                        
+                        <div class="member-bio-reveal">
+                            <div class="separator-small"></div>
+                            <p class="member-bio">
+                                
+                                    Sócio-fundador do escritório, com vasta experiência em Direito Civil e Contratual. Reconhecido pela sua atuação estratég...
+                                
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                
+                <div class="team-card">
+                    <div class="team-img-wrapper">
+                        
+                            <img src="/static/images/Taise.png?v=3" 
+                                 alt="Taise Peixoto" class="team-img">
+                        
+                        
+                        <div class="team-overlay">
+                            <span class="view-profile-btn">Ver Perfil</span>
+                        </div>
+                    </div>
+                    
+                    <div class="team-info">
+                        <h3 class="member-name">Taise Peixoto</h3>
+                        <span class="member-role">Advogada</span>
+                        
+                        <div class="member-bio-reveal">
+                            <div class="separator-small"></div>
+                            <p class="member-bio">
+                                
+                                    Especialista em Direito de Família e Sucessões, com uma abordagem humana e focada na resolução consensual de conflitos. ...
+                                
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            
+        </div>
+    </div>
+</section>
+
+<style>
+    /* --- VARIÁVEIS LOCAIS (Adaptive System) --- */
+    .team-universal-wrapper {
+        --tm-bg: var(--prm-bg-light, #f8f9fa);
+        --tm-card-bg: #ffffff;
+        --tm-accent: var(--prm-accent-red, #b92027);
+        --tm-text: #333;
+        --tm-text-muted: #666;
+        --tm-border-radius: 12px;
+        --tm-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        --tm-img-height: 400px;
+    }
+
+    /* Option 2 (Corporativo) */
+    body.option2 .team-universal-wrapper {
+        --tm-card-bg: #fff;
+        --tm-accent: #002F49;
+        --tm-border-radius: 4px;
+        --tm-img-height: 450px; /* Mais imponente */
+    }
+
+    /* Option 3 (Boutique) */
+    body.option3 .team-universal-wrapper {
+        --tm-bg: #F9F7F2;
+        --tm-accent: #D4AF37;
+        --tm-shadow: 0 15px 40px rgba(212, 175, 55, 0.1);
+    }
+
+    /* Option 4 (Tech) & Dark Mode */
+    body.option4 .team-universal-wrapper,
+    body.dark-mode .team-universal-wrapper,
+    [data-theme="dark"] .team-universal-wrapper {
+        --tm-bg: transparent;
+        --tm-card-bg: rgba(255, 255, 255, 0.03);
+        --tm-text: #f1f1f1;
+        --tm-text-muted: #aaa;
+        --tm-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        --tm-accent: var(--prm-accent-red, #b92027);
+    }
+
+    /* --- ESTRUTURA --- */
+    .team-universal-wrapper {
+        padding: 100px 0;
+        background-color: var(--tm-bg);
+        position: relative;
+    }
+
+    /* Cabeçalhos */
+    .section-header .section-badge {
+        display: block; font-size: 0.8rem; text-transform: uppercase;
+        letter-spacing: 2px; color: var(--tm-accent); margin-bottom: 10px;
+        font-weight: 700;
+    }
+    .section-header .section-title {
+        font-family: var(--font-heading, serif);
+        font-size: clamp(2rem, 4vw, 3rem); color: var(--tm-text); margin: 0;
+    }
+    .section-line {
+        width: 60px; height: 3px; background-color: var(--tm-accent);
+        border-radius: 2px;
+    }
+    .section-subtitle {
+        font-size: 1.1rem; color: var(--tm-text-muted); opacity: 0.8;
+        max-width: 600px; margin: 0 auto;
+    }
+
+    /* --- CARD DO MEMBRO --- */
+    .team-card {
+        background: var(--tm-card-bg);
+        border-radius: var(--tm-border-radius);
+        overflow: hidden;
+        box-shadow: var(--tm-shadow);
+        transition: transform 0.4s ease, box-shadow 0.4s ease;
+        position: relative;
+        height: 100%;
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+    body.dark-mode .team-card { border-color: rgba(255,255,255,0.1); }
+
+    .team-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+    }
+
+    /* Imagem */
+    .team-img-wrapper {
+        position: relative;
+        height: var(--tm-img-height);
+        overflow: hidden;
+        background-color: #e9ecef; /* Placeholder color */
+    }
+    
+    .team-img {
+        width: 100%; height: 100%;
+        object-fit: cover;
+        object-position: top center;
+        transition: transform 0.6s ease, filter 0.6s ease;
+    }
+    
+    /* Efeito de Zoom e Filtro no Hover */
+    .team-card:hover .team-img {
+        transform: scale(1.05);
+    }
+    
+    /* Overlay no Hover */
+    .team-overlay {
+        position: absolute; inset: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+        opacity: 0; transition: 0.4s;
+        display: flex; align-items: flex-end; justify-content: center;
+        padding-bottom: 30px;
+    }
+    .team-card:hover .team-overlay { opacity: 1; }
+
+    .view-profile-btn {
+        color: #fff; border: 1px solid #fff;
+        padding: 8px 20px; border-radius: 50px;
+        font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;
+        transform: translateY(20px); transition: 0.4s;
+    }
+    .team-card:hover .view-profile-btn { transform: translateY(0); }
+
+    /* Informações */
+    .team-info {
+        padding: 25px;
+        text-align: center;
+        position: relative;
+        z-index: 2;
+        background: var(--tm-card-bg);
+        transition: 0.3s;
+    }
+
+    .member-name {
+        font-family: var(--font-heading, serif);
+        font-size: 1.4rem; color: var(--tm-text);
+        margin-bottom: 5px; font-weight: 700;
+    }
+    
+    .member-role {
+        display: block; font-size: 0.9rem;
+        color: var(--tm-accent); text-transform: uppercase;
+        letter-spacing: 1px; font-weight: 600;
+        margin-bottom: 15px;
+    }
+
+    /* Bio Reveal (Acordeão Visual) */
+    .member-bio-reveal {
+        max-height: 0; opacity: 0;
+        overflow: hidden;
+        transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+    .team-card:hover .member-bio-reveal {
+        max-height: 150px; opacity: 1;
+    }
+
+    .separator-small {
+        width: 30px; height: 2px; background-color: var(--tm-text-muted);
+        opacity: 0.2; margin: 10px auto;
+    }
+
+    .member-bio {
+        font-size: 0.9rem; color: var(--tm-text-muted);
+        line-height: 1.6; margin: 0;
+    }
+
+    /* Responsividade */
+    @media (max-width: 991px) {
+        .team-universal-wrapper { padding: 60px 0; }
+        .team-img-wrapper { height: 350px; }
+        
+        /* No mobile, mostrar bio sempre ou adaptar UX? 
+           Vamos manter o reveal para não poluir, mas aumentar a area de toque */
+        .member-bio-reveal { max-height: 100px; opacity: 1; margin-top: 15px; } /* Mostra sempre no mobile para UX melhor */
+    }
+</style>
+
+    
+    <section class="map-universal-wrapper" data-aos="fade">
+    
+    <div class="map-frame">
+        <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3981.345678901234!2d-38.5000000!3d-3.7300000!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zQXYuIFNhbnRvcyBEdW1vbnQsIDEyMzQgLSBBbGRlb3RhLCBGb3J0YWxlemEgLSBDRQ!5e0!3m2!1spt-BR!2sbr!4v1600000000000!5m2!1spt-BR!2sbr" 
+            width="100%" 
+            height="100%" 
+            style="border:0;" 
+            allowfullscreen="" 
+            loading="lazy" 
+            referrerpolicy="no-referrer-when-downgrade"
+            class="google-map-iframe">
+        </iframe>
+        
+        <div class="map-scroll-guard" onclick="this.style.pointerEvents='none'"></div>
+    </div>
+
+    <div class="container position-relative h-100 map-content-container">
+        <div class="row h-100 align-items-center">
+            
+            <div class="col-lg-4 col-md-6" data-aos="fade-right" data-aos-delay="200">
+                <div class="location-card">
+                    <div class="card-header-loc">
+                        <span class="loc-badge">Nossa Sede</span>
+                        <h3 class="loc-title">Fortaleza, CE</h3>
+                    </div>
+                    
+                    <div class="loc-details">
+                        <div class="loc-item">
+                            <i class="bi bi-geo-alt-fill"></i>
+                            <div>
+                                <strong>Endereço</strong>
+                                <p>Av. Santos Dumont, 1234<br>Aldeota, Fortaleza - CE</p>
+                            </div>
+                        </div>
+                        
+                        <div class="loc-item">
+                            <i class="bi bi-clock-fill"></i>
+                            <div>
+                                <strong>Horário</strong>
+                                <p>Seg a Sex: 08h às 18h</p>
+                            </div>
+                        </div>
+                        
+                        <div class="loc-item">
+                            <i class="bi bi-envelope-fill"></i>
+                            <div>
+                                <strong>Contato</strong>
+                                <p>contato@belarminomonteiro.com.br</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="https://maps.google.com" target="_blank" class="btn-loc-route">
+                        Traçar Rota <i class="bi bi-arrow-up-right"></i>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</section>
+
+<style>
+    /* --- VARIÁVEIS LOCAIS --- */
+    .map-universal-wrapper {
+        --map-height: 550px;
+        --loc-card-bg: rgba(255, 255, 255, 0.95);
+        --loc-text: #333;
+        --loc-accent: var(--prm-accent-red, #b92027);
+        --loc-shadow: 0 25px 50px rgba(0,0,0,0.15);
+    }
+
+    /* Temas Específicos */
+    body.option2 .map-universal-wrapper { --loc-accent: #002F49; } /* Corporativo */
+    body.option3 .map-universal-wrapper { --loc-card-bg: #F9F7F2; --loc-accent: #D4AF37; } /* Boutique */
+    
+    /* Dark Mode */
+    body.dark-mode .map-universal-wrapper,
+    [data-theme="dark"] .map-universal-wrapper {
+        --loc-card-bg: rgba(20, 25, 30, 0.9);
+        --loc-text: #f1f1f1;
+        --loc-shadow: 0 25px 60px rgba(0,0,0,0.5);
+    }
+
+    /* --- ESTRUTURA --- */
+    .map-universal-wrapper {
+        position: relative;
+        height: var(--map-height);
+        overflow: hidden;
+        /* Não adicionamos padding aqui, o mapa ocupa tudo */
+    }
+
+    .map-frame {
+        position: absolute; inset: 0; width: 100%; height: 100%;
+        z-index: 0;
+    }
+
+    /* Estilo do Iframe (Grayscale para elegância) */
+    .google-map-iframe {
+        filter: grayscale(100%) contrast(1.1);
+        transition: filter 0.5s ease;
+    }
+    .map-universal-wrapper:hover .google-map-iframe {
+        filter: grayscale(0%) contrast(1); /* Cor volta no hover */
+    }
+
+    /* Scroll Guard */
+    .map-scroll-guard {
+        position: absolute; inset: 0;
+        background: transparent; z-index: 1;
+        /* Impede zoom acidental ao rolar a página */
+    }
+
+    /* Container Flutuante */
+    .map-content-container {
+        pointer-events: none; /* Permite clicar no mapa atrás */
+        z-index: 2;
+    }
+
+    /* --- LOCATION CARD --- */
+    .location-card {
+        background: var(--loc-card-bg);
+        backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: var(--loc-shadow);
+        pointer-events: auto; /* Reativa cliques no card */
+        border-left: 5px solid var(--loc-accent);
+        margin-top: 50px; /* Centralização visual */
+    }
+
+    .loc-badge {
+        font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px;
+        color: var(--loc-accent); font-weight: 700; display: block; margin-bottom: 5px;
+    }
+    
+    .loc-title {
+        font-family: var(--font-primary, serif);
+        font-size: 2rem; color: var(--loc-text); margin-bottom: 30px;
+        font-weight: 700;
+    }
+
+    .loc-item {
+        display: flex; gap: 15px; margin-bottom: 20px;
+    }
+    
+    .loc-item i {
+        font-size: 1.5rem; color: var(--loc-accent);
+        opacity: 0.8; margin-top: 2px;
+    }
+    
+    .loc-item strong {
+        display: block; font-size: 0.9rem; color: var(--loc-text);
+        margin-bottom: 2px; text-transform: uppercase; font-weight: 700;
+    }
+    
+    .loc-item p {
+        font-size: 0.95rem; color: var(--loc-text); opacity: 0.8; margin: 0;
+        line-height: 1.4;
+    }
+
+    /* Botão Rota */
+    .btn-loc-route {
+        display: inline-block; width: 100%;
+        padding: 15px; text-align: center;
+        background-color: var(--loc-text); /* Botão Escuro */
+        color: #fff !important;
+        text-transform: uppercase; font-weight: 700; font-size: 0.85rem;
+        letter-spacing: 1px; border-radius: 8px;
+        text-decoration: none; margin-top: 10px;
+        transition: 0.3s;
+    }
+    .btn-loc-route:hover {
+        background-color: var(--loc-accent);
+        transform: translateY(-3px);
+    }
+    
+    /* Dark Mode Button invert */
+    body.dark-mode .btn-loc-route { background-color: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); }
+    body.dark-mode .btn-loc-route:hover { background-color: var(--loc-accent); border-color: var(--loc-accent); }
+
+    /* RESPONSIVIDADE */
+    @media (max-width: 991px) {
+        .map-universal-wrapper { height: auto; display: flex; flex-direction: column-reverse; }
+        .map-frame { position: relative; height: 300px; } /* Mapa menor embaixo */
+        .map-content-container { position: relative; height: auto; padding: 0; }
+        .location-card {
+            margin: 0; border-radius: 0; border-left: none; border-bottom: 5px solid var(--loc-accent);
+            padding: 40px 25px;
+        }
+    }
+</style> 
+    <section class="cta-universal-wrapper">
+    <div class="container">
+        
+        <div class="cta-card" data-aos="fade-up">
+            
+            <div class="cta-decor-circle circle-1"></div>
+            <div class="cta-decor-circle circle-2"></div>
+            <div class="cta-bg-overlay"></div>
+
+            <div class="row align-items-center position-relative z-2">
+                
+                <div class="col-lg-7 text-center text-lg-start mb-4 mb-lg-0">
+                    <h2 class="cta-title">
+                        Precisa de Orientação Jurídica?
+                    </h2>
+                    <p class="cta-subtitle">
+                        Não deixe suas dúvidas para depois. Nossa equipe está pronta para analisar o seu caso com total sigilo e dedicação.
+                    </p>
+                </div>
+
+                <div class="col-lg-5 text-center text-lg-end">
+                    <div class="d-flex flex-column flex-md-row gap-3 justify-content-center justify-content-lg-end">
+                        
+                        <a href="https://wa.me/558597698475" target="_blank" class="btn-cta-primary">
+                            <i class="bi bi-whatsapp"></i> Falar no WhatsApp
+                        </a>
+
+                        <a href="/contato" class="btn-cta-outline">
+                            Agendar Consulta
+                        </a>
+
+                    </div>
+                    <div class="mt-3 text-white-50 small">
+                        <i class="bi bi-clock me-1"></i> Resposta rápida em horário comercial
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<style>
+    /* --- VARIÁVEIS LOCAIS (Adaptive System) --- */
+    .cta-universal-wrapper {
+        --cta-bg-gradient: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
+        --cta-accent: var(--prm-accent-red, #b92027); /* Herda do global */
+        --cta-text: #ffffff;
+        --cta-glass-border: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Ajuste para Temas Específicos */
+    body.option2 .cta-universal-wrapper { --cta-bg-gradient: linear-gradient(135deg, #002F49 0%, #001a29 100%); --cta-accent: #fff; }
+    body.option3 .cta-universal-wrapper { --cta-bg-gradient: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%); --cta-accent: #D4AF37; }
+    body.option4 .cta-universal-wrapper { --cta-bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); --cta-accent: #38bdf8; }
+
+    /* --- ESTRUTURA --- */
+    .cta-universal-wrapper {
+        padding: 80px 0;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .cta-card {
+        background: var(--cta-bg-gradient);
+        border-radius: 24px;
+        padding: 60px 50px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        border: 1px solid var(--cta-glass-border);
+    }
+
+    /* --- DECORAÇÃO (Luzes Ambientais) --- */
+    .cta-decor-circle {
+        position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.4; pointer-events: none;
+    }
+    .circle-1 {
+        width: 300px; height: 300px; background: var(--cta-accent);
+        top: -100px; left: -100px;
+    }
+    .circle-2 {
+        width: 250px; height: 250px; background: rgba(255,255,255,0.1);
+        bottom: -50px; right: -50px;
+    }
+    
+    .cta-bg-overlay {
+        position: absolute; inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.03' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E");
+        opacity: 0.5; pointer-events: none;
+    }
+
+    /* --- TIPOGRAFIA --- */
+    .cta-title {
+        color: var(--cta-text);
+        font-family: var(--font-primary, serif);
+        font-weight: 800; font-size: clamp(1.8rem, 4vw, 2.5rem);
+        margin-bottom: 15px; line-height: 1.2;
+    }
+
+    .cta-subtitle {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 1.1rem; line-height: 1.6; font-weight: 300;
+        max-width: 90%;
+    }
+
+    /* --- BOTÕES --- */
+    .btn-cta-primary {
+        background-color: var(--cta-accent);
+        color: #fff;
+        padding: 16px 32px; border-radius: 50px;
+        font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+        text-decoration: none; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+        border: 2px solid var(--cta-accent);
+    }
+    
+    /* Option 2 & 4 Specific Text Color adjust */
+    body.option2 .btn-cta-primary, body.option4 .btn-cta-primary { color: #000; }
+
+    .btn-cta-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+        filter: brightness(1.1); color: #fff;
+    }
+
+    .btn-cta-outline {
+        background: transparent; color: #fff;
+        padding: 16px 32px; border-radius: 50px;
+        font-weight: 600; text-transform: uppercase;
+        text-decoration: none; transition: all 0.3s;
+        border: 2px solid rgba(255,255,255,0.3);
+        display: inline-flex; align-items: center; justify-content: center;
+    }
+    
+    .btn-cta-outline:hover {
+        background: rgba(255,255,255,0.1);
+        border-color: #fff; color: #fff;
+    }
+
+    /* --- RESPONSIVIDADE --- */
+    @media (max-width: 991px) {
+        .cta-card { padding: 40px 25px; text-align: center; }
+        .cta-subtitle { margin: 0 auto 30px; }
+    }
+</style> 
+
+</div>
+
+
+    </main>
+
+    <footer class="footer-premium">
+        <div class="container">
+            <div class="row gy-3">
+                
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="text-white text-uppercase mb-4 fw-bold ls-1">Belarmino Monteiro</h5>
+                    <p class="small text-secondary mb-4">
+                        Sociedade de advogados comprometida com a excelência técnica e a defesa intransigente dos direitos de nossos clientes.
+                    </p>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="text-secondary fs-5 hover-white"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="text-secondary fs-5 hover-white"><i class="bi bi-linkedin"></i></a>
+                        <a href="#" class="text-secondary fs-5 hover-white"><i class="bi bi-facebook"></i></a>
+                    </div>
+                </div>
+
+                <div class="col-lg-2 col-md-6">
+                    <h6 class="text-white text-uppercase mb-4 fw-bold fs-7">Institucional</h6>
+                    <ul class="list-unstyled d-flex flex-column gap-2">
+                        <li><a href="/" class="text-decoration-none text-secondary small hover-red">Início</a></li>
+                        <li><a href="/sobre-nos" class="text-decoration-none text-secondary small hover-red">Sobre Nós</a></li>
+                        <li><a href="/areas-de-atuacao" class="text-decoration-none text-secondary small hover-red">Áreas de Atuação</a></li>
+                        <li><a href="/politica-de-privacidade" class="text-decoration-none text-secondary small hover-red">Privacidade</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <h6 class="text-white text-uppercase mb-4 fw-bold fs-7">Fale Conosco</h6>
+                    <ul class="list-unstyled d-flex flex-column gap-3">
+                        <li class="d-flex align-items-start gap-3">
+                            <i class="bi bi-geo-alt text-danger mt-1"></i>
+                            <span class="text-secondary small">Av. Santos Dumont, 1234<br>Aldeota, Fortaleza - CE</span>
+                        </li>
+                        <li class="d-flex align-items-center gap-3">
+                            <i class="bi bi-envelope text-danger"></i>
+                            <span class="text-secondary small">contato@belarminomonteiro.com.br</span>
+                        </li>
+                        <li class="d-flex align-items-center gap-3">
+                            <i class="bi bi-telephone text-danger"></i>
+                            <span class="text-secondary small">+55 (85) 9769-8475</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-3 col-md-6 text-lg-end">
+                    <h6 class="text-white text-uppercase mb-4 fw-bold fs-7">Salve nosso Contato</h6>
+                    <div class="footer-qr-box">
+                        <img src="/static/images/qr-code%20(SEM%20O%20LOGO%20NO%20CENTRO).svg" 
+                             alt="vCard QR Code" class="footer-qr-img">
+                    </div>
+                    <p class="text-secondary mt-3 small" style="font-size: 0.75rem;">Aponte a câmera para salvar.</p>
+                </div>
+
+            </div>
+            
+            <hr class="border-secondary opacity-25 my-0">
+            
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="small text-secondary mb-0">&copy; 2025 Belarmino Monteiro Sociedade de Advogados. OAB/CE 0000.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end mt-3 mt-md-0">
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <style>
+    /* --- VARIÁVEIS LOCAIS (Escopadas) --- */
+    #cookie-consent-banner {
+        --cc-bg: rgba(255, 255, 255, 0.9);
+        --cc-border: rgba(255, 255, 255, 0.6);
+        --cc-text: #333;
+        --cc-text-muted: #666;
+        --cc-accent: var(--prm-accent-red, #b92027); /* Herda do tema principal */
+        --cc-shadow: 0 15px 40px rgba(0,0,0,0.12);
+        --cc-radius: 16px;
+        --cc-z-index: 10000;
+    }
+
+    /* Temas Específicos (Overrides) */
+    body.option2 #cookie-consent-banner { --cc-accent: #002F49; --cc-radius: 4px; }
+    body.option3 #cookie-consent-banner { --cc-bg: #F9F7F2; --cc-accent: #D4AF37; }
+    
+    /* DARK MODE ENGINE */
+    body.dark-mode #cookie-consent-banner,
+    [data-theme="dark"] #cookie-consent-banner {
+        --cc-bg: rgba(20, 20, 20, 0.9);
+        --cc-border: rgba(255, 255, 255, 0.1);
+        --cc-text: #f1f1f1;
+        --cc-text-muted: #aaa;
+        --cc-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    }
+
+    /* --- CONTAINER PRINCIPAL --- */
+    #cookie-consent-banner {
+        position: fixed;
+        bottom: 30px;
+        left: 30px; /* Esquerda para não colidir com WhatsApp (Direita) */
+        width: 100%;
+        max-width: 400px;
+        z-index: var(--cc-z-index);
+        font-family: var(--font-secondary, sans-serif);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(20px) scale(0.98);
+        transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+        pointer-events: none;
+    }
+
+    /* Estado Ativo */
+    #cookie-consent-banner.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0) scale(1);
+        pointer-events: all;
+    }
+
+    /* --- CARD DE VIDRO --- */
+    .cc-card {
+        background: var(--cc-bg);
+        backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--cc-border);
+        border-radius: var(--cc-radius);
+        padding: 24px;
+        box-shadow: var(--cc-shadow);
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    /* --- CABEÇALHO --- */
+    .cc-header {
+        display: flex; align-items: flex-start; gap: 15px;
+    }
+    .cc-icon {
+        font-size: 1.6rem; color: var(--cc-accent);
+        background: rgba(128, 128, 128, 0.1);
+        width: 42px; height: 42px;
+        display: flex; align-items: center; justify-content: center;
+        border-radius: 50%; flex-shrink: 0;
+    }
+    .cc-content h4 {
+        margin: 0 0 6px; font-size: 1rem; font-weight: 700; color: var(--cc-text);
+        text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .cc-content p {
+        margin: 0; font-size: 0.85rem; line-height: 1.5; color: var(--cc-text-muted);
+    }
+    .cc-link {
+        color: var(--cc-accent); text-decoration: none; font-weight: 600;
+        border-bottom: 1px dotted currentColor; transition: 0.2s;
+    }
+    .cc-link:hover { opacity: 0.8; }
+
+    /* --- ÁREA DE PREFERÊNCIAS (Toggle) --- */
+    .cc-preferences {
+        display: none; /* Oculto por padrão */
+        background: rgba(128,128,128,0.05);
+        border-radius: 8px;
+        padding: 15px;
+        margin-top: 5px;
+        border: 1px solid rgba(128,128,128,0.1);
+    }
+    
+    .cc-switch-row {
+        display: flex; justify-content: space-between; align-items: center;
+        margin-bottom: 12px;
+    }
+    .cc-switch-row:last-child { margin-bottom: 0; }
+    
+    .cc-switch-label { font-size: 0.85rem; color: var(--cc-text); font-weight: 600; }
+    .cc-switch-desc { font-size: 0.75rem; color: var(--cc-text-muted); display: block; }
+
+    /* Toggle Switch Custom */
+    .cc-switch { position: relative; display: inline-block; width: 34px; height: 18px; }
+    .cc-switch input { opacity: 0; width: 0; height: 0; }
+    .cc-slider {
+        position: absolute; cursor: pointer; inset: 0;
+        background-color: #ccc; transition: .3s; border-radius: 20px;
+    }
+    .cc-slider:before {
+        position: absolute; content: ""; height: 14px; width: 14px; left: 2px; bottom: 2px;
+        background-color: white; transition: .3s; border-radius: 50%;
+    }
+    input:checked + .cc-slider { background-color: var(--cc-accent); }
+    input:checked + .cc-slider:before { transform: translateX(16px); }
+    input:disabled + .cc-slider { opacity: 0.5; cursor: not-allowed; }
+
+    /* --- BOTÕES DE AÇÃO --- */
+    .cc-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr; /* Dividido igualmente */
+        gap: 10px;
+        margin-top: 5px;
+    }
+    .cc-actions.full-width { grid-template-columns: 1fr; } 
+
+    .cc-btn {
+        padding: 12px; border-radius: 8px; font-size: 0.8rem;
+        font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+        cursor: pointer; transition: all 0.2s; border: none; text-align: center;
+    }
+
+    /* Aceitar (Primary) */
+    .cc-btn-accept {
+        background: var(--cc-accent); color: #fff;
+        grid-column: span 2; /* Ocupa linha inteira se for o principal */
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .cc-btn-accept:hover { filter: brightness(0.9); transform: translateY(-1px); }
+
+    /* Secundários (Ghost) */
+    .cc-btn-ghost {
+        background: transparent; color: var(--cc-text-muted);
+        border: 1px solid rgba(128,128,128,0.3);
+    }
+    .cc-btn-ghost:hover {
+        background: rgba(128,128,128,0.1); color: var(--cc-text); border-color: rgba(128,128,128,0.5);
+    }
+
+    /* Link "Gerenciar" pequeno */
+    .cc-manage-link {
+        font-size: 0.75rem; color: var(--cc-text-muted); text-align: center;
+        text-decoration: underline; cursor: pointer; margin-top: 10px; display: block;
+    }
+
+    /* --- RESPONSIVIDADE --- */
+    @media (max-width: 576px) {
+        #cookie-consent-banner {
+            bottom: 0; left: 0; right: 0; width: 100%; max-width: 100%;
+            border-radius: 20px 20px 0 0;
+        }
+        .cc-card {
+            border-radius: 20px 20px 0 0;
+            border-bottom: none; border-left: none; border-right: none;
+            padding: 20px;
+        }
+        /* No mobile, botões um em cima do outro */
+        .cc-actions { grid-template-columns: 1fr; }
+        .cc-btn-accept { grid-column: span 1; }
+    }
+</style>
+
+<div id="cookie-consent-banner">
+    <div class="cc-card">
+        
+        <div class="cc-header">
+            <div class="cc-icon"><i class="bi bi-shield-lock-fill"></i></div>
+            <div class="cc-content">
+                <h4>Sua Privacidade</h4>
+                <p>
+                    Utilizamos cookies para personalizar sua experiência. 
+                    Veja nossa <a href="/politica-de-privacidade" class="cc-link">Política de Privacidade</a>.
+                </p>
+            </div>
+        </div>
+
+        <div id="cc-pref-panel" class="cc-preferences">
+            <div class="cc-switch-row">
+                <div>
+                    <span class="cc-switch-label">Essenciais</span>
+                    <span class="cc-switch-desc">Funcionamento básico e segurança.</span>
+                </div>
+                <label class="cc-switch">
+                    <input type="checkbox" checked disabled>
+                    <span class="cc-slider"></span>
+                </label>
+            </div>
+            <div class="cc-switch-row">
+                <div>
+                    <span class="cc-switch-label">Analíticos</span>
+                    <span class="cc-switch-desc">Ajuda a melhorar o site.</span>
+                </div>
+                <label class="cc-switch">
+                    <input type="checkbox" id="cc-analytics" checked>
+                    <span class="cc-slider"></span>
+                </label>
+            </div>
+            <button class="cc-btn cc-btn-accept w-100 mt-2" onclick="CookieConsent.savePreferences()">Salvar Preferências</button>
+        </div>
+
+        <div id="cc-main-actions" class="cc-actions">
+            <button class="cc-btn cc-btn-ghost" onclick="CookieConsent.rejectAll()">Rejeitar</button>
+            <button class="cc-btn cc-btn-accept" onclick="CookieConsent.acceptAll()">Aceitar</button>
+        </div>
+        
+        <span id="cc-manage-btn" class="cc-manage-link" onclick="CookieConsent.togglePreferences()">Gerenciar Preferências</span>
+
+    </div>
+</div>
+
+<script>
+    const CookieConsent = {
+        key: 'bm_privacy_consent',
+        banner: document.getElementById('cookie-consent-banner'),
+        prefPanel: document.getElementById('cc-pref-panel'),
+        mainActions: document.getElementById('cc-main-actions'),
+        manageBtn: document.getElementById('cc-manage-btn'),
+
+        init() {
+            // Verifica se já existe consentimento salvo
+            const consent = localStorage.getItem(this.key);
+            if (!consent) {
+                // Delay para não assustar o usuário na entrada
+                setTimeout(() => this.banner.classList.add('show'), 2000);
+            } else {
+                this.applyConsent(JSON.parse(consent));
+            }
+        },
+
+        togglePreferences() {
+            if (this.prefPanel.style.display === 'block') {
+                this.prefPanel.style.display = 'none';
+                this.mainActions.style.display = 'grid';
+                this.manageBtn.style.display = 'block';
+            } else {
+                this.prefPanel.style.display = 'block';
+                this.mainActions.style.display = 'none';
+                this.manageBtn.style.display = 'none';
+            }
+        },
+
+        acceptAll() {
+            const preferences = {
+                essential: true,
+                analytics: true,
+                marketing: true,
+                timestamp: new Date().toISOString()
+            };
+            this.saveAndClose(preferences);
+        },
+
+        rejectAll() {
+            const preferences = {
+                essential: true,
+                analytics: false,
+                marketing: false,
+                timestamp: new Date().toISOString()
+            };
+            this.saveAndClose(preferences);
+        },
+
+        savePreferences() {
+            const analytics = document.getElementById('cc-analytics').checked;
+            const preferences = {
+                essential: true,
+                analytics: analytics,
+                marketing: false, // Simplificado
+                timestamp: new Date().toISOString()
+            };
+            this.saveAndClose(preferences);
+        },
+
+        saveAndClose(preferences) {
+            localStorage.setItem(this.key, JSON.stringify(preferences));
+            this.banner.classList.remove('show');
+            this.applyConsent(preferences);
+        },
+
+        applyConsent(preferences) {
+            // Aqui é onde os scripts reais seriam ativados
+            if (preferences.analytics) {
+                console.log('Analytics Activated');
+                // Ex: window.dataLayer.push({'event': 'consent_granted'});
+            }
+        }
+    };
+
+    document.addEventListener('DOMContentLoaded', () => CookieConsent.init());
+</script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <script>
+        // Init AOS
+        AOS.init({ duration: 800, once: true });
+
+        // Navbar Scroll Effect Logic
+        const navbar = document.getElementById('mainNav');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+                navbar.classList.remove('navbar-dark');
+                navbar.classList.add('navbar-light'); // Texto escuro no fundo branco
+            } else {
+                navbar.classList.remove('scrolled');
+                // Se estiver na Home (assumindo hero escuro), volta para navbar-dark
+                // Se não, mantém light. Essa lógica depende da página, mas o CSS trata a cor.
+            }
+        });
+    </script>
+    
+    
+
+</body>
+</html>
