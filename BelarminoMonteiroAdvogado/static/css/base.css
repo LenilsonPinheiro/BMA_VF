@@ -149,7 +149,56 @@ body.dark-mode .invert-on-dark {
     p { line-height: 1.8 !important; }
 }
 
-/* --- AUDIT COMPLIANCE (HIDDEN) ---
-   max-width: 320px
-   min-width: 2560px
-*/
+/* ==========================================================================
+   7. SAFETY OVERRIDES (BLINDAGEM DE LAYOUT)
+   ========================================================================== */
+
+/* --- HEADER & LOGO --- */
+.navbar-brand img {
+    height: 55px !important; /* Altura fixa elegante */
+    width: auto !important;
+    max-width: 250px;
+    object-fit: contain;
+    transition: all 0.3s ease;
+}
+
+@media (max-width: 768px) {
+    .navbar-brand img {
+        height: 45px !important; /* Menor no mobile */
+    }
+}
+
+.inner-header-universal {
+    max-height: 450px; /* Impede header gigante em páginas internas */
+}
+
+/* --- SEÇÃO SOBRE (Imagens) --- */
+.about-img-col {
+    max-height: 800px; /* Limite para não esticar infinitamente */
+}
+
+/* --- SEÇÃO EQUIPE (Cards) --- */
+.team-img-wrapper {
+    max-height: 450px !important; /* Garante uniformidade nas fotos */
+}
+.team-img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
+
+/* --- SEÇÃO MAPA --- */
+.map-frame {
+    max-height: 600px; /* Limite vertical para o mapa */
+}
+
+/* --- SEÇÃO CTA (Chamada para Ação) --- */
+.cta-universal-wrapper {
+    overflow: hidden; /* Impede scroll horizontal causado por decorações */
+}
+
+/* Correção para evitar quebra de layout no iPhone SE/Small */
+@media (max-width: 375px) {
+    .hero-title { font-size: 2.5rem !important; }
+    .btn-luxury { padding: 15px 30px !important; }
+}
