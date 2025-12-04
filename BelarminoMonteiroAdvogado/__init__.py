@@ -184,6 +184,7 @@ def ensure_essential_data():
     com páginas padrão, áreas de atuação, configurações de tema, conteúdo inicial,
     depoimentos de exemplo e membros da equipe, prevenindo erros de dados ausentes.
     """
+    app = current_app  # Obtém o app atual do contexto
     app.logger.info("Verificando e garantindo a existência de dados essenciais no banco de dados.")
 
     # --- PÁGINAS PRINCIPAIS ---
@@ -471,98 +472,78 @@ def create_app(test_config: Dict[str, Any] = None) -> Flask:
 
     # Configuração padrão da aplicação
     app.config.from_mapping(
-        SECRET_KEY=os.environ.get('SECRET_KEY', 'default-dev-secret-key')
-
+        SECRET_KEY=os.environ.get('SECRET_KEY', 'default-dev-secret-key'),
+        UPLOAD_FOLDER=os.path.join('static', 'images', 'uploads'), # Diretório para uploads de arquivos
+        ALLOWED_EXTENSIONS={'png', 'jpg', 'jpeg', 'gif', 'webp', 'ico', 'mp4', 'webm'}, # Extensões permitidas para upload
+        WTF_CSRF_ENABLED=True # Habilita proteção CSRF
+    )
+    
     # --- CONFIGURAÇÃO DE DB DINÂMICA (SQLITE /TMP - CUSTO ZERO) ---
     # Lógica inteligente para alternar entre ambiente Local e GCP
     if test_config is None:
+        # Verifica se está no App Engine (GAE_ENV='standard')
         if os.environ.get('GAE_ENV') == 'standard':
-            # No GCP App Engine, apenas /tmp permite escrita
+            # ÚNICO local com permissão de escrita no App Engine Standard
+            # Importante: No GCP, o DB em /tmp é efêmero (reinicia com a instância)
+            # Para persistência real em produção, recomenda-se Cloud SQL ou Datastore.
+            # Mas para custo zero e testes, /tmp funciona.
             DB_URI = 'sqlite:////tmp/site.db'
-            app.logger.info("MODO GCP: Usando SQLite persistente em /tmp/site.db")
+            app.logger.info("MODO GCP: Usando SQLite persistente em /tmp/site.db (Custo Zero).")
         else:
-            # Localmente, usa a pasta instance padrão
-            DB_URI = f"sqlite:///{os.path.join(app.instance_path, 'site.db')}"
-            app.logger.info(f"MODO LOCAL: Usando SQLite em {app.instance_path}/site.db")
+            # Modo Local (usa a pasta instance padrão do Flask)
+            # Garante o caminho absoluto correto
+            db_path = os.path.join(app.instance_path, 'site.db')
+            DB_URI = f"sqlite:///{db_path}"
+            app.logger.info(f"MODO LOCAL: Usando SQLite em {db_path}.")
         
         app.config['SQLALCHEMY_DATABASE_URI'] = DB_URI
     else:
+        # Configuração de teste - sobrescreve as configurações padrão para garantir isolamento
         app.config.update(test_config)
     
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # Otimização de memória
     # --- FIM DA CONFIGURAÇÃO DB DINÂMICA ---
-    
 
+    app.logger.debug(f"SQLALCHEMY_DATABASE_URI em create_app: {app.config.get('SQLALCHEMY_DATABASE_URI')}")
+    app.logger.debug(f"Caminho da instância em create_app: {app.instance_path}")
     
+    # Garante que a pasta instance exista
+    try:
+        os.makedirs(app.instance_path, exist_ok=True)
+    except OSError as e:
+        app.logger.warning(f"[WARNING] Não foi possível criar o diretório {app.instance_path}: {e}")
+
     db.init_app(app)
     migrate.init_app(app, db)
     
-    # Por padrão, NÃO criamos tabelas automaticamente aqui porque os testes frequentemente
-    # chamam create_app() e depois sobrescrevem `    # para apontar para um DB temporário e chamam `db.create_all()` por conta própria.
-    # A criação automática na inicialização do aplicativo vincularia o engine ao
-    # DB da instância padrão e quebraria as expectativas dos testes.
-    # Para habilitar a criação automática em desenvolvimento, defina a variável de ambiente
-    # BMA_AUTO_CREATE_ALL=1 antes de iniciar o aplicativo.
-    if os.environ.get('BMA_AUTO_CREATE_ALL', '0') == '1':
-        with app.app_context():
-            app.logger.info("BMA_AUTO_CREATE_ALL está ativo. Verificando o estado do banco de dados...")
-            try:
-                inspector = db.inspect(db.engine)
-                # Verifica se a tabela de migrações (alembic_version) existe.
-                # Se não existir, indica que o banco de dados provavelmente está vazio e precisa ser criado.
-                if not inspector.has_table("alembic_version"):
-                    app.logger.info("Tabela 'alembic_version' não encontrada. Executando db.create_all() como fallback para criação de schema inicial.")
-                    db.create_all()
-                    db.session.commit()
-                    app.logger.info("db.create_all() executado com sucesso.")
-                    
-                    # Medida de compatibilidade para testes legados:
-                    # Cria aliases de tabela no singular (ex: 'area_atuacao') para tabelas
-                    # que agora usam o plural (ex: 'areas_atuacao'). Isso garante que testes
-                    # mais antigos que esperam o nome no singular não quebrem.
-                    try:
-                        existing = inspector.get_table_names()
-                        alias_map = {
-                            'area_atuacao': 'areas_atuacao',
-                            'depoimento': 'depoimentos',
-                            'cliente_parceiro': 'clientes_parceiros' # Exemplo de alias, se necessário
-                        }
-                        for legacy, current in alias_map.items():
-                            if legacy not in existing and current in existing:
-                                sql = f"CREATE TABLE {legacy} AS SELECT * FROM {current} WHERE 0"
-                                try:
-                                    from sqlalchemy import text
-                                    db.session.execute(text(sql))
-                                    db.session.commit()
-                                    app.logger.info(f"Tabela legacy criada: {legacy} (copiada de {current})")
-                                except Exception as e:
-                                    app.logger.warning(f"Não foi possível criar tabela legacy {legacy}: {e}")
-                    except Exception as e:
-                        app.logger.warning(f"Erro ao tentar criar tabelas legacy: {e}")
+    # --- INICIALIZAÇÃO CRÍTICA DO BANCO DE DADOS (GCP SAFE) ---
+    # Este bloco garante que o DB é criado na inicialização, evitando o erro 502/Worker.
+    # No App Engine, como usamos /tmp (que começa vazio), precisamos criar o DB no startup.
+    with app.app_context():
+        try:
+            # Tenta verificar se a tabela 'user' (crucial) existe
+            # O uso de inspect é mais seguro que try/except cego
+            inspector = db.inspect(db.engine)
+            
+            # Se a tabela 'user' não existe, assumimos que o DB precisa ser criado
+            if not inspector.has_table("user"): 
+                app.logger.info("Tabela 'user' não encontrada. Executando db.create_all() e populando dados essenciais.")
+                
+                # Cria todas as tabelas definidas nos models
+                db.create_all()
+                
+                # Popula com dados iniciais (função definida neste arquivo)
+                ensure_essential_data()
+                
+                app.logger.info("DB criado e populado com sucesso.")
+            else:
+                app.logger.info("DB já inicializado (Tabela 'user' existe). Pulando criação inicial.")
 
-                    # Garante que o registro de ThemeSettings exista e use defaults esperados
-                    # É crucial para o sistema de temas ter uma configuração base.
-                    try:
-                        theme = ThemeSettings.query.first()
-                        if not theme:
-                            theme = ThemeSettings(cor_texto_dark='#ffffff') # Define um valor padrão seguro
-                            db.session.add(theme)
-                            db.session.commit()
-                            app.logger.info("ThemeSettings criado com cor_texto_dark padrão '#ffffff'.")
-                        else:
-                            # Normaliza cor_texto_dark se for diferente do padrão esperado
-                            if getattr(theme, 'cor_texto_dark', None) != '#ffffff':
-                                theme.cor_texto_dark = '#ffffff'
-                                db.session.commit()
-                                app.logger.info("ThemeSettings cor_texto_dark normalizada para '#ffffff'.")
-                    except Exception as e:
-                        app.logger.warning(f"Erro ao verificar/criar ThemeSettings: {e}")
-                else:
-                    app.logger.info("Tabela 'alembic_version' encontrada. Pulando db.create_all() em create_app, assumindo migrações gerenciadas.")
-            except OperationalError as e:
-                app.logger.warning(f"OperationalError ao verificar ou criar tabelas: {e}")
-            except Exception as e:
-                app.logger.error(f"Erro inesperado ao tentar verificar/criar tabelas no create_app: {e}")
+        except OperationalError as e:
+            # Erro comum quando o diretório não existe ou permissão negada
+            app.logger.error(f"FALHA CRÍTICA AO INICIALIZAR O DB: {e}. Verifique permissões de escrita em {app.config['SQLALCHEMY_DATABASE_URI']}.")
+        except Exception as e:
+            app.logger.error(f"FALHA INESPERADA na inicialização do DB: {e}")
 
     login_manager = LoginManager()
     login_manager.login_view = 'auth.login'
@@ -572,10 +553,6 @@ def create_app(test_config: Dict[str, Any] = None) -> Flask:
 
     @login_manager.user_loader
     def load_user(user_id):
-        """
-        Definição de load_user.
-        Componente essencial para a arquitetura do sistema.
-        """
         # Registra o acesso ao banco de dados para depuração, mostrando qual DB está sendo usado.
         app.logger.debug(f"load_user tentando acessar DB em: {db.engine.url.database}")
         return User.query.get(int(user_id))
@@ -762,24 +739,4 @@ def create_app(test_config: Dict[str, Any] = None) -> Flask:
             click.echo('Senha atualizada com sucesso.')
             app.logger.info(f"Senha do usuário {username} atualizada com sucesso.")
 
-    # --- INICIALIZAÇÃO CRÍTICA DO BANCO DE DADOS (GCP SAFE) ---
-    # Garante que as tabelas existam antes da primeira requisição
-    with app.app_context():
-        try:
-            # Verifica se uma tabela essencial existe (ex: 'user')
-            inspector = db.inspect(db.engine)
-            if not inspector.has_table("user"): 
-                app.logger.info("Inicialização: Tabela 'user' não encontrada. Criando DB...")
-                db.create_all()
-                # Tenta popular dados apenas se a função existir no escopo
-                if 'ensure_essential_data' in locals() or 'ensure_essential_data' in globals():
-                    ensure_essential_data()
-                app.logger.info("Inicialização: DB criado e populado com sucesso.")
-            else:
-                app.logger.info("Inicialização: DB já existe. Pulando criação.")
-        except Exception as e:
-            app.logger.error(f"FALHA NA INICIALIZAÇÃO DO DB: {e}")
-            # Não aborta para permitir tentativa de recuperação pelo Flask
-            
     return app
-    

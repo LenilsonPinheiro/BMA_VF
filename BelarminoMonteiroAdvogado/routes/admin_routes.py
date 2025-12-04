@@ -398,7 +398,7 @@ def toggle_section_status(id: int):
     old_status = s.is_active
     s.is_active = not old_status
     db.session.commit()
-    flash(f'Seção "{s.title}" atualizada para {'ativa' if s.is_active else 'inativa'}.', 'success')
+    flash(f'Seção "{s.title}" atualizada para {"ativa" if s.is_active else "inativa"}.', 'success')
     current_app.logger.info(f"Status da seção da Home '{s.title}' (ID: {id}) alterado para {s.is_active}.")
     return redirect(url_for('admin.dashboard') + '#HomeSections')
 
