@@ -41,6 +41,7 @@ from PIL import Image, ImageOps
 from pathlib import Path
 import os
 from datetime import datetime
+from typing import List, Tuple, Optional, Union # Importações adicionadas para corrigir o erro
 from flask import current_app # Importar current_app para logging no contexto da aplicação
 
 class ImageProcessor:
@@ -72,7 +73,7 @@ class ImageProcessor:
         self.max_width = max_width
         self.create_backup = create_backup
         
-    def optimize_image(self, input_path: Path | str, output_path: Path | str = None) -> tuple[bool, int, int, str | None]:
+    def optimize_image(self, input_path: Union[Path, str], output_path: Union[Path, str] = None) -> Tuple[bool, int, int, Optional[str]]:
         """
         Otimiza uma imagem convertendo-a para WebP, redimensionando-a e corrigindo a orientação EXIF.
         
@@ -166,7 +167,7 @@ class ImageProcessor:
             return img.convert('RGB')
         return img
     
-    def _smart_resize(self, img: Image.Image) -> tuple[Image.Image, bool]:
+    def _smart_resize(self, img: Image.Image) -> Tuple[Image.Image, bool]:
         """
         Redimensiona a imagem apenas se sua largura exceder 'self.max_width',
         mantendo a proporção original. Utiliza o algoritmo LANCZOS para alta qualidade.
@@ -194,7 +195,7 @@ class ImageProcessor:
         img = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
         return img, True
     
-    def process_upload(self, file, upload_folder: Path | str) -> tuple[bool, str | None, str]:
+    def process_upload(self, file, upload_folder: Union[Path, str]) -> Tuple[bool, Optional[str], str]:
         """
         Processa automaticamente um arquivo de imagem enviado via upload (e.g., de um formulário Flask).
         Salva o arquivo temporariamente, otimiza-o e retorna o caminho para a versão WebP otimizada.
@@ -241,7 +242,7 @@ class ImageProcessor:
             current_app.logger.error(message, exc_info=True)
             return False, None, message
     
-    def batch_optimize(self, directory: Path | str, extensions: List[str] = None) -> dict:
+    def batch_optimize(self, directory: Union[Path, str], extensions: List[str] = None) -> dict:
         """
         Otimiza todas as imagens em um diretório especificado, convertendo-as para WebP.
         
@@ -307,7 +308,7 @@ class ImageProcessor:
 image_processor = ImageProcessor(quality=95, max_width=2560, create_backup=True)
 
 
-def optimize_uploaded_image(file, upload_folder: str | Path) -> tuple[bool, str | None, str]:
+def optimize_uploaded_image(file, upload_folder: Union[str, Path]) -> Tuple[bool, Optional[str], str]:
     """
     Função auxiliar para otimizar um arquivo de imagem recebido via upload de formulário.
     Encapsula a lógica de `ImageProcessor.process_upload`.
@@ -322,7 +323,7 @@ def optimize_uploaded_image(file, upload_folder: str | Path) -> tuple[bool, str 
     return image_processor.process_upload(file, upload_folder)
 
 
-def optimize_image_file(input_path: str | Path, output_path: str | Path = None) -> tuple[bool, int, int, str | None]:
+def optimize_image_file(input_path: Union[str, Path], output_path: Union[str, Path] = None) -> Tuple[bool, int, int, Optional[str]]:
     """
     Função auxiliar para otimizar um arquivo de imagem existente no sistema de arquivos.
     Encapsula a lógica de `ImageProcessor.optimize_image`.
@@ -339,7 +340,7 @@ def optimize_image_file(input_path: str | Path, output_path: str | Path = None) 
     return image_processor.optimize_image(input_path, output_path)
 
 
-def process_and_save_image(file, upload_folder: str | Path) -> tuple[bool, str | None, str]:
+def process_and_save_image(file, upload_folder: Union[str, Path]) -> Tuple[bool, Optional[str], str]:
     """
     Função auxiliar para processar e salvar uma imagem de upload.
     Este é um alias para `optimize_uploaded_image` para compatibilidade com nomes anteriores ou clareza.
@@ -355,7 +356,7 @@ def process_and_save_image(file, upload_folder: str | Path) -> tuple[bool, str |
     return optimize_uploaded_image(file, upload_folder)
 
 
-def save_logo(file, filename: str) -> str | None:
+def save_logo(file, filename: str) -> Optional[str]:
     """
     Salva um arquivo de logo ou imagem, otimizando-o automaticamente.
     Gera um caminho relativo para ser armazenado no banco de dados.
