@@ -83,62 +83,56 @@ def allowed_file(filename: str) -> bool:
 @main_bp.route('/')
 def home():
     """
-    Renderiza a página inicial do site, selecionando dinamicamente o template de acordo com o tema.
+    Renderiza a página inicial, FORÇANDO o carregamento do template de conteúdo (home_optionX.html).
     """
-    # Log de acesso com Correlation ID (Segurança e Rastreabilidade)
-    correlation_id = g.get('correlation_id', 'unknown')
-    current_app.logger.info(f"Acessando a página inicial. Correlation ID: {correlation_id}")
+    current_app.logger.info("Acessando Home Page.")
     
-    # --- Seleção Dinâmica do Template ---
+    # 1. Recupera o tema
     try:
         theme_settings = ThemeSettings.query.first()
         theme = theme_settings.theme if theme_settings else 'option1'
-    except Exception as e:
-        current_app.logger.error(f"Erro ao buscar configurações de tema: {e}")
+    except Exception:
         theme = 'option1'
 
-    # [CORREÇÃO CRÍTICA] Define explicitamente o caminho do template para evitar confusão com o base
-    # Se o tema for 'option1', carrega 'home/home_option1.html' (que contém o conteúdo)
-    # e NÃO 'base_option1.html' (que é apenas a estrutura).
-    template_name = f'home/home_{theme}.html'
-    
-    current_app.logger.info(f"Renderizando Home com template: {template_name}")
-    
-    # --- Carregamento de Seções ---
+    # [CORREÇÃO DE ARQUITETURA] 
+    # Nunca renderizar 'base_option1.html' diretamente, pois ele é apenas a casca.
+    # Devemos renderizar 'home/home_option1.html', que herda da casca e injeta o conteúdo.
+    if theme == 'option1':
+        template_name = 'home/home_option1.html'
+    else:
+        template_name = f'home/home_{theme}.html'
+
+    # 2. Carrega os dados (Mantendo sua lógica)
     try:
-        other_sections = HomePageSection.query.filter(
-            HomePageSection.section_type != 'hero',
-            HomePageSection.is_active == True
-        ).all()
+        home_sections = HomePageSection.query.filter_by(is_active=True).all()
+        active_custom = CustomHomeSection.query.filter_by(is_active=True).all()
         
-        active_custom_sections = CustomHomeSection.query.filter_by(is_active=True).all()
+        # Organiza e ordena
+        for s in home_sections: s.type = 'predefined'
+        for s in active_custom: s.type = 'custom'
+        
+        all_sections = sorted(home_sections + active_custom, key=lambda x: x.order)
+        
+        # Dados auxiliares
+        areas = AreaAtuacao.query.order_by(AreaAtuacao.ordem).all()
+        depos = Depoimento.query.filter_by(aprovado=True).order_by(Depoimento.data_criacao.desc()).all()
+        clientes = ClienteParceiro.query.order_by(ClienteParceiro.nome).all()
+        equipe = MembroEquipe.query.order_by(MembroEquipe.nome).all()
 
-        for s in other_sections:
-            s.type = 'predefined'
-        for s in active_custom_sections:
-            s.type = 'custom'
-
-        all_sections = sorted(other_sections + active_custom_sections, key=lambda x: x.order)
-
-        # Dados auxiliares para o contexto
-        form = ContactForm()
         extra_context = {
-            'form': form,
+            'form': ContactForm(),
             'all_home_sections': all_sections,
-            'lista_areas_atuacao': AreaAtuacao.query.group_by(AreaAtuacao.titulo, AreaAtuacao.slug).order_by(AreaAtuacao.ordem).all(),
-            'testimonials': Depoimento.query.filter_by(aprovado=True).order_by(Depoimento.data_criacao.desc()).all(),
-            'all_clients': ClienteParceiro.query.order_by(ClienteParceiro.nome).all(),
-            'team': MembroEquipe.query.order_by(MembroEquipe.nome).all(),
-            # Garante que a Hero Section seja passada explicitamente se necessário no template
-            'hero_section': HomePageSection.query.filter_by(section_type='hero', is_active=True).first()
+            'lista_areas_atuacao': areas,
+            'testimonials': depos,
+            'all_clients': clientes,
+            'team': equipe
         }
-        
-        return render_page(template_name, 'home', **extra_context)
-
     except Exception as e:
-        current_app.logger.error(f"Erro crítico ao renderizar a home: {e}", exc_info=True)
-        # Fallback de segurança para evitar tela branca completa
+        current_app.logger.error(f"Erro ao carregar dados da Home: {e}")
         return render_template('500.html'), 500
+
+    current_app.logger.info(f"Renderizando Home com template final: {template_name}")
+    return render_page(template_name, 'home', **extra_context)
 
 @main_bp.route('/politica-de-privacidade')
 def politica_privacidade():

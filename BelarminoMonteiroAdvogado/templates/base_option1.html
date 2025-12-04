@@ -1,168 +1,142 @@
 <!DOCTYPE html>
-<html lang="pt-br" class="no-js">
+{# 
+    ARQUIVO: website/templates/base_option1.html
+    VERSÃO: 5.0 (Enterprise Stable)
+    DESCRIÇÃO: Layout Mestre (Root) com Failsafes de Renderização
+#}
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% block title %}Belarmino Monteiro Advogados{% endblock %}</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     
-    <title>{% block title %}Belarmino Monteiro Advogado{% endblock %}</title>
-    <meta name="description" content="{% block metadescription %}Escritório de Advocacia Belarmino Monteiro. Excelência, ética e resultados em Fortaleza.{% endblock %}">
-    <meta name="author" content="Belarmino Monteiro">
-    <meta name="theme-color" content="#b92027">
-
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}">
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;500;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
-    
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
-    
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
-    
-    <!-- === THEME STYLES (Variables) === -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme-light.css') }}" media="(prefers-color-scheme: light)">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme-dark.css') }}" media="(prefers-color-scheme: dark)">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme-option1.css') }}">
-    
-    {% if theme_css %}
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/' + theme_css) }}">
-    {% endif %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}?v={{ get_file_mtime('css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/cookie_consent.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/flashes.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/inner_header.css') }}">
 
-    <!-- UI/UX Improvements -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/ui-improvements.css') }}">
-
+    <style>
+        /* Garante que o AOS não esconda o site se o JS demorar */
+        html:not(.no-js) [data-aos] {
+            opacity: 1 !important;
+            transform: none !important;
+        }
+        
+        /* Ajustes da Navbar Fixa */
+        body { padding-top: 80px; } /* Compensa a navbar fixa */
+        
+        .navbar-premium {
+            background-color: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            padding: 15px 0;
+        }
+        .nav-link {
+            color: #333 !important; 
+            font-weight: 600; 
+            text-transform: uppercase; 
+            font-size: 0.8rem; 
+            letter-spacing: 1px;
+            transition: 0.3s;
+        }
+        .nav-link:hover { color: #b92027 !important; }
+        .btn-nav-contact {
+            border: 2px solid #b92027; color: #b92027; border-radius: 50px; 
+            padding: 8px 24px; font-weight: 700; text-transform: uppercase; font-size: 0.75rem;
+        }
+        .btn-nav-contact:hover { background-color: #b92027; color: #fff; }
+    </style>
+    
     {% block head %}{% endblock %}
-
-    </head>
-
+</head>
 <body>
 
-    <nav class="navbar navbar-expand-lg fixed-top navbar-premium" id="mainNav">
+    <nav class="navbar navbar-expand-lg navbar-premium fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="{{ url_for('main.home') }}">
-                <img src="{{ url_for('static', filename='images/BM.svg') }}" alt="Belarmino Monteiro" id="navLogo">
+            <a class="navbar-brand" href="/">
+                {% if configs and configs.logo_principal %}
+                    <img src="{{ url_for('static', filename=configs.logo_principal) }}" alt="BMA" height="45">
+                {% else %}
+                    <span style="font-family: 'Playfair Display'; font-weight: 700; color: #b92027;">BELARMINO MONTEIRO</span>
+                {% endif %}
             </a>
-
-            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
-
-            <div class="collapse navbar-collapse justify-content-end" id="navbarContent">
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav align-items-center gap-3">
-                    <li class="nav-item"><a class="nav-link nav-link-premium" href="{{ url_for('main.home') }}">Início</a></li>
-                    
-                    <li class="nav-item dropdown">
-                        <a class="nav-link nav-link-premium dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Atuação</a>
-                        <ul class="dropdown-menu shadow-lg border-0 rounded-0 mt-3 p-0 overflow-hidden">
-                            <li><a class="dropdown-item py-3 px-4 border-bottom" href="{{ url_for('main.todas_areas_atuacao') }}">Todas as Áreas</a></li>
-                            {% if lista_areas_atuacao %}
-                                {% for area in lista_areas_atuacao[:5] %}
-                                <li><a class="dropdown-item py-2 px-4" href="{{ url_for('main.pagina_dinamica', slug=area.slug) }}">{{ area.titulo }}</a></li>
-                                {% endfor %}
-                            {% endif %}
-                        </ul>
-                    </li>
-
-                    <li class="nav-item"><a class="nav-link nav-link-premium" href="{{ url_for('main.pagina_dinamica', slug='sobre-nos') }}">Sobre</a></li>
-                    <li class="nav-item"><a class="nav-link nav-link-premium" href="{{ url_for('main.pagina_contato') }}">Contato</a></li>
-                    
-                    <li class="nav-item ms-lg-3">
-                        <a href="https://wa.me/558597698475" target="_blank" class="btn btn-outline-danger rounded-pill px-4 fw-bold">
-                            <i class="bi bi-whatsapp me-2"></i> Agendar
-                        </a>
+                    <li class="nav-item"><a class="nav-link" href="/">Início</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/sobre-nos">Sobre Nós</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/areas-de-atuacao">Atuação</a></li>
+                    <li class="nav-item ms-lg-2">
+                        <a href="{{ url_for('main.pagina_contato') }}" class="btn btn-nav-contact">Fale Conosco</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <div style="position: fixed; top: 100px; right: 20px; z-index: 10000; max-width: 400px;">
-        {% include '_flashes.html' %}
-    </div>
-
     <main>
         {% block content %}{% endblock %}
     </main>
 
-    <footer class="footer-premium">
+    <footer class="footer-premium bg-dark text-white pt-5 pb-3 mt-5">
         <div class="container">
-            <div class="row gy-3">
-                
+            <div class="row gy-4">
                 <div class="col-lg-4 col-md-6">
-                    <h5 class="text-white text-uppercase mb-4 fw-bold ls-1">Belarmino Monteiro</h5>
-                    <p class="small text-secondary mb-4">
-                        Sociedade de advogados comprometida com a excelência técnica e a defesa intransigente dos direitos de nossos clientes.
-                    </p>
-                    <div class="d-flex gap-3">
-                        <a href="#" class="text-secondary fs-5 hover-white"><i class="bi bi-instagram"></i></a>
-                        <a href="#" class="text-secondary fs-5 hover-white"><i class="bi bi-linkedin"></i></a>
-                        <a href="#" class="text-secondary fs-5 hover-white"><i class="bi bi-facebook"></i></a>
+                    <h5 class="text-uppercase fw-bold mb-3" style="color: #fff; letter-spacing: 1px;">Belarmino Monteiro</h5>
+                    <p class="text-white-50 small">Sociedade de advogados comprometida com a excelência técnica e a defesa intransigente dos direitos.</p>
+                    <div class="d-flex gap-3 mt-3">
+                        <a href="#" class="text-white-50 hover-white"><i class="bi bi-instagram fs-5"></i></a>
+                        <a href="#" class="text-white-50 hover-white"><i class="bi bi-linkedin fs-5"></i></a>
                     </div>
                 </div>
-
                 <div class="col-lg-2 col-md-6">
-                    <h6 class="text-white text-uppercase mb-4 fw-bold fs-7">Institucional</h6>
+                    <h6 class="text-uppercase fw-bold fs-7 mb-3 text-white">Links</h6>
                     <ul class="list-unstyled d-flex flex-column gap-2">
-                        <li><a href="{{ url_for('main.home') }}" class="text-decoration-none text-secondary small hover-red">Início</a></li>
-                        <li><a href="{{ url_for('main.pagina_dinamica', slug='sobre-nos') }}" class="text-decoration-none text-secondary small hover-red">Sobre Nós</a></li>
-                        <li><a href="{{ url_for('main.todas_areas_atuacao') }}" class="text-decoration-none text-secondary small hover-red">Áreas de Atuação</a></li>
-                        <li><a href="{{ url_for('main.politica_privacidade') }}" class="text-decoration-none text-secondary small hover-red">Privacidade</a></li>
+                        <li><a href="/" class="text-white-50 text-decoration-none small">Início</a></li>
+                        <li><a href="/sobre-nos" class="text-white-50 text-decoration-none small">Sobre</a></li>
+                        <li><a href="/areas-de-atuacao" class="text-white-50 text-decoration-none small">Áreas</a></li>
                     </ul>
                 </div>
-
                 <div class="col-lg-3 col-md-6">
-                    <h6 class="text-white text-uppercase mb-4 fw-bold fs-7">Fale Conosco</h6>
-                    <ul class="list-unstyled d-flex flex-column gap-3">
-                        <li class="d-flex align-items-start gap-3">
-                            <i class="bi bi-geo-alt text-danger mt-1"></i>
-                            <span class="text-secondary small">Av. Santos Dumont, 1234<br>Aldeota, Fortaleza - CE</span>
-                        </li>
-                        <li class="d-flex align-items-center gap-3">
-                            <i class="bi bi-envelope text-danger"></i>
-                            <span class="text-secondary small">contato@belarminomonteiro.com.br</span>
-                        </li>
-                        <li class="d-flex align-items-center gap-3">
-                            <i class="bi bi-telephone text-danger"></i>
-                            <span class="text-secondary small">+55 (85) 9769-8475</span>
-                        </li>
+                    <h6 class="text-uppercase fw-bold fs-7 mb-3 text-white">Contato</h6>
+                    <ul class="list-unstyled d-flex flex-column gap-2">
+                        <li class="d-flex gap-2 text-white-50 small"><i class="bi bi-geo-alt text-danger"></i> Av. Santos Dumont, 1234, Fortaleza-CE</li>
+                        <li class="d-flex gap-2 text-white-50 small"><i class="bi bi-envelope text-danger"></i> contato@bm.adv.br</li>
                     </ul>
                 </div>
-
-                <div class="col-lg-3 col-md-6 text-lg-end">
-                    <h6 class="text-white text-uppercase mb-4 fw-bold fs-7">Salve nosso Contato</h6>
-                    <div class="footer-qr-box">
-                        <img src="{{ url_for('static', filename=theme_settings.qr_code_path) if theme_settings and theme_settings.qr_code_path else '' }}" 
-                             alt="vCard QR Code" class="footer-qr-img">
+                <div class="col-lg-3 col-md-6 text-center text-lg-end">
+                    <div class="bg-white p-2 d-inline-block rounded">
+                        <img src="{{ url_for('static', filename='images/qr-code (SEM O LOGO NO CENTRO).svg') }}" alt="QR" width="100">
                     </div>
-                    <p class="text-secondary mt-3 small" style="font-size: 0.75rem;">Aponte a câmera para salvar.</p>
-                </div>
-
-            </div>
-            
-            <hr class="border-secondary opacity-25 my-0">
-            
-            <div class="row align-items-center">
-                <div class="col-md-6 text-center text-md-start">
-                    <p class="small text-secondary mb-0">&copy; {{ now.year if now else '2025' }} Belarmino Monteiro Sociedade de Advogados. OAB/CE 0000.</p>
-                </div>
-                <div class="col-md-6 text-center text-md-end mt-3 mt-md-0">
                 </div>
             </div>
+            <hr class="border-secondary opacity-25 mt-4">
+            <p class="text-center text-white-50 small mb-0">© 2025 Belarmino Monteiro Sociedade de Advogados.</p>
         </div>
     </footer>
 
-    {% include '_cookie_consent.html' %}
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    
-        
-    {% block scripts %}{% endblock %}
-
+    <script>
+        // Inicialização segura do AOS
+        document.addEventListener('DOMContentLoaded', function() {
+            AOS.init({
+                duration: 800,
+                once: true,
+                offset: 50,
+                disable: 'mobile' // Opcional: desativa em mobile se causar problemas
+            });
+        });
+    </script>
 </body>
 </html>
