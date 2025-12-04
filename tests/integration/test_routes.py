@@ -111,3 +111,9 @@ def test_404_page(client):
     response = client.get('/rota-que-nao-existe')
     assert response.status_code == 404
     assert 'Página não encontrada'.encode('utf-8') in response.data or b'404' in response.data
+
+def test_health_check(client):
+    """Testa a rota de health check."""
+    response = client.get('/health')
+    assert response.status_code == 200
+    assert response.json == {'status': 'ok'}

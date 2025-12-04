@@ -1,0 +1,20 @@
+# Ignorar ambiente virtual e bibliotecas (CRÍTICO)
+venv/
+env/
+.env/
+Lib/
+site-packages/
+
+# Ignorar caches e temporários
+__pycache__/
+.pytest_cache/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignorar logs grandes
+*.log
+run_log.txt
+
+# Ignorar Git
+.git/

@@ -34,7 +34,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 # Imports Flask e Extensões
-from flask import Blueprint, render_template, request, url_for, abort, current_app, jsonify, Response
+from flask import Blueprint, render_template, request, url_for, abort, current_app, jsonify, Response, g
 from werkzeug.utils import secure_filename
 from PIL import Image
 
@@ -85,39 +85,60 @@ def home():
     """
     Renderiza a página inicial do site, selecionando dinamicamente o template de acordo com o tema.
     """
-    current_app.logger.info("Acessando a página inicial.")
+    # Log de acesso com Correlation ID (Segurança e Rastreabilidade)
+    correlation_id = g.get('correlation_id', 'unknown')
+    current_app.logger.info(f"Acessando a página inicial. Correlation ID: {correlation_id}")
     
     # --- Seleção Dinâmica do Template ---
-    theme_settings = ThemeSettings.query.first()
-    theme = theme_settings.theme if theme_settings else 'option1'
+    try:
+        theme_settings = ThemeSettings.query.first()
+        theme = theme_settings.theme if theme_settings else 'option1'
+    except Exception as e:
+        current_app.logger.error(f"Erro ao buscar configurações de tema: {e}")
+        theme = 'option1'
 
+    # [CORREÇÃO CRÍTICA] Define explicitamente o caminho do template para evitar confusão com o base
+    # Se o tema for 'option1', carrega 'home/home_option1.html' (que contém o conteúdo)
+    # e NÃO 'base_option1.html' (que é apenas a estrutura).
     template_name = f'home/home_{theme}.html'
     
-    # --- Carregamento de Seções ---
-    other_sections = HomePageSection.query.filter(
-        HomePageSection.section_type != 'hero',
-        HomePageSection.is_active == True
-    ).all()
+    current_app.logger.info(f"Renderizando Home com template: {template_name}")
     
-    active_custom_sections = CustomHomeSection.query.filter_by(is_active=True).all()
+    # --- Carregamento de Seções ---
+    try:
+        other_sections = HomePageSection.query.filter(
+            HomePageSection.section_type != 'hero',
+            HomePageSection.is_active == True
+        ).all()
+        
+        active_custom_sections = CustomHomeSection.query.filter_by(is_active=True).all()
 
-    for s in other_sections:
-        s.type = 'predefined'
-    for s in active_custom_sections:
-        s.type = 'custom'
+        for s in other_sections:
+            s.type = 'predefined'
+        for s in active_custom_sections:
+            s.type = 'custom'
 
-    all_sections = sorted(other_sections + active_custom_sections, key=lambda x: x.order)
+        all_sections = sorted(other_sections + active_custom_sections, key=lambda x: x.order)
 
-    form = ContactForm()
-    extra_context = {
-        'form': form,
-        'all_home_sections': all_sections,
-        'lista_areas_atuacao': AreaAtuacao.query.group_by(AreaAtuacao.titulo, AreaAtuacao.slug).order_by(AreaAtuacao.ordem).all(),
-        'testimonials': Depoimento.query.filter_by(aprovado=True).order_by(Depoimento.data_criacao.desc()).all(),
-        'all_clients': ClienteParceiro.query.order_by(ClienteParceiro.nome).all(),
-        'team': MembroEquipe.query.order_by(MembroEquipe.nome).all()
-    }
-    return render_page(template_name, 'home', **extra_context)
+        # Dados auxiliares para o contexto
+        form = ContactForm()
+        extra_context = {
+            'form': form,
+            'all_home_sections': all_sections,
+            'lista_areas_atuacao': AreaAtuacao.query.group_by(AreaAtuacao.titulo, AreaAtuacao.slug).order_by(AreaAtuacao.ordem).all(),
+            'testimonials': Depoimento.query.filter_by(aprovado=True).order_by(Depoimento.data_criacao.desc()).all(),
+            'all_clients': ClienteParceiro.query.order_by(ClienteParceiro.nome).all(),
+            'team': MembroEquipe.query.order_by(MembroEquipe.nome).all(),
+            # Garante que a Hero Section seja passada explicitamente se necessário no template
+            'hero_section': HomePageSection.query.filter_by(section_type='hero', is_active=True).first()
+        }
+        
+        return render_page(template_name, 'home', **extra_context)
+
+    except Exception as e:
+        current_app.logger.error(f"Erro crítico ao renderizar a home: {e}", exc_info=True)
+        # Fallback de segurança para evitar tela branca completa
+        return render_template('500.html'), 500
 
 @main_bp.route('/politica-de-privacidade')
 def politica_privacidade():
@@ -154,31 +175,32 @@ def pagina_contato():
 
         current_app.logger.info(f"Recebida submissão de formulário de contato de {nome} ({email}).")
 
-        email_settings_db = ConteudoGeral.query.filter_by(pagina='configuracoes_email').all()
-        email_config = {item.secao: item.conteudo for item in email_settings_db}
-
-        SMTP_SERVER = email_config.get('smtp_server')
         try:
-            SMTP_PORT = int(email_config.get('smtp_port') or 587)
-        except (ValueError, TypeError):
-            SMTP_PORT = 587
-            current_app.logger.warning("Porta SMTP inválida no DB. Usando padrão 587.")
-        
-        SMTP_USER = email_config.get('smtp_user')
-        SMTP_PASS = email_config.get('smtp_pass')
-        EMAIL_TO = email_config.get('email_to', 'contato@belarminomonteiroadvogado.com.br')
+            email_settings_db = ConteudoGeral.query.filter_by(pagina='configuracoes_email').all()
+            email_config = {item.secao: item.conteudo for item in email_settings_db}
 
-        if not all([SMTP_SERVER, SMTP_USER, SMTP_PASS]):
-            current_app.logger.error("Configurações SMTP incompletas no banco de dados.")
-            return jsonify({'success': False, 'message': 'Erro interno: Configurações de e-mail incompletas.'}), 500
+            SMTP_SERVER = email_config.get('smtp_server')
+            try:
+                SMTP_PORT = int(email_config.get('smtp_port') or 587)
+            except (ValueError, TypeError):
+                SMTP_PORT = 587
+                current_app.logger.warning("Porta SMTP inválida no DB. Usando padrão 587.")
+            
+            SMTP_USER = email_config.get('smtp_user')
+            SMTP_PASS = email_config.get('smtp_pass')
+            EMAIL_TO = email_config.get('email_to', 'contato@belarminomonteiroadvogado.com.br')
 
-        msg = MIMEMultipart()
-        msg['From'] = SMTP_USER
-        msg['To'] = EMAIL_TO
-        msg['Subject'] = f"[{current_app.config.get('SITE_NAME', 'Site Contato')}] {assunto}"
-        msg['Reply-To'] = email
+            if not all([SMTP_SERVER, SMTP_USER, SMTP_PASS]):
+                current_app.logger.error("Configurações SMTP incompletas no banco de dados.")
+                return jsonify({'success': False, 'message': 'Erro interno: Configurações de e-mail incompletas.'}), 500
 
-        body = f"""Nova mensagem do site:
+            msg = MIMEMultipart()
+            msg['From'] = SMTP_USER
+            msg['To'] = EMAIL_TO
+            msg['Subject'] = f"[{current_app.config.get('SITE_NAME', 'Site Contato')}] {assunto}"
+            msg['Reply-To'] = email
+
+            body = f"""Nova mensagem do site:
 Nome: {nome}
 Email: {email}
 Assunto: {assunto}
@@ -188,15 +210,16 @@ Mensagem:
 Enviado em: {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}
 IP: {request.remote_addr}
 """
-        msg.attach(MIMEText(body, 'plain'))
+            msg.attach(MIMEText(body, 'plain'))
 
-        try:
             with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
                 server.starttls()
                 server.login(SMTP_USER, SMTP_PASS)
                 server.sendmail(SMTP_USER, EMAIL_TO, msg.as_string())
+            
             current_app.logger.info(f"E-mail enviado com sucesso para {EMAIL_TO}.")
             return jsonify({'success': True, 'message': 'Mensagem enviada com sucesso!'})
+            
         except Exception as e:
             current_app.logger.error(f"Erro ao enviar e-mail: {e}", exc_info=True)
             return jsonify({'success': False, 'message': 'Erro ao enviar mensagem. Tente novamente.'}), 500
