@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 {# 
     ARQUIVO: website/templates/base_option1.html
-    VERSÃO: 5.0 (Enterprise Stable)
-    DESCRIÇÃO: Layout Mestre (Root) com Failsafes de Renderização
+    VERSÃO: 5.2 (Enterprise Stable + Modular Footer)
+    DESCRIÇÃO: Layout Mestre (Root) - Define a estrutura global.
 #}
 <html lang="pt-br">
 <head>
@@ -10,28 +10,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Belarmino Monteiro Advogados{% endblock %}</title>
 
+    {# CSS Global #}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-
+    
     <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}?v={{ get_file_mtime('css/base.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/cookie_consent.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/flashes.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/inner_header.css') }}">
 
     <style>
-        /* Garante que o AOS não esconda o site se o JS demorar */
-        html:not(.no-js) [data-aos] {
-            opacity: 1 !important;
-            transform: none !important;
-        }
-        
-        /* Ajustes da Navbar Fixa */
-        body { padding-top: 80px; } /* Compensa a navbar fixa */
+        /* Ajustes Estruturais Globais */
+        html:not(.no-js) [data-aos] { opacity: 1 !important; transform: none !important; }
+        body { padding-top: 80px; } 
         
         .navbar-premium {
             background-color: rgba(255, 255, 255, 0.98);
@@ -39,19 +30,9 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.05);
             padding: 15px 0;
         }
-        .nav-link {
-            color: #333 !important; 
-            font-weight: 600; 
-            text-transform: uppercase; 
-            font-size: 0.8rem; 
-            letter-spacing: 1px;
-            transition: 0.3s;
-        }
+        .nav-link { color: #333 !important; font-weight: 600; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
         .nav-link:hover { color: #b92027 !important; }
-        .btn-nav-contact {
-            border: 2px solid #b92027; color: #b92027; border-radius: 50px; 
-            padding: 8px 24px; font-weight: 700; text-transform: uppercase; font-size: 0.75rem;
-        }
+        .btn-nav-contact { border: 2px solid #b92027; color: #b92027; border-radius: 50px; padding: 8px 24px; font-weight: 700; text-transform: uppercase; font-size: 0.75rem; }
         .btn-nav-contact:hover { background-color: #b92027; color: #fff; }
     </style>
     
@@ -59,6 +40,7 @@
 </head>
 <body>
 
+    {# NAVBAR #}
     <nav class="navbar navbar-expand-lg navbar-premium fixed-top">
         <div class="container">
             <a class="navbar-brand" href="/">
@@ -84,58 +66,20 @@
         </div>
     </nav>
 
+    {# CONTEÚDO PRINCIPAL (Aqui é onde o home_option1.html é injetado) #}
     <main>
         {% block content %}{% endblock %}
     </main>
 
-    <footer class="footer-premium bg-dark text-white pt-5 pb-3 mt-5">
-        <div class="container">
-            <div class="row gy-4">
-                <div class="col-lg-4 col-md-6">
-                    <h5 class="text-uppercase fw-bold mb-3" style="color: #fff; letter-spacing: 1px;">Belarmino Monteiro</h5>
-                    <p class="text-white-50 small">Sociedade de advogados comprometida com a excelência técnica e a defesa intransigente dos direitos.</p>
-                    <div class="d-flex gap-3 mt-3">
-                        <a href="#" class="text-white-50 hover-white"><i class="bi bi-instagram fs-5"></i></a>
-                        <a href="#" class="text-white-50 hover-white"><i class="bi bi-linkedin fs-5"></i></a>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-6">
-                    <h6 class="text-uppercase fw-bold fs-7 mb-3 text-white">Links</h6>
-                    <ul class="list-unstyled d-flex flex-column gap-2">
-                        <li><a href="/" class="text-white-50 text-decoration-none small">Início</a></li>
-                        <li><a href="/sobre-nos" class="text-white-50 text-decoration-none small">Sobre</a></li>
-                        <li><a href="/areas-de-atuacao" class="text-white-50 text-decoration-none small">Áreas</a></li>
-                    </ul>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <h6 class="text-uppercase fw-bold fs-7 mb-3 text-white">Contato</h6>
-                    <ul class="list-unstyled d-flex flex-column gap-2">
-                        <li class="d-flex gap-2 text-white-50 small"><i class="bi bi-geo-alt text-danger"></i> Av. Santos Dumont, 1234, Fortaleza-CE</li>
-                        <li class="d-flex gap-2 text-white-50 small"><i class="bi bi-envelope text-danger"></i> contato@bm.adv.br</li>
-                    </ul>
-                </div>
-                <div class="col-lg-3 col-md-6 text-center text-lg-end">
-                    <div class="bg-white p-2 d-inline-block rounded">
-                        <img src="{{ url_for('static', filename='images/qr-code (SEM O LOGO NO CENTRO).svg') }}" alt="QR" width="100">
-                    </div>
-                </div>
-            </div>
-            <hr class="border-secondary opacity-25 mt-4">
-            <p class="text-center text-white-50 small mb-0">© 2025 Belarmino Monteiro Sociedade de Advogados.</p>
-        </div>
-    </footer>
+    {# AQUI ESTÁ O SEGREDO: Incluir o Rodapé Modular #}
+    {% include '_footer_standard.html' %}
 
+    {# SCRIPTS GLOBAIS #}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        // Inicialização segura do AOS
         document.addEventListener('DOMContentLoaded', function() {
-            AOS.init({
-                duration: 800,
-                once: true,
-                offset: 50,
-                disable: 'mobile' // Opcional: desativa em mobile se causar problemas
-            });
+            AOS.init({ duration: 800, once: true, offset: 50 });
         });
     </script>
 </body>

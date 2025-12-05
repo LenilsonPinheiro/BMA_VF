@@ -1,7 +1,7 @@
 # 🏛️ CONTEXTO ARQUITETURA E "BÍBLIA DO PROJETO" (MASTER FILE)
 
 > **STATUS:** CRÍTICO / VIVO
-> **VERSÃO:** 5.0 (Omni-Channel AI God Mode)
+> **VERSÃO:** 5.2 (Omni-Channel AI God Mode + Performance Hardening)
 > **ÚLTIMA ATUALIZAÇÃO:** 03/12/2025
 > **ACESSO:** OBRIGATÓRIO PARA TODAS AS IAs (Copilot, Windsurf, Cline, Cursor)
 
@@ -34,6 +34,14 @@
 ### 2.2. Regras de Negócio & Proteções
 * **Fail-Safe:** Todo `try` tem que ter um `except` que loga o erro completo (`traceback`) e notifica o admin (via Webhook n8n).
 * **Input Sanitization:** Nunca confiar no usuário. Validar tipos e limpar strings antes de processar.
+
+### 2.3. Performance & Segurança (Middleware Global) [NOVO]
+* **Caching Agressivo (Static):** Assets em `/static` devem ter header `Cache-Control: public, max-age=31536000, immutable`. O navegador NÃO deve requisitar o servidor novamente.
+* **Caching Inteligente (HTML):** Páginas dinâmicas devem ter `Cache-Control: public, max-age=3600, must-revalidate`.
+* **Headers de Segurança (Hardening):** Todas as rotas devem retornar:
+    * `X-Content-Type-Options: nosniff`
+    * `X-Frame-Options: SAMEORIGIN`
+* **SEO Técnico:** Obrigatório injetar JSON-LD Schema.org em todas as páginas via componente `_seo_meta.html`.
 
 ---
 

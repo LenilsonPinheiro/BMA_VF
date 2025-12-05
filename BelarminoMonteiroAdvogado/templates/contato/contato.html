@@ -1,354 +1,414 @@
-{% extends "base.html" %}
+{% extends "base_option1.html" %}
 
-{% block title %}Fale Conosco - Belarmino Monteiro{% endblock %}
-{% block metadescription %}Entre em contato com nossa equipe especializada. Atendimento ágil, sigiloso e estratégico.{% endblock %}
+{# --- TÍTULO E META --- #}
+{% block title %}Fale Conosco - Atendimento Jurídico Premium | Belarmino Monteiro{% endblock %}
+{% block metadescription %}Entre em contato com nossa equipe de elite. Agende uma consulta estratégica presencial ou online.{% endblock %}
+
+{% block head %}
+    <link rel="preload" href="{{ url_for('static', filename='images/banners/inner_bg_default.jpg') }}" as="image">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
+{% endblock %}
 
 {% block content %}
 
-{% with title="Fale Conosco", subtitle="Estamos prontos para ouvir o seu caso e traçar a melhor estratégia.", bg_image=url_for('static', filename='images/banners/inner_bg_default.jpg') %}
-    {% include '_inner_page_header.html' %}
-{% endwith %}
-
-<section class="contact-universal-wrapper">
-    <div class="container">
-        <div class="row g-5">
-            
-            <div class="col-lg-5" data-aos="fade-right">
-                <div class="contact-info-card">
-                    <h3 class="info-title">Canais de Atendimento</h3>
-                    <p class="info-desc">
-                        Escolha a forma mais conveniente para você. Nossa equipe retornará o mais breve possível.
-                    </p>
-
-                    <div class="info-list">
-                        <div class="info-item">
-                            <div class="icon-box"><i class="bi bi-geo-alt-fill"></i></div>
-                            <div>
-                                <span class="label">Sede</span>
-                                <p class="value">Av. Santos Dumont, 1234<br>Aldeota, Fortaleza - CE</p>
-                            </div>
-                        </div>
-
-                        <div class="info-item">
-                            <div class="icon-box"><i class="bi bi-whatsapp"></i></div>
-                            <div>
-                                <span class="label">WhatsApp (Rápido)</span>
-                                <p class="value">
-                                    <a href="https://wa.me/558597698475" target="_blank" class="text-reset text-decoration-none hover-accent">
-                                        +55 (85) 9 7698-8475
-                                    </a>
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="info-item">
-                            <div class="icon-box"><i class="bi bi-envelope-fill"></i></div>
-                            <div>
-                                <span class="label">E-mail</span>
-                                <p class="value">
-                                    <a href="mailto:contato@belarminomonteiro.com.br" class="text-reset text-decoration-none hover-accent">
-                                        contato@belarminomonteiro.com.br
-                                    </a>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="hours-box">
-                        <i class="bi bi-clock me-2"></i> Seg - Sex: 08h às 18h
-                    </div>
-
-                    <div class="social-links mt-4">
-                        <a href="#" class="social-btn"><i class="bi bi-instagram"></i></a>
-                        <a href="#" class="social-btn"><i class="bi bi-linkedin"></i></a>
-                    </div>
-
-                </div>
-            </div>
-
-            <div class="col-lg-7" data-aos="fade-left">
-                <div class="contact-form-card">
-                    <div class="form-header-inner">
-                        <h3>Envie sua Mensagem</h3>
-                        <p>Preencha os campos abaixo. Seus dados estão protegidos.</p>
-                    </div>
-
-                    {% include '_flashes.html' %}
-
-                    <form method="POST" action="{{ url_for('main.pagina_contato') }}" class="needs-validation" novalidate>
-                        {{ form.hidden_tag() }}
-
-                        <div class="row g-4">
-                            <div class="col-md-6">
-                                <div class="form-floating-custom">
-                                    {{ form.name(class="form-control-custom", placeholder="Seu Nome") }}
-                                    <label class="floating-label">Nome Completo</label>
-                                    {% if form.name.errors %}
-                                        <div class="text-danger small mt-1">{{ form.name.errors[0] }}</div>
-                                    {% endif %}
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="form-floating-custom">
-                                    {{ form.email(class="form-control-custom", placeholder="Seu E-mail") }}
-                                    <label class="floating-label">E-mail Profissional</label>
-                                    {% if form.email.errors %}
-                                        <div class="text-danger small mt-1">{{ form.email.errors[0] }}</div>
-                                    {% endif %}
-                                </div>
-                            </div>
-
-                            <div class="col-12">
-                                <div class="form-floating-custom select-wrapper">
-                                    <select class="form-control-custom" name="subject_visual" id="subject_visual">
-                                        <option value="" disabled selected>Selecione o Assunto</option>
-                                        <option value="consulta">Agendar Consulta</option>
-                                        <option value="juridico">Dúvida Jurídica</option>
-                                        <option value="parceria">Proposta de Parceria</option>
-                                        <option value="outro">Outros</option>
-                                    </select>
-                                    <i class="bi bi-chevron-down select-arrow"></i>
-                                </div>
-                            </div>
-
-                            <div class="col-12">
-                                <div class="form-floating-custom">
-                                    {{ form.message(class="form-control-custom", rows="5", placeholder="Sua Mensagem", style="height: 150px;") }}
-                                    <label class="floating-label">Como podemos ajudar?</label>
-                                    {% if form.message.errors %}
-                                        <div class="text-danger small mt-1">{{ form.message.errors[0] }}</div>
-                                    {% endif %}
-                                </div>
-                            </div>
-
-                            <div class="col-12">
-                                <button type="submit" class="btn-submit-contact">
-                                    <span>Enviar Solicitação</span>
-                                    <i class="bi bi-send-fill ms-2"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</section>
-
-{% include 'home/_map_section.html' %}
-
 <style>
-    /* --- VARIÁVEIS LOCAIS (Adaptive System) --- */
-    .contact-universal-wrapper {
-        --ct-bg: var(--prm-bg-light, #f9f9f9);
-        --ct-card-bg: #ffffff;
-        --ct-text: #333;
-        --ct-text-muted: #666;
-        --ct-accent: var(--prm-accent-red, #b92027);
-        --ct-border: #e0e0e0;
-        --ct-radius: 16px;
-        --ct-shadow: 0 15px 40px rgba(0,0,0,0.05);
-        --ct-input-bg: #f8f9fa;
+    /* --- 1. ENGINE DE SCROLL & LAYOUT (GOD-TIER) --- */
+    
+    /* Reset Global para Scroll Snap */
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden !important; /* Remove scroll do navegador */
+        background-color: #000;
     }
 
-    /* Option 2 (Titan/Corporate) */
-    body.option2 .contact-universal-wrapper {
-        --ct-card-bg: #fff;
-        --ct-radius: 4px;
-        --ct-accent: #002F49;
-        --ct-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    /* Wrapper Principal - O único elemento com scroll */
+    .contact-page-wrapper {
+        height: 100vh;
+        width: 100%;
+        overflow-y: auto;
+        scroll-snap-type: y mandatory; /* O "imã" */
+        scroll-behavior: smooth;
+        
+        /* Esconder Scrollbar (Visual Limpo) */
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE/Edge */
+        
+        /* Variáveis de Design */
+        --lux-gold: #b92027;
+        --lux-gold-glow: rgba(185, 32, 39, 0.5);
+        --lux-dark: #050505;
+        --lux-glass-panel: rgba(20, 20, 20, 0.6);
+        --lux-border: rgba(255, 255, 255, 0.1);
+        --lux-text: #fff;
+        
+        font-family: 'Roboto', sans-serif;
+        background-color: var(--lux-dark);
+        color: var(--lux-text);
+    }
+    
+    /* Esconder Scrollbar (Chrome/Safari/Webkit) */
+    .contact-page-wrapper::-webkit-scrollbar { 
+        display: none; 
     }
 
-    /* Option 3 (Boutique) */
-    body.option3 .contact-universal-wrapper {
-        --ct-bg: #F9F7F2;
-        --ct-card-bg: #fff;
-        --ct-accent: #D4AF37;
-        --ct-radius: 8px;
-        --ct-shadow: 0 20px 50px rgba(212, 175, 55, 0.1);
+    /* Seção Base (Full Screen) */
+    .snap-section {
+        height: 100vh;
+        width: 100%;
+        scroll-snap-align: start;
+        scroll-snap-stop: always; /* Força a parada */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        position: relative;
+        padding-top: 80px; /* Compensa Navbar */
+        box-sizing: border-box;
+        overflow: hidden;
     }
 
-    /* Option 4 (Tech) & Dark Mode */
-    body.option4 .contact-universal-wrapper,
-    body.dark-mode .contact-universal-wrapper,
-    [data-theme="dark"] .contact-universal-wrapper {
-        --ct-bg: transparent;
-        --ct-card-bg: rgba(255, 255, 255, 0.03);
-        --ct-text: #f1f1f1;
-        --ct-text-muted: #aaa;
-        --ct-border: rgba(255, 255, 255, 0.1);
-        --ct-input-bg: rgba(0, 0, 0, 0.2);
-        --ct-shadow: 0 15px 40px rgba(0,0,0,0.3);
-        --ct-accent: var(--prm-accent-red, #b92027);
+    /* --- 2. HERO SECTION (CLEAN) --- */
+    .contact-hero {
+        background: #000;
+        text-align: center;
+    }
+    
+    .hero-bg {
+        position: absolute; inset: 0;
+        background-image: url('{{ url_for("static", filename="images/banners/inner_bg_default.jpg") }}');
+        background-size: cover; background-position: center;
+        filter: brightness(0.3) blur(2px); /* Fundo escuro e levemente desfocado */
+        z-index: 0;
+        animation: breathingBg 20s infinite alternate ease-in-out;
+    }
+    @keyframes breathingBg { from { transform: scale(1); } to { transform: scale(1.1); } }
+
+    .hero-content {
+        position: relative; z-index: 2;
+        max-width: 900px; margin: 0 auto;
+        display: flex; flex-direction: column; align-items: center; gap: 20px;
+    }
+    
+    .hero-title {
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(3.5rem, 8vw, 6rem);
+        font-weight: 700;
+        line-height: 1;
+        background: linear-gradient(to bottom right, #fff 30%, #ccc 100%);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        margin: 0;
+        text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    
+    .hero-subtitle {
+        font-size: 1.1rem; font-weight: 300; opacity: 0.8;
+        text-transform: uppercase; letter-spacing: 4px;
+        color: var(--lux-gold);
     }
 
-    /* --- ESTRUTURA --- */
-    .contact-universal-wrapper {
-        padding: 80px 0;
-        background-color: var(--ct-bg);
+    .scroll-indicator {
+        margin-top: 40px;
+        width: 40px; height: 70px;
+        border: 2px solid rgba(255,255,255,0.2);
+        border-radius: 50px;
+        position: relative;
+        cursor: pointer;
+    }
+    .scroll-indicator::before {
+        content: ''; position: absolute; top: 10px; left: 50%;
+        width: 6px; height: 10px; background: #fff;
+        border-radius: 10px; transform: translateX(-50%);
+        animation: scrollAnim 2s infinite;
+    }
+    @keyframes scrollAnim {
+        0% { top: 10px; opacity: 1; }
+        100% { top: 30px; opacity: 0; }
     }
 
-    /* Card de Informações (Esquerda) */
-    .contact-info-card {
-        background: var(--ct-card-bg);
-        border-radius: var(--ct-radius);
+    /* --- 3. FORMULÁRIO & CANAIS (GLASSMORPHISM) --- */
+    .contact-form-section {
+        background: radial-gradient(circle at top right, #1a1a1a 0%, #000 100%);
+    }
+
+    /* Card Esquerdo (Infos) */
+    .info-card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--lux-border);
+        border-radius: 20px;
         padding: 40px;
         height: 100%;
-        border: 1px solid var(--ct-border);
-        box-shadow: var(--ct-shadow);
+        display: flex; flex-direction: column; justify-content: center;
+        backdrop-filter: blur(10px);
     }
 
-    .info-title {
-        font-family: var(--font-heading, serif);
-        font-size: 1.8rem; color: var(--ct-text);
-        margin-bottom: 15px; font-weight: 700;
-    }
-    .info-desc {
-        font-size: 1rem; color: var(--ct-text-muted);
-        line-height: 1.6; margin-bottom: 40px;
-    }
-
-    .info-item {
-        display: flex; gap: 20px; margin-bottom: 30px;
-    }
-    .icon-box {
-        width: 50px; height: 50px;
-        background: rgba(0,0,0,0.05); /* Neutro */
-        color: var(--ct-accent);
-        border-radius: 50%;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 1.3rem; flex-shrink: 0;
-        transition: 0.3s;
-    }
-    /* Adaptação ícone dark */
-    body.dark-mode .icon-box, body.option4 .icon-box { background: rgba(255,255,255,0.1); }
-
-    .contact-info-card:hover .icon-box {
-        background: var(--ct-accent); color: #fff;
-    }
-
-    .label {
-        font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;
-        color: var(--ct-text-muted); font-weight: 700; display: block; margin-bottom: 5px;
-    }
-    .value {
-        font-size: 1.05rem; color: var(--ct-text); font-weight: 500; margin: 0;
-        line-height: 1.4;
-    }
-    .hover-accent:hover { color: var(--ct-accent) !important; }
-
-    .hours-box {
-        background: rgba(0,0,0,0.03);
-        padding: 15px; border-radius: 8px;
-        color: var(--ct-text-muted); font-size: 0.9rem;
-        display: inline-flex; align-items: center;
-    }
-    body.dark-mode .hours-box { background: rgba(255,255,255,0.05); }
-
-    .social-btn {
-        width: 40px; height: 40px; border-radius: 50%;
-        background: transparent; border: 1px solid var(--ct-border);
-        color: var(--ct-text); display: inline-flex; align-items: center; justify-content: center;
-        margin-right: 10px; transition: 0.3s;
-    }
-    .social-btn:hover { background: var(--ct-accent); color: #fff; border-color: var(--ct-accent); }
-
-    /* Card Formulário (Direita) */
-    .contact-form-card {
-        background: var(--ct-card-bg);
-        border-radius: var(--ct-radius);
-        padding: 40px;
-        box-shadow: var(--ct-shadow);
-        border: 1px solid var(--ct-border);
-        /* Destaque sutil */
-        border-top: 4px solid var(--ct-accent);
-    }
-
-    .form-header-inner h3 {
-        font-family: var(--font-heading, serif);
-        font-size: 1.5rem; color: var(--ct-text); margin-bottom: 5px;
-    }
-    .form-header-inner p {
-        font-size: 0.9rem; color: var(--ct-text-muted); margin-bottom: 30px;
-    }
-
-    /* Inputs Customizados */
-    .form-floating-custom { position: relative; }
-    
-    .form-control-custom {
-        width: 100%;
-        background: var(--ct-input-bg);
+    .channel-item {
+        display: flex; align-items: center; gap: 20px;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.02);
         border: 1px solid transparent;
-        border-bottom: 2px solid var(--ct-border);
-        border-radius: 4px 4px 0 0;
-        padding: 25px 15px 10px;
-        color: var(--ct-text);
-        font-size: 1rem;
-        transition: 0.3s;
-        resize: none; /* Para textarea */
+        border-radius: 12px;
+        margin-bottom: 15px;
+        transition: all 0.3s ease;
+        text-decoration: none; color: #fff;
     }
-    
-    .form-control-custom:focus {
-        outline: none;
-        background: var(--ct-card-bg); /* Fica "branco" no foco */
-        border-bottom-color: var(--ct-accent);
-        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    }
-    
-    .floating-label {
-        position: absolute; top: 18px; left: 15px;
-        font-size: 0.95rem; color: var(--ct-text-muted);
-        pointer-events: none; transition: 0.2s;
-    }
-    
-    .form-control-custom:focus ~ .floating-label,
-    .form-control-custom:not(:placeholder-shown) ~ .floating-label {
-        top: 5px; left: 15px; font-size: 0.75rem; color: var(--ct-accent); font-weight: 700;
+    .channel-item:hover {
+        background: rgba(185, 32, 39, 0.1);
+        border-color: var(--lux-gold);
+        transform: translateX(10px);
     }
 
-    /* Select */
-    .select-wrapper { position: relative; }
-    .select-arrow {
-        position: absolute; right: 15px; top: 20px;
-        color: var(--ct-text-muted); pointer-events: none;
+    .channel-icon {
+        width: 50px; height: 50px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.5rem; color: var(--lux-gold);
+        background: rgba(0,0,0,0.3); border-radius: 50%;
     }
 
-    /* Botão Submit */
-    .btn-submit-contact {
+    .channel-text label {
+        display: block; font-size: 0.7rem; text-transform: uppercase;
+        letter-spacing: 1px; opacity: 0.6;
+    }
+    .channel-text span { font-size: 1.1rem; font-weight: 500; }
+
+    /* Card Direito (Formulário) */
+    .form-card {
+        background: var(--lux-glass-panel);
+        border: 1px solid var(--lux-border);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        backdrop-filter: blur(20px);
+    }
+
+    /* Inputs Premium */
+    .input-group-lux { position: relative; margin-bottom: 20px; }
+    
+    .input-lux {
         width: 100%;
-        padding: 16px;
-        background: var(--ct-accent);
-        color: #fff;
-        border: none; border-radius: 8px;
-        font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid var(--lux-border);
+        border-radius: 8px;
+        padding: 15px;
+        color: #fff; font-size: 1rem;
         transition: 0.3s;
-        margin-top: 10px;
+        /* Sombra interna sutil */
+        box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
+    }
+    .input-lux:focus {
+        outline: none;
+        border-color: var(--lux-gold);
+        background: rgba(0, 0, 0, 0.5);
+        box-shadow: 0 0 0 2px rgba(185, 32, 39, 0.2);
+    }
+
+    .btn-submit {
+        width: 100%; padding: 18px;
+        background: var(--lux-gold);
+        color: #fff; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;
+        border: none; border-radius: 8px;
+        cursor: pointer; transition: 0.3s;
+        box-shadow: 0 10px 20px rgba(185, 32, 39, 0.3);
+    }
+    .btn-submit:hover {
+        background: #fff; color: var(--lux-gold);
+        transform: translateY(-2px);
+        box-shadow: 0 15px 30px rgba(185, 32, 39, 0.4);
+    }
+
+    /* --- 4. MAPA PREMIUM (INTERATIVO) --- */
+    .map-section {
+        padding: 0;
+        height: 100vh;
+        position: relative;
     }
     
-    /* Ajuste para Option 2 (Texto Escuro no botão claro se necessário) */
-    /* Mas geralmente accent é escuro no Option 2 (Navy), então texto branco ok */
+    .map-frame {
+        width: 100%; height: 100%;
+        filter: grayscale(100%) invert(90%) contrast(1.2); /* Mapa Dark */
+        transition: filter 0.5s;
+    }
+    .map-section:hover .map-frame {
+        filter: grayscale(0%) invert(0%) contrast(1); /* Mapa Normal ao passar mouse */
+    }
+
+    /* Card Flutuante no Mapa */
+    .map-card-overlay {
+        position: absolute;
+        top: 50%; left: 10%; transform: translateY(-50%);
+        background: rgba(15, 15, 15, 0.95);
+        border-left: 5px solid var(--lux-gold);
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+        max-width: 400px;
+        z-index: 10;
+        backdrop-filter: blur(10px);
+    }
     
-    .btn-submit-contact:hover {
-        filter: brightness(1.1);
-        transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    .map-title { font-family: 'Playfair Display'; font-size: 2rem; color: #fff; margin-bottom: 20px; }
+    .map-address { color: #ccc; font-size: 1rem; line-height: 1.6; margin-bottom: 30px; }
+    
+    .btn-map-route {
+        display: inline-flex; align-items: center; gap: 10px;
+        color: var(--lux-gold); text-decoration: none; font-weight: 700; text-transform: uppercase; font-size: 0.9rem;
+        transition: 0.3s;
+    }
+    .btn-map-route:hover { gap: 15px; color: #fff; }
+
+    /* --- 5. RODAPÉ (INTEGRADO AO FLOW) --- */
+    .footer-section {
+        scroll-snap-align: end; /* Garante que pare no fim */
+        height: auto; min-height: auto;
+        background: #111;
+        padding: 0; /* O include já tem padding */
     }
 
     /* Responsividade */
     @media (max-width: 991px) {
-        .contact-universal-wrapper { padding: 60px 0; }
-        .contact-info-card { margin-bottom: 0; }
+        .contact-page-wrapper { scroll-snap-type: y proximity; }
+        .snap-section { height: auto; min-height: 100vh; padding: 100px 20px; }
+        .contact-hero { height: 100vh; }
+        .map-card-overlay { position: relative; top: 0; left: 0; transform: none; margin: -50px auto 0; width: 90%; }
     }
 </style>
 
+<div class="contact-page-wrapper">
+
+    <section class="snap-section contact-hero">
+        <div class="hero-bg"></div>
+        <div class="hero-content" data-aos="zoom-in">
+            <h1 class="hero-title">Fale Conosco</h1>
+            <p class="hero-subtitle">ESTAMOS PRONTOS PARA OUVIR SUA HISTÓRIA</p>
+            
+            <div class="scroll-indicator" onclick="document.getElementById('formSection').scrollIntoView({behavior: 'smooth'})"></div>
+        </div>
+    </section>
+
+    <section id="formSection" class="snap-section contact-form-section">
+        <div class="container">
+            <div class="row g-5 align-items-center">
+                
+                <div class="col-lg-5" data-aos="fade-right">
+                    <div class="info-card" data-tilt data-tilt-max="3" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.1">
+                        <h3 class="text-white mb-4 font-serif">Canais Diretos</h3>
+                        
+                        <a href="https://wa.me/558597698475" target="_blank" class="channel-item">
+                            <div class="channel-icon"><i class="bi bi-whatsapp"></i></div>
+                            <div class="channel-text">
+                                <label>WhatsApp</label>
+                                <span>+55 (85) 9769-8475</span>
+                            </div>
+                        </a>
+                        
+                        <a href="tel:+558532440000" class="channel-item">
+                            <div class="channel-icon"><i class="bi bi-telephone"></i></div>
+                            <div class="channel-text">
+                                <label>Telefone</label>
+                                <span>(85) 3244-0000</span>
+                            </div>
+                        </a>
+                        
+                        <a href="mailto:contato@belarminomonteiro.com.br" class="channel-item">
+                            <div class="channel-icon"><i class="bi bi-envelope"></i></div>
+                            <div class="channel-text">
+                                <label>E-mail</label>
+                                <span>contato@bm.adv.br</span>
+                            </div>
+                        </a>
+
+                        <div class="mt-4 pt-3 border-top border-secondary">
+                            <small class="text-uppercase text-muted d-block mb-3">Redes Sociais</small>
+                            <div class="d-flex gap-3">
+                                <a href="#" class="text-white fs-4 hover-gold"><i class="bi bi-instagram"></i></a>
+                                <a href="#" class="text-white fs-4 hover-gold"><i class="bi bi-linkedin"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-7" data-aos="fade-left">
+                    <div class="form-card">
+                        <h3 class="text-white mb-4 font-serif">Envie sua Mensagem</h3>
+                        
+                        {% include '_flashes.html' %}
+
+                        <form method="POST" action="{{ url_for('main.pagina_contato') }}">
+                            {{ form.hidden_tag() }}
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="input-group-lux">
+                                        {{ form.name(class="input-lux", placeholder="Nome Completo *", required=True) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="input-group-lux">
+                                        {{ form.email(class="input-lux", placeholder="E-mail Profissional *", required=True) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="input-group-lux">
+                                        <input type="tel" name="phone" class="input-lux" placeholder="Telefone (DDD) *" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="input-group-lux">
+                                        <select class="input-lux" name="subject_visual" required style="color: #fff;">
+                                            <option value="" disabled selected>Assunto *</option>
+                                            <option value="consulta">Agendar Consulta</option>
+                                            <option value="juridico">Dúvida Jurídica</option>
+                                            <option value="outros">Outros</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="input-group-lux">
+                                {{ form.message(class="input-lux", rows="4", placeholder="Como podemos ajudar? *", required=True, style="resize: none;") }}
+                            </div>
+
+                            <button type="submit" class="btn-submit">Enviar Solicitação</button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="snap-section map-section">
+        <div class="map-card-overlay" data-aos="fade-right">
+            <h3 class="map-title">Nossa Sede</h3>
+            <p class="map-address">
+                Av. Santos Dumont, 1234<br>
+                Aldeota, Fortaleza - CE<br>
+                CEP: 60150-161
+            </p>
+            <a href="https://maps.google.com" target="_blank" class="btn-map-route">
+                Traçar Rota <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="map-frame">
+            {% include 'home/_map_section.html' ignore missing %}
+        </div>
+    </section>
+
+    <div class="footer-section">
+        {% include '_footer_standard.html' %}
+    </div>
+
+</div>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const select = document.getElementById('subject_visual');
-        if(select) {
-            select.addEventListener('change', function() {
-                this.classList.add('has-value');
+        if (typeof VanillaTilt !== 'undefined') {
+            VanillaTilt.init(document.querySelectorAll(".info-card"), {
+                max: 5, speed: 400, glare: true, "max-glare": 0.1
             });
         }
     });

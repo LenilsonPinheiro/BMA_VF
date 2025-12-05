@@ -22,6 +22,7 @@ Principais Responsabilidades:
   como inicializar o banco de dados, limpar dados e redefinir senhas.
 - Garantir a existência de dados essenciais no banco de dados na
   inicialização.
+- [NOVO v5.0] Implementar Middleware Global de Performance (Cache) e Segurança.
 
 ==============================================================================
 AVISO OBRIGATÓRIO PARA QUALQUER IA (GPT, Gemini, Copilot, etc.)
@@ -41,10 +42,14 @@ Isto significa:
 Esta é a regra mais importante deste projeto. A manutenção a longo prazo
 depende da aderência estrita a este princípio. NÃO FAÇA MUDANÇAS ISOLADAS.
 """
-from datetime import datetime, timezone
+# Imports Padrão Python
+from datetime import datetime, timezone, timedelta
 from typing import Dict, Any, List
-from flask import Flask, render_template, current_app, flash
 import os, secrets, json, click
+
+# Imports Flask e Extensões
+# [ATUALIZAÇÃO] Adicionado 'request' para lógica de cache baseada em rota
+from flask import Flask, render_template, current_app, flash, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_migrate import Migrate
@@ -556,6 +561,55 @@ def create_app(test_config: Dict[str, Any] = None) -> Flask:
         # Registra o acesso ao banco de dados para depuração, mostrando qual DB está sendo usado.
         app.logger.debug(f"load_user tentando acessar DB em: {db.engine.url.database}")
         return User.query.get(int(user_id))
+
+    # [PERFORMANCE & SECURITY] Middleware Global de Cabeçalhos (Padrão Enterprise/NASA)
+    # Implementa cache agressivo para assets e políticas de segurança.
+    @app.after_request
+    def add_header(response):
+        """
+        Interceptador global para adicionar headers de cache e segurança em todas as respostas.
+        
+        Estratégia de Cache:
+        1. Static Assets (/static): Cache imutável de 1 ano. O browser não deve nem perguntar ao servidor.
+        2. Páginas HTML (Dynamic): Cache de 1 hora, mas exige revalidação (ETag/Last-Modified) se o conteúdo mudar.
+        
+        Estratégia de Segurança:
+        1. nosniff: Previne MIME type sniffing.
+        2. SAMEORIGIN: Protege contra Clickjacking.
+        """
+        try:
+            # Lógica para Assets Estáticos (Imagens, CSS, JS, Fontes)
+            if request.path.startswith('/static'):
+                # Cache agressivo: 1 ano (31536000 segundos) + immutable
+                # immutable: Diz ao browser que este arquivo NUNCA muda enquanto a URL for a mesma.
+                response.headers['Cache-Control'] = 'public, max-age=31536000, immutable'
+                
+                # Define data de expiração explícita para proxies antigos
+                expires_date = datetime.now(timezone.utc) + timedelta(days=365)
+                response.headers['Expires'] = expires_date.strftime("%a, %d %b %Y %H:%M:%S GMT")
+                
+                # Log em nível DEBUG para não poluir (ativo apenas em dev/diag)
+                # app.logger.debug(f"[CACHE] Asset estático servido com cache longo: {request.path}")
+
+            # Lógica para Conteúdo Dinâmico (HTML, JSON API)
+            else:
+                # Cache moderado: 1 hora, mas exige revalidação com o servidor (must-revalidate)
+                # Isso garante que se você fizer um deploy, o usuário recebe o novo HTML na próxima visita (após 1h ou refresh forte)
+                response.headers['Cache-Control'] = 'public, max-age=3600, must-revalidate'
+            
+            # [SEGURANÇA] Headers de Endurecimento (Hardening)
+            # Protege contra interpretação errada de tipos MIME (risco de XSS em uploads)
+            response.headers['X-Content-Type-Options'] = 'nosniff'
+            
+            # Protege contra Clickjacking (impede que o site seja aberto em um iframe de terceiros)
+            response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+            
+            return response
+            
+        except Exception as e:
+            # Fail-safe: Se algo der errado no middleware, loga e devolve a resposta sem alterações para não quebrar o site
+            app.logger.error(f"[MIDDLEWARE ERROR] Falha ao adicionar headers: {str(e)}")
+            return response
 
     with app.app_context():
         app.logger.debug(f"Executando init_db_command com SQLALCHEMY_DATABASE_URI: {current_app.config.get('SQLALCHEMY_DATABASE_URI')}")

@@ -1,246 +1,314 @@
-{% extends "base.html" %}
+{% extends "base_option1.html" %}
 
-{% block title %}Áreas de Atuação - Belarmino Monteiro{% endblock %}
-{% block metadescription %}Conheça nossa expertise jurídica. Atuamos em diversas áreas do direito com foco em resultados estratégicos.{% endblock %}
+{# --- TÍTULO E META (SEO OTIMIZADO) --- #}
+{% block title %}Áreas de Atuação - Expertise Jurídica | Belarmino Monteiro{% endblock %}
+{% block metadescription %}Conheça nossa expertise jurídica. Atuamos com excelência em Direito Civil, Consumidor, Família e Previdenciário.{% endblock %}
+
+{% block head %}
+    <link rel="preload" href="{{ url_for('static', filename='images/banners/areas_bg.jpg') }}" as="image">
+{% endblock %}
 
 {% block content %}
 
-{% with title="Nossas Áreas de Atuação", subtitle="Expertise jurídica abrangente para proteger seus interesses em todas as frentes.", bg_image=url_for('static', filename='images/banners/areas_bg.jpg') %}
-    {% include '_inner_page_header.html' %}
-{% endwith %}
-
-<section class="areas-page-wrapper">
-    <div class="container">
-        
-        {# BARRA DE PESQUISA #}
-        <div class="row justify-content-center mb-5">
-            <div class="col-lg-6">
-                <div class="search-wrapper" data-aos="fade-up">
-                    <i class="bi bi-search search-icon"></i>
-                    <input type="text" id="areaSearch" class="search-input" placeholder="Buscar área de atuação (ex: Civil, Tributário...)">
-                </div>
-            </div>
-        </div>
-
-        {# GRID DE ÁREAS #}
-        <div class="row g-4" id="areasGrid">
-            {% for area in areas %}
-            <div class="col-md-6 col-lg-4 area-item" data-title="{{ area.titulo | lower }}" data-desc="{{ area.descricao | lower }}" data-aos="fade-up" data-aos-delay="{{ loop.index * 50 }}">
-                
-                <a href="{{ url_for('main.pagina_dinamica', slug=area.slug) }}" class="area-card">
-                    <div class="card-body">
-                        <div class="area-icon-box">
-                            <i class="{{ area.icone if area.icone else 'bi bi-shield-check' }}"></i>
-                        </div>
-                        
-                        <h3 class="area-title">{{ area.titulo }}</h3>
-                        <p class="area-desc">
-                            {{ area.descricao[:140] }}{% if area.descricao|length > 140 %}...{% endif %}
-                        </p>
-                        
-                        <div class="area-footer">
-                            <span class="learn-more">
-                                Saiba Mais <i class="bi bi-arrow-right"></i>
-                            </span>
-                        </div>
-                    </div>
-                </a>
-
-            </div>
-            {% else %}
-            <div class="col-12 text-center py-5">
-                <div class="empty-state">
-                    <i class="bi bi-inbox display-4 text-muted mb-3 d-block opacity-50"></i>
-                    <p class="text-muted">Nenhuma área de atuação cadastrada no momento.</p>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-
-        {# ESTADO VAZIO (SEM RESULTADOS) #}
-        <div id="noResults" class="text-center py-5 d-none">
-            <i class="bi bi-search display-6 text-muted mb-3 d-block opacity-50"></i>
-            <p class="text-muted">Nenhuma área encontrada para sua busca.</p>
-            <button class="btn btn-sm btn-outline-secondary mt-2 rounded-pill px-4" onclick="clearSearch()">Limpar Filtros</button>
-        </div>
-
-    </div>
-</section>
-
-{% include '_cta_section.html' %}
-
 <style>
-    /* --- VARIÁVEIS LOCAIS ADAPTATIVAS --- */
-    .areas-page-wrapper {
-        --ar-bg: var(--prm-bg-surface, #fff);
-        --ar-card-bg: var(--prm-bg-surface, #ffffff);
-        --ar-card-border: var(--prm-border, rgba(0,0,0,0.08));
-        --ar-accent: var(--prm-accent-red, #b92027);
-        --ar-text: var(--prm-text, #333);
-        --ar-text-muted: var(--prm-text-light, #666);
-        --ar-radius: 12px;
-        --ar-shadow: var(--shadow-sm, 0 4px 6px rgba(0,0,0,0.05));
-        --ar-hover-lift: -8px;
+    /* --- SISTEMA DE DESIGN (Variáveis Locais) --- */
+    .areas-wrapper {
+        --lux-gold: #b92027;
+        --lux-gold-hover: #a01b22;
+        --lux-text: #333;
+        --lux-text-muted: #666;
+        --lux-bg-light: #f8f9fa;
+        --lux-card-bg: #ffffff;
+        --lux-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        --lux-serif: 'Playfair Display', serif;
+        --lux-sans: 'Roboto', sans-serif;
+        font-family: var(--lux-sans);
+        background-color: var(--lux-bg-light);
     }
 
-    /* Option 2/6 (Corporativo) */
-    body.option2 .areas-page-wrapper, body.option6 .areas-page-wrapper {
-        --ar-bg: var(--titan-bg-main, #f8f9fa);
-        --ar-accent: var(--titan-text-primary, #002F49);
-        --ar-radius: 4px;
-    }
-
-    /* Option 3/7 (Boutique) */
-    body.option3 .areas-page-wrapper, body.option7 .areas-page-wrapper {
-        --ar-bg: var(--btq-bg-main, #F9F7F2);
-        --ar-accent: var(--btq-gold-main, #D4AF37);
-    }
-
-    /* Option 4/8 (Tech) & Dark Mode */
-    body.option4 .areas-page-wrapper, body.option8 .areas-page-wrapper,
-    body.dark-mode .areas-page-wrapper,
-    [data-theme="dark"] .areas-page-wrapper {
-        --ar-bg: transparent;
-        --ar-card-bg: rgba(255, 255, 255, 0.03);
-        --ar-card-border: rgba(255, 255, 255, 0.1);
-        --ar-text: #f1f1f1;
-        --ar-text-muted: #aaa;
-        --ar-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    }
-
-    /* --- ESTRUTURA --- */
-    .areas-page-wrapper {
-        padding: 80px 0;
-        background-color: var(--ar-bg);
-        min-height: 60vh;
-    }
-
-    /* --- SEARCH BAR --- */
-    .search-wrapper {
+    /* --- 1. HERO CINEMATIC --- */
+    .areas-hero {
         position: relative;
-        max-width: 600px;
-        margin: 0 auto;
+        height: 60vh;
+        min-height: 450px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #000;
+        color: white;
+        text-align: center;
+        margin-top: -80px; /* Compensa Navbar */
+        padding-top: 80px;
+        overflow: hidden;
+    }
+
+    .hero-bg-anim {
+        position: absolute; inset: 0;
+        background-image: url('{{ url_for("static", filename="images/banners/areas_bg.jpg") }}');
+        background-size: cover; background-position: center; z-index: 0;
+        opacity: 0.6;
+        animation: zoomEffect 20s infinite alternate ease-in-out;
+    }
+    @keyframes zoomEffect { from { transform: scale(1); } to { transform: scale(1.1); } }
+
+    .hero-overlay {
+        position: absolute; inset: 0;
+        background: radial-gradient(circle at center, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.9) 100%);
+        z-index: 1;
+    }
+
+    .hero-content { position: relative; z-index: 2; max-width: 800px; padding: 0 20px; }
+
+    .hero-title {
+        font-family: var(--lux-serif); font-size: clamp(3rem, 6vw, 5rem);
+        font-weight: 700; margin-bottom: 1rem; line-height: 1.1;
+        text-shadow: 0 5px 20px rgba(0,0,0,0.5);
+    }
+
+    .hero-desc {
+        font-size: 1.2rem; font-weight: 300; opacity: 0.9;
+        max-width: 700px; margin: 0 auto;
+    }
+
+    /* --- 2. BARRA DE PESQUISA FLUTUANTE --- */
+    .search-container {
+        margin-top: -40px; /* Sobe para sobrepor o Hero */
+        position: relative; z-index: 10;
+        padding: 0 20px;
+    }
+    
+    .search-box {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 50px;
+        padding: 10px 30px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        display: flex; align-items: center;
+        max-width: 700px; margin: 0 auto;
+        border: 1px solid rgba(0,0,0,0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .search-box:focus-within {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 50px rgba(185, 32, 39, 0.15);
+        border-color: var(--lux-gold);
     }
     
     .search-input {
-        width: 100%;
-        padding: 15px 15px 15px 50px;
-        border-radius: 50px;
-        border: 2px solid var(--ar-card-border);
-        background: var(--ar-card-bg);
-        color: var(--ar-text);
-        font-size: 1rem;
-        transition: 0.3s;
-        box-shadow: var(--ar-shadow);
-    }
-    
-    .search-input:focus {
+        border: none; background: transparent;
+        width: 100%; padding: 15px;
+        font-size: 1.1rem; color: var(--lux-text);
         outline: none;
-        border-color: var(--ar-accent);
-        box-shadow: 0 0 0 4px rgba(var(--ar-accent), 0.1);
     }
-    
-    .search-icon {
-        position: absolute;
-        left: 20px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: var(--ar-text-muted);
-        font-size: 1.2rem;
-        pointer-events: none;
-    }
+    .search-icon { font-size: 1.4rem; color: var(--lux-gold); margin-right: 10px; }
 
-    /* --- CARD ÁREA --- */
+    /* --- 3. GRID DE ÁREAS --- */
+    .areas-grid-section { padding: 80px 0 120px; }
+    
     .area-card {
-        display: block;
-        background: var(--ar-card-bg);
-        border: 1px solid var(--ar-card-border);
-        border-radius: var(--ar-radius);
-        height: 100%;
-        text-decoration: none;
-        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        display: block; text-decoration: none; color: inherit;
+        background: var(--lux-card-bg);
+        border-radius: 16px;
         overflow: hidden;
+        box-shadow: var(--lux-shadow);
+        transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        height: 100%;
+        border: 1px solid rgba(0,0,0,0.03);
         position: relative;
     }
-
-    .area-card:hover {
-        transform: translateY(var(--ar-hover-lift));
-        box-shadow: 0 20px 50px rgba(0,0,0,0.12);
-        border-color: var(--ar-accent);
-    }
-
-    /* Dark Mode Hover Glow */
-    body.dark-mode .area-card:hover, body.option4 .area-card:hover, body.option8 .area-card:hover {
-        box-shadow: 0 0 30px rgba(255,255,255,0.05), inset 0 0 0 1px var(--ar-accent);
-        border-color: transparent;
-    }
-
-    .card-body {
-        padding: 40px 30px;
-        display: flex; flex-direction: column; height: 100%;
-    }
-
-    /* Ícone */
-    .area-icon-box {
-        width: 60px; height: 60px;
-        background: rgba(var(--prm-accent-red-rgb), 0.04);
-        background: rgba(185, 32, 39, 0.04);
-        border-radius: 12px;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 1.8rem;
-        color: var(--ar-accent);
-        margin-bottom: 25px;
-        transition: 0.3s;
-    }
     
-    body.dark-mode .area-icon-box, body.option4 .area-icon-box { background: rgba(255,255,255,0.1); }
-
-    .area-card:hover .area-icon-box {
-        background: var(--ar-accent); color: #fff;
-        transform: rotateY(180deg);
+    .area-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 25px 60px rgba(0,0,0,0.12);
+        border-color: var(--lux-gold);
     }
 
-    /* Texto */
+    .card-body { padding: 40px 30px; display: flex; flex-direction: column; height: 100%; }
+
+    .area-icon-wrapper {
+        width: 70px; height: 70px;
+        background: rgba(185, 32, 39, 0.05);
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 2rem; color: var(--lux-gold);
+        margin-bottom: 25px;
+        transition: 0.4s;
+    }
+    .area-card:hover .area-icon-wrapper {
+        background: var(--lux-gold); color: #fff;
+        transform: scale(1.1) rotateY(180deg);
+        box-shadow: 0 10px 20px rgba(185, 32, 39, 0.3);
+    }
+
     .area-title {
-        font-family: var(--font-heading, serif);
-        font-size: 1.4rem; color: var(--ar-text);
-        margin-bottom: 15px; font-weight: 700;
-        transition: 0.3s;
+        font-family: var(--lux-serif); font-size: 1.6rem;
+        font-weight: 700; margin-bottom: 15px; color: var(--lux-text);
     }
     
     .area-desc {
-        font-size: 0.95rem; color: var(--ar-text-muted);
-        line-height: 1.6; margin-bottom: 30px; flex: 1;
+        font-size: 0.95rem; color: var(--lux-text-muted);
+        line-height: 1.6; flex: 1; margin-bottom: 30px;
     }
 
-    /* Footer / Link */
-    .area-footer {
-        border-top: 1px solid var(--ar-card-border);
-        padding-top: 20px;
-        margin-top: auto;
-    }
-    
-    .learn-more {
-        font-size: 0.85rem; font-weight: 700; text-transform: uppercase;
-        letter-spacing: 1px; color: var(--ar-text);
+    .area-link {
+        font-size: 0.85rem; text-transform: uppercase;
+        letter-spacing: 1px; font-weight: 700;
+        color: var(--lux-gold);
         display: flex; align-items: center; gap: 8px;
         transition: 0.3s;
     }
-    
-    .area-card:hover .learn-more {
-        color: var(--ar-accent);
-        gap: 15px; /* Seta se afasta */
-    }
+    .area-card:hover .area-link { gap: 15px; color: var(--lux-gold-hover); }
 
-    /* Ajuste Option 2 (Barra lateral) */
-    body.option2 .area-card, body.option6 .area-card {
-        border-left: 4px solid transparent;
+    /* Estado Vazio */
+    .empty-state { text-align: center; padding: 60px 0; opacity: 0.6; display: none; }
+    
+    /* --- 4. CTA --- */
+    .cta-section { padding-bottom: 100px; }
+    .cta-box {
+        background: linear-gradient(135deg, #111 0%, #222 100%);
+        border-radius: 30px; padding: 80px 40px;
+        text-align: center; color: #fff;
+        box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+        position: relative; overflow: hidden;
     }
-    body.option2 .area-card:hover, body.option6 .area-card:hover {
-        border-left-color: var(--ar-accent);
+    .cta-decor {
+        position: absolute; border-radius: 50%; background: var(--lux-gold);
+        opacity: 0.1; filter: blur(80px); pointer-events: none;
     }
+    .d1 { width: 300px; height: 300px; top: -100px; left: -100px; }
+    .d2 { width: 400px; height: 400px; bottom: -150px; right: -150px; }
+    
+    .btn-cta-glass {
+        background: rgba(255,255,255,0.1); color: #fff;
+        border: 1px solid rgba(255,255,255,0.2);
+        padding: 16px 40px; border-radius: 50px;
+        text-transform: uppercase; font-weight: 700; letter-spacing: 1px;
+        text-decoration: none; transition: 0.3s; backdrop-filter: blur(10px);
+    }
+    .btn-cta-glass:hover { background: #fff; color: #000; box-shadow: 0 0 30px rgba(255,255,255,0.3); }
 
 </style>
+
+<div class="areas-wrapper">
+
+    <section class="areas-hero">
+        <div class="hero-bg-anim"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content" data-aos="zoom-in">
+            <h1 class="hero-title">Nossa Expertise</h1>
+            <p class="hero-desc">
+                Atuação estratégica e especializada para proteger seus interesses em todas as esferas do direito.
+            </p>
+        </div>
+    </section>
+
+    <div class="search-container" data-aos="fade-up" data-aos-delay="200">
+        <div class="search-box">
+            <i class="bi bi-search search-icon"></i>
+            <input type="text" id="areaSearch" class="search-input" placeholder="Buscar por área (ex: Civil, Família...)">
+        </div>
+    </div>
+
+    <section class="areas-grid-section">
+        <div class="container">
+            <div class="row g-4" id="areasGrid">
+                <div class="col-md-6 col-lg-4 area-item" data-title="direito civil" data-desc="contratos obrigações responsabilidade civil">
+                    <a href="{{ url_for('main.pagina_dinamica', slug='direito-civil') }}" class="area-card" data-aos="fade-up" data-aos-delay="100">
+                        <div class="card-body">
+                            <div class="area-icon-wrapper"><i class="bi bi-bank"></i></div>
+                            <h3 class="area-title">Direito Civil</h3>
+                            <p class="area-desc">Soluções completas para questões de obrigações, contratos, responsabilidade civil e direitos reais.</p>
+                            <span class="area-link">Saiba Mais <i class="bi bi-arrow-right"></i></span>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-md-6 col-lg-4 area-item" data-title="direito do consumidor" data-desc="defesa danos morais materiais">
+                    <a href="{{ url_for('main.pagina_dinamica', slug='direito-do-consumidor') }}" class="area-card" data-aos="fade-up" data-aos-delay="200">
+                        <div class="card-body">
+                            <div class="area-icon-wrapper"><i class="bi bi-shield-check"></i></div>
+                            <h3 class="area-title">Direito do Consumidor</h3>
+                            <p class="area-desc">Defesa intransigente em conflitos nas relações de consumo, buscando a reparação integral de danos.</p>
+                            <span class="area-link">Saiba Mais <i class="bi bi-arrow-right"></i></span>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-md-6 col-lg-4 area-item" data-title="direito previdenciário" data-desc="inss aposentadoria benefícios">
+                    <a href="{{ url_for('main.pagina_dinamica', slug='direito-previdenciario') }}" class="area-card" data-aos="fade-up" data-aos-delay="300">
+                        <div class="card-body">
+                            <div class="area-icon-wrapper"><i class="bi bi-person-workspace"></i></div>
+                            <h3 class="area-title">Direito Previdenciário</h3>
+                            <p class="area-desc">Assessoria especializada em aposentadorias, pensões e benefícios do INSS. Planejamento previdenciário.</p>
+                            <span class="area-link">Saiba Mais <i class="bi bi-arrow-right"></i></span>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-md-6 col-lg-4 area-item" data-title="direito de família" data-desc="divórcio guarda pensão sucessões">
+                    <a href="{{ url_for('main.pagina_dinamica', slug='direito-de-familia') }}" class="area-card" data-aos="fade-up" data-aos-delay="400">
+                        <div class="card-body">
+                            <div class="area-icon-wrapper"><i class="bi bi-people"></i></div>
+                            <h3 class="area-title">Direito de Família</h3>
+                            <p class="area-desc">Condução sensível e técnica de processos de divórcio, guarda, pensão alimentícia e inventários.</p>
+                            <span class="area-link">Saiba Mais <i class="bi bi-arrow-right"></i></span>
+                        </div>
+                    </a>
+                </div>
+                
+                <div class="col-md-6 col-lg-4 area-item" data-title="direito imobiliário" data-desc="imóveis aluguel compra venda">
+                    <a href="#" class="area-card" data-aos="fade-up" data-aos-delay="500">
+                        <div class="card-body">
+                            <div class="area-icon-wrapper"><i class="bi bi-building"></i></div>
+                            <h3 class="area-title">Direito Imobiliário</h3>
+                            <p class="area-desc">Segurança jurídica em transações imobiliárias, regularização de imóveis e contratos de locação.</p>
+                            <span class="area-link">Saiba Mais <i class="bi bi-arrow-right"></i></span>
+                        </div>
+                    </a>
+                </div>
+                
+                 <div class="col-md-6 col-lg-4 area-item" data-title="direito empresarial" data-desc="empresas contratos societário">
+                    <a href="#" class="area-card" data-aos="fade-up" data-aos-delay="600">
+                        <div class="card-body">
+                            <div class="area-icon-wrapper"><i class="bi bi-briefcase"></i></div>
+                            <h3 class="area-title">Direito Empresarial</h3>
+                            <p class="area-desc">Consultoria jurídica para empresas, elaboração de contratos e planejamento societário.</p>
+                            <span class="area-link">Saiba Mais <i class="bi bi-arrow-right"></i></span>
+                        </div>
+                    </a>
+                </div>
+
+            </div>
+
+            <div id="noResults" class="empty-state">
+                <i class="bi bi-search display-4 mb-3 d-block"></i>
+                <h4 class="text-muted">Nenhuma área encontrada</h4>
+                <p class="text-muted small">Tente buscar por outro termo.</p>
+                <button class="btn btn-outline-danger rounded-pill mt-3" onclick="clearSearch()">Limpar Busca</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-box" data-aos="zoom-in">
+                <div class="cta-decor d1"></div>
+                <div class="cta-decor d2"></div>
+                
+                <h2 class="display-5 fw-bold mb-4 font-serif">Não encontrou o que precisa?</h2>
+                <p class="lead mb-5 opacity-75" style="max-width: 700px; margin: 0 auto;">
+                    Entre em contato e explique seu caso. Nossa equipe multidisciplinar está pronta para avaliar sua situação.
+                </p>
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="https://wa.me/558597698475" target="_blank" class="btn-cta-glass">
+                        <i class="bi bi-whatsapp me-2"></i> Falar com Especialista
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -258,17 +326,17 @@
                     const desc = item.getAttribute('data-desc');
                     
                     if (title.includes(term) || desc.includes(term)) {
-                        item.classList.remove('d-none');
+                        item.style.display = 'block';
                         visibleCount++;
                     } else {
-                        item.classList.add('d-none');
+                        item.style.display = 'none';
                     }
                 });
 
                 if (visibleCount === 0) {
-                    noResults.classList.remove('d-none');
+                    noResults.style.display = 'block';
                 } else {
-                    noResults.classList.add('d-none');
+                    noResults.style.display = 'none';
                 }
             });
         }

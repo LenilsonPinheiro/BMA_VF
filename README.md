@@ -7,7 +7,7 @@ Este projeto é uma aplicação web completa desenvolvida em Flask, projetada pa
 - **/BelarminoMonteiroAdvogado**: Contém o código-fonte principal da aplicação Flask.
   - **/static**: Arquivos estáticos (CSS, JS, imagens).
   - **/templates**: Templates Jinja2, incluindo os diferentes layouts do site.
-  - `__init__.py`: Fábrica da aplicação (`create_app`), onde o Flask é inicializado, os blueprints são registrados e o banco de dados é configurado.
+  - `__init__.py`: Fábrica da aplicação (`create_app`). Configura DB, Rotas e **Middleware Global de Segurança/Cache**.
   - `models.py`: Define os modelos de dados do SQLAlchemy (ex: `User`, `Pagina`, `ThemeSettings`).
   - `routes/`: Contém os blueprints que organizam as rotas da aplicação (ex: `main_routes.py`, `admin_routes.py`).
 - **/tests**: Contém a suíte de testes do Pytest.
@@ -32,6 +32,22 @@ Este projeto é uma aplicação web completa desenvolvida em Flask, projetada pa
     ```
     A aplicação estará disponível em `http://127.0.0.1:5000`.
 
+## Arquitetura de Performance & Segurança (Novo v5.0)
+
+O sistema implementa um middleware global (`after_request`) que impõe políticas estritas:
+
+### Estratégia de Caching
+1.  **Assets Estáticos (`/static`)**: 
+    * `Cache-Control: public, max-age=31536000, immutable` (1 Ano).
+    * Isso força o navegador a nunca requisitar o arquivo novamente até que o nome mude (cache busting via `?v=timestamp`).
+2.  **Conteúdo Dinâmico (HTML)**:
+    * `Cache-Control: public, max-age=3600, must-revalidate` (1 Hora).
+    * Garante que o conteúdo seja fresco, mas alivia a carga do servidor em navegações frequentes.
+
+### Cabeçalhos de Segurança (Hardening)
+* `X-Content-Type-Options: nosniff`: Previne ataques de MIME sniffing.
+* `X-Frame-Options: SAMEORIGIN`: Protege contra Clickjacking (impede o site de rodar em iframes de terceiros).
+
 ## Arquitetura de Temas (CSS)
 
 O sistema de temas foi refatorado para uma arquitetura moderna, escalável e de fácil manutenção, utilizando variáveis CSS.
@@ -54,8 +70,8 @@ A aparência de cada layout é controlada por uma cascata de três níveis de ar
     ```
 
 3.  **Variáveis de Layout (`theme-optionX.css`)**: Cada layout possui seu próprio arquivo de variáveis (ex: `theme-option2.css`). Este arquivo é usado para:
-    *   Sobrescrever as variáveis de cor globais (se necessário).
-    *   Definir variáveis específicas para aquele layout, como famílias de fontes.
+    * Sobrescrever as variáveis de cor globais (se necessário).
+    * Definir variáveis específicas para aquele layout, como famílias de fontes.
     ```css
     /* theme-option2.css */
     :root {

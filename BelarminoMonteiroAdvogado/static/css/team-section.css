@@ -3,6 +3,7 @@
    ==========================================================================
    Estilos específicos para a galeria de equipe.
    Suporta os 4 temas visuais e Dark Mode via variáveis CSS.
+   UPDATED: Performance Fixes (GPU Acceleration)
 */
 
 /* --- 1. VARIÁVEIS DO SISTEMA ADAPTATIVO --- */
@@ -112,16 +113,21 @@ body.option4.dark-mode .team-universal-wrapper {
     border-radius: var(--tm-border-radius);
     overflow: hidden;
     box-shadow: var(--tm-shadow);
-    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
     position: relative;
     height: 100%;
     border: 1px solid var(--tm-border-color);
     display: flex;
     flex-direction: column;
+
+    /* GPU HACKS */
+    transform: translateZ(0);
+    will-change: transform, box-shadow;
+    backface-visibility: hidden;
 }
 
 .team-card:hover {
-    transform: translateY(var(--tm-hover-lift));
+    transform: translateY(var(--tm-hover-lift)) translateZ(0);
     box-shadow: 0 20px 50px rgba(0,0,0,0.15); /* Sombra Elevada */
     z-index: 2; /* Traz para frente */
 }
@@ -131,7 +137,7 @@ body.option4.dark-mode .team-universal-wrapper {
     position: relative;
     height: var(--tm-img-height);
     overflow: hidden;
-    background-color: #e9ecef; /* Placeholder enquanto carrega */
+    background-color: transparent; /* FIXED: avoid color flash behind PNGs */
     flex-shrink: 0;
 }
 
@@ -140,12 +146,17 @@ body.option4.dark-mode .team-universal-wrapper {
     height: 100%;
     object-fit: cover;
     object-position: top center;
-    transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1), filter 0.6s ease;
+    transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); /* Removed filter transition for perf */
+    
+    /* GPU HACKS */
+    transform: translateZ(0);
+    will-change: transform;
+    backface-visibility: hidden;
 }
 
 /* Zoom suave no hover */
 .team-card:hover .team-img {
-    transform: scale(1.05);
+    transform: scale(1.05) translateZ(0);
 }
 
 /* Overlay Gradiente (para texto sobre a imagem se necessário) */
@@ -179,7 +190,7 @@ body.option4.dark-mode .team-universal-wrapper {
     letter-spacing: 1px;
     font-weight: 600;
     transform: translateY(20px); 
-    transition: 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .team-card:hover .view-profile-btn {
@@ -228,6 +239,7 @@ body.option4.dark-mode .team-universal-wrapper {
     opacity: 0;
     overflow: hidden;
     transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+    will-change: max-height, opacity;
 }
 
 .team-card:hover .member-bio-reveal {
@@ -263,11 +275,6 @@ body.option4.dark-mode .team-universal-wrapper {
     .team-img-wrapper { 
         height: 380px; 
     }
-    
-    /* Mobile UX: Mostrar bio sempre ou manter interação? 
-       Optamos por manter o reveal mas facilitar a ativação (click/focus)
-       ou mostrar parcialmente se desejar. Aqui, mantemos o padrão desktop
-       mas garantimos que o card não seja gigante. */
     
     .member-bio-reveal {
         /* Opcional: Descomentar abaixo para mostrar bio sempre no mobile */

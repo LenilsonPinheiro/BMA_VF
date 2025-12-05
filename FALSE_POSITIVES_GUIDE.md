@@ -5,60 +5,45 @@
 
 ---
 
-# 🛡️ Guia de Gerenciamento de Falsos Positivos no `detect-secrets`
+# 🛡️ Protocolo de Gestão de Segredos e Falsos Positivos (SecDevOps)
 
-O `detect-secrets` é uma ferramenta poderosa, mas às vezes pode identificar "falsos positivos" - trechos de código que parecem segredos, mas não são (ex: hashes de exemplo, IDs longos, etc.).
+> **Contexto Zero Trust:** No modelo de segurança Enterprise, tratamos credenciais hardcoded como vulnerabilidades críticas (CVSS High/Critical). O `detect-secrets` atua como nosso *Gatekeeper* de prevenção contra vazamento de dados.
 
-Quando o hook de pre-commit do `detect-secrets` falha, **NUNCA ignore o aviso sem investigar**. Siga este guia para gerenciar a situação de forma segura.
-
-## O que é o `.secrets.baseline`?
-
-O arquivo `.secrets.baseline` é o "cérebro" do `detect-secrets` no nosso projeto. Ele contém uma lista de todos os segredos (ou falsos positivos) que já foram encontrados e explicitamente marcados como "seguros" para este repositório.
-
-Quando você faz um commit, o `detect-secrets` compara os novos segredos encontrados com a lista no `.secrets.baseline`. Se um segredo for novo e não estiver na linha de base, o commit é bloqueado.
+Este documento define o procedimento padrão para lidar com bloqueios de commit causados pela detecção de entropia ou padrões de credenciais.
 
 ---
 
-## 🚀 Fluxo de Trabalho para Lidar com um Falso Positivo
+## 🚨 O que fazer quando o commit é bloqueado?
 
-Quando o `pre-commit` falhar devido a um novo segredo detectado, siga estes passos:
+Quando o `pre-commit` falha com `Detect Secrets.........................................................Failed`, siga este fluxograma rigoroso:
 
-### Passo 1: Analise o Segredo Detectado
+### 1. 🛑 ANÁLISE DE VULNERABILIDADE (Triage)
 
-Primeiro, verifique o que foi detectado. **É realmente um falso positivo?**
+Verifique o output do terminal. Ele mostrará o arquivo e a linha suspeita.
 
--   **Se for um segredo real (chave de API, senha):** **NÃO continue.** Remova o segredo do código imediatamente e utilize uma variável de ambiente ou um sistema de gerenciamento de segredos.
--   **Se for um falso positivo:** Prossiga para o próximo passo.
+* **CENÁRIO A: É um Segredo Real (API Key, Senha, Token, Chave Privada)**
+    * **AÇÃO IMEDIATA:** Aborte o commit.
+    * **CORREÇÃO:**
+        1.  Mova o segredo para o **Google Secret Manager** (Produção) ou `.env` (Local - e verifique se está no `.gitignore`).
+        2.  Substitua o valor no código por `os.environ.get('NOME_DA_VARIAVEL')`.
+    * **INCIDENTE:** Se este segredo já foi commitado anteriormente no histórico git:
+        1.  Considere-o **COMPROMETIDO**.
+        2.  Revogue a credencial no provedor imediatamente.
+        3.  Gere uma nova chave.
 
-### Passo 2: Audite a Linha de Base
+* **CENÁRIO B: É um Falso Positivo (Hash de exemplo, ID público, UUID)**
+    * **AÇÃO:** Prossiga para o Passo 2 (Auditoria).
 
-A maneira correta de adicionar um falso positivo à lista de permissões é através do comando de auditoria interativa.
+---
 
-1.  **Execute o comando de auditoria:**
-    ```powershell
-    detect-secrets audit .secrets.baseline
-    ```
+## 2. 🕵️‍♂️ AUDITORIA DA LINHA DE BASE (Allowlisting)
 
-2.  **Analise cada segredo:** A ferramenta irá apresentar cada segredo encontrado, um por um. Para cada um, você terá opções:
-    -   `(s)kip`: Pular e decidir depois.
-    -   `(m)ark as not a secret`: **Esta é a opção que você usará para falsos positivos.**
-    -   `(r)emove`: Remover da linha de base (raramente usado).
-    -   `(q)uit`: Sair da auditoria.
+O arquivo `.secrets.baseline` é a nossa "Lista de Exceções Auditada". Para adicionar um novo falso positivo, **não edite o arquivo manualmente**. Use a ferramenta interativa.
 
-3.  **Marque o falso positivo:** Quando a ferramenta mostrar o falso positivo que bloqueou seu commit, pressione `m` para marcá-lo como "não é um segredo".
+### Execução do Protocolo de Auditoria
 
-4.  **Salve e saia:** Continue o processo até o fim ou pressione `q` para sair e salvar as alterações.
+No terminal, na raiz do projeto:
 
-### Passo 3: Adicione a Linha de Base Atualizada ao seu Commit
-
-O comando de auditoria modificou o arquivo `.secrets.baseline`. Agora, você precisa adicionar essa mudança ao seu commit.
-
-```powershell
-# Adicione o arquivo de linha de base atualizado
-git add .secrets.baseline
-
-# Tente fazer o commit novamente
-git commit -m "Sua mensagem de commit"
-```
-
-Desta vez, o hook de pre-commit passará, pois o `detect-secrets` agora reconhece o falso positivo como seguro.
+```bash
+# Windows / Linux / Mac
+detect-secrets audit .secrets.baseline

@@ -1,0 +1,185 @@
+<footer class="footer-premium bg-dark text-white pt-5 pb-3 mt-5">
+    <div class="container">
+        <div class="row gy-4 align-items-start">
+            
+            <div class="col-lg-4 col-md-6">
+                <h5 class="brand-title">Belarmino Monteiro</h5>
+                <p class="brand-desc text-white-50 small">
+                    Sociedade de advogados comprometida com a excelência técnica e a defesa intransigente dos direitos.
+                </p>
+                <div class="social-wrapper d-flex gap-3 mt-3">
+                    <a href="#" class="social-btn" aria-label="Siga-nos no Instagram">
+                        <i class="bi bi-instagram"></i>
+                    </a>
+                    <a href="#" class="social-btn" aria-label="Conecte-se no LinkedIn">
+                        <i class="bi bi-linkedin"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-6">
+                <h6 class="footer-heading text-uppercase fw-bold fs-7 mb-3 text-white">Links</h6>
+                <ul class="list-unstyled d-flex flex-column gap-2">
+                    {# CORREÇÃO: main.index -> main.home #}
+                    <li><a href="{{ url_for('main.home') }}" class="footer-link">Início</a></li>
+                    
+                    {# Rota dinâmica para Sobre Nós #}
+                    <li><a href="{{ url_for('main.pagina_dinamica', slug='sobre-nos') }}" class="footer-link">Sobre Nós</a></li>
+                    
+                    {# CORREÇÃO: main.areas_atuacao -> main.todas_areas_atuacao #}
+                    <li><a href="{{ url_for('main.todas_areas_atuacao') }}" class="footer-link">Áreas de Atuação</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <h6 class="footer-heading text-uppercase fw-bold fs-7 mb-3 text-white">Contato</h6>
+                <ul class="list-unstyled d-flex flex-column gap-2">
+                    <li class="contact-item d-flex gap-2 text-white-50 small">
+                        <i class="bi bi-geo-alt icon-accent"></i> 
+                        <span>Av. Santos Dumont, 1234, Fortaleza-CE</span>
+                    </li>
+                    <li class="contact-item d-flex gap-2 text-white-50 small">
+                        <i class="bi bi-envelope icon-accent"></i> 
+                        <a href="mailto:contato@bm.adv.br" class="footer-link-text">contato@bm.adv.br</a>
+                    </li>
+                    <li class="contact-item d-flex gap-2 text-white-50 small">
+                        <i class="bi bi-whatsapp icon-accent"></i> 
+                        <a href="https://wa.me/558599999999" target="_blank" class="footer-link-text">+55 (85) 9.9999-9999</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col-lg-3 col-md-6 text-center text-lg-end">
+                <div class="qr-code-wrapper" title="Clique ou passe o mouse para ampliar">
+                    {# Fallback seguro para imagem #}
+                    <img src="{{ url_for('static', filename='images/qr-code (SEM O LOGO NO CENTRO).svg') }}" 
+                         alt="Escaneie para contato" 
+                         class="qr-img" 
+                         loading="lazy">
+                </div>
+                <span class="d-block text-white-50 extra-small mt-2">Salve nosso contato</span>
+            </div>
+
+        </div>
+
+        <hr class="border-secondary opacity-25 mt-4">
+        
+        <div class="d-flex justify-content-between flex-wrap align-items-center small">
+            <p class="text-white-50 mb-0">
+                &copy; {{ now.year if now else 2025 }} Belarmino Monteiro Sociedade de Advogados.
+            </p>
+            <p class="text-white-50 mb-0 extra-small">
+                Excelência & Tradição.
+            </p>
+        </div>
+    </div>
+</footer>
+
+<style>
+    /* --- VARIÁVEIS LOCAIS (Footer Scope) --- */
+    .footer-premium {
+        --ft-accent: #b92027; /* Vermelho da Marca */
+        --ft-text-hover: #ffffff;
+        --ft-bg-social: rgba(255,255,255,0.05);
+        --ft-transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    /* Tipografia & Branding */
+    .brand-title {
+        color: #fff;
+        font-family: 'Playfair Display', serif; /* Fonte Serifada para elegância */
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        margin-bottom: 1rem;
+    }
+    .brand-desc { max-width: 300px; line-height: 1.6; opacity: 0.7; }
+    .extra-small { font-size: 0.75rem; letter-spacing: 0.5px; }
+    .footer-heading { letter-spacing: 1px; opacity: 0.9; }
+
+    /* --- LINKS ANIMADOS (Micro-interação) --- */
+    .footer-link {
+        color: rgba(255, 255, 255, 0.5);
+        text-decoration: none;
+        font-size: 0.9rem;
+        display: inline-block;
+        transition: var(--ft-transition);
+        position: relative;
+    }
+
+    .footer-link:hover {
+        color: var(--ft-accent);
+        transform: translateX(5px); /* Desliza para direita */
+        text-shadow: 0 0 15px rgba(185, 32, 39, 0.4);
+    }
+
+    /* Link de texto simples (email/tel) */
+    .footer-link-text {
+        color: inherit; text-decoration: none; transition: var(--ft-transition);
+    }
+    .footer-link-text:hover { color: var(--ft-text-hover); text-decoration: underline; }
+
+    /* Ícones de Contato */
+    .icon-accent { color: var(--ft-accent); flex-shrink: 0; margin-top: 2px; }
+
+    /* --- SOCIAL ICONS POP (Micro-interação) --- */
+    .social-btn {
+        width: 40px; height: 40px;
+        border-radius: 50%;
+        background: var(--ft-bg-social);
+        display: flex; align-items: center; justify-content: center;
+        color: rgba(255,255,255,0.6);
+        text-decoration: none;
+        font-size: 1.1rem;
+        transition: var(--ft-transition);
+        border: 1px solid transparent;
+    }
+
+    .social-btn:hover {
+        background: var(--ft-accent);
+        color: #fff;
+        transform: translateY(-4px) scale(1.1); /* Sobe e cresce */
+        box-shadow: 0 5px 15px rgba(185, 32, 39, 0.4);
+        border-color: rgba(255,255,255,0.2);
+    }
+
+    /* --- QR CODE EXPANDIDO (Smart Zoom) --- */
+    .qr-code-wrapper {
+        display: inline-block;
+        background: #fff;
+        padding: 8px; /* Padding reduzido para a imagem ser maior */
+        border-radius: 8px;
+        transition: var(--ft-transition);
+        /* Tamanho base maior (era 100px) */
+        width: 120px; 
+        height: 120px;
+        position: relative;
+        z-index: 1;
+        cursor: pointer;
+    }
+
+    .qr-img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+    }
+
+    /* Efeito Zoom: Cresce muito no hover sem empurrar o layout (transform puro) */
+    .qr-code-wrapper:hover {
+        transform: scale(1.8) translateY(-15px) translateX(-20px); 
+        z-index: 100; /* Garante que fique sobre tudo */
+        box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        border: 2px solid var(--ft-accent);
+    }
+
+    /* Mobile Responsive Adjustments */
+    @media (max-width: 991px) {
+        .col-lg-3.text-lg-end { text-align: left !important; margin-top: 30px; }
+        .qr-code-wrapper { margin-bottom: 10px; }
+        .qr-code-wrapper:hover { 
+            transform: scale(1.3); /* Zoom menor no mobile para não sair da tela */
+            transform-origin: left center;
+        } 
+    }
+</style>

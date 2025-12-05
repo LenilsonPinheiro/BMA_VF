@@ -1,317 +1,122 @@
-{#-*- coding: utf-8 -*-#}
-{#
-    ARQUIVO: website/templates/home/home_option1.html
-    STATUS: CORRIGIDO E INTEGRAL (Versão Final God-Tier)
-    DESCRIÇÃO: Conteúdo da Home Page com lógica dinâmica preservada e rota corrigida.
-#}
 {% extends "base_option1.html" %}
-
-{% block title %}Belarmino Monteiro - Tradição e Excelência Jurídica{% endblock %}
-{% block metadescription %}Advocacia de alto padrão com foco em resultados sólidos e atendimento personalizado.{% endblock %}
 
 {% block content %}
 
 <style>
-    /* --- VARIÁVEIS LOCAIS (Herdam do Tema 1) --- */
+    /* [ESTILOS ESPECÍFICOS DA HOME] */
     .luxury-wrapper {
-        --lux-gold: var(--prm-accent-red, #b92027);
-        --lux-dark: #111;
-        --lux-light: #fdfdfd;
-        --lux-gray: #f4f4f4;
-        --lux-text: #333;
-        --lux-font-serif: 'Playfair Display', serif;
-        --lux-font-sans: 'Open Sans', sans-serif;
-    }
-
-    /* Dark Mode Engine */
-    body.dark-mode .luxury-wrapper,
-    [data-theme="dark"] .luxury-wrapper {
-        --lux-light: #0f1215;
-        --lux-gray: #1a1d21;
-        --lux-text: #f1f1f1;
-        --lux-dark: #000;
-    }
-
-    /* --- 1. HERO CINEMATIC --- */
-    .hero-luxury {
-        position: relative;
-        height: 100vh;
-        min-height: 600px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-        color: #fff;
-        text-align: center;
-        /* Ajuste para compensar o menu fixo do base_option1 */
-        margin-top: -80px; 
-        padding-top: 80px;
+        --lux-gold: #b92027;
+        font-family: 'Roboto', sans-serif;
     }
     
-    .hero-video-bg {
-        position: absolute; inset: 0;
-        width: 100%; height: 100%;
-        object-fit: cover;
-        z-index: 0;
-        filter: brightness(0.4);
+    /* HERO */
+    .hero-section {
+        position: relative; height: 90vh; min-height: 600px;
+        background: #000; display: flex; align-items: center; justify-content: center;
+        margin-top: -80px; padding-top: 80px; overflow: hidden;
     }
-
+    .hero-video {
+        position: absolute; inset: 0; width: 100%; height: 100%;
+        object-fit: cover; opacity: 0.4; z-index: 0;
+    }
     .hero-content {
-        position: relative; z-index: 2;
-        max-width: 900px; padding: 0 20px;
+        position: relative; z-index: 2; text-align: center; color: white; padding: 20px;
     }
 
-    .hero-pre-title {
-        font-family: var(--lux-font-sans);
-        text-transform: uppercase; letter-spacing: 4px;
-        font-size: 0.9rem; margin-bottom: 20px;
-        opacity: 0.8; display: block;
-        color: #fff;
-    }
-
-    .hero-title {
-        font-family: var(--lux-font-serif);
-        font-size: clamp(3rem, 7vw, 5.5rem);
-        font-weight: 700; margin-bottom: 20px;
-        line-height: 1.1;
-        color: #fff;
-    }
-
-    .hero-subtitle {
-        font-family: var(--lux-font-sans);
-        font-size: clamp(1rem, 2vw, 1.25rem);
-        font-weight: 300; opacity: 0.9;
-        max-width: 600px; margin: 0 auto 40px;
-        line-height: 1.6;
-        color: #fff;
-    }
-
-    .btn-luxury {
-        background: transparent; color: #fff;
-        border: 1px solid rgba(255,255,255,0.3);
-        padding: 18px 45px;
-        font-family: var(--lux-font-sans);
-        text-transform: uppercase; letter-spacing: 2px;
-        font-size: 0.8rem; transition: 0.4s ease;
-        position: relative; overflow: hidden;
-        text-decoration: none; display: inline-block;
-    }
-    .btn-luxury:hover {
-        background: #fff; color: #000;
-        padding-left: 60px; padding-right: 60px;
-    }
-
-    /* Scroll Indicator */
-    .scroll-down {
-        position: absolute; bottom: 40px; left: 50%;
-        transform: translateX(-50%);
-        animation: bounce 2s infinite; opacity: 0.7;
-        font-size: 2rem;
-    }
-    @keyframes bounce {
-        0%, 20%, 50%, 80%, 100% {transform: translateX(-50%) translateY(0);}
-        40% {transform: translateX(-50%) translateY(-10px);}
-        60% {transform: translateX(-50%) translateY(-5px);}
-    }
-
-    /* --- 2. INTRODUÇÃO --- */
-    .intro-luxury {
-        padding: 120px 0;
-        background-color: var(--lux-light);
-    }
-    .intro-text-large {
-        font-family: var(--lux-font-serif);
-        font-size: clamp(1.8rem, 3vw, 2.5rem);
-        line-height: 1.5; color: var(--lux-text);
-        text-align: center; max-width: 900px; margin: 0 auto;
-    }
-    .intro-highlight { color: var(--lux-gold); font-style: italic; }
-
-    /* --- 3. SERVIÇOS --- */
-    .services-luxury {
-        padding: 100px 0;
-        background-color: var(--lux-gray);
-    }
-    .section-header-lux { margin-bottom: 60px; text-align: center; }
-    .section-label {
-        font-family: var(--lux-font-sans);
-        text-transform: uppercase; letter-spacing: 2px;
-        font-size: 0.75rem; color: var(--lux-gold);
-        margin-bottom: 10px; display: block;
-    }
-    .section-title {
-        font-family: var(--lux-font-serif);
-        font-size: 2.5rem; color: var(--lux-text);
-    }
+    /* CARDS */
     .card-lux {
-        background: var(--lux-light);
-        padding: 40px; height: 100%;
-        transition: all 0.4s ease;
-        border: 1px solid transparent;
-        position: relative;
+        background: #fff; padding: 40px; height: 100%;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        transition: transform 0.3s; border: 1px solid #eee;
     }
-    .card-lux:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 20px 50px rgba(0,0,0,0.05);
-        border-color: rgba(0,0,0,0.05);
-    }
-    .card-icon {
-        font-size: 2rem; color: var(--lux-gold);
-        margin-bottom: 25px; display: block;
-    }
-    .card-title {
-        font-family: var(--lux-font-serif);
-        font-size: 1.5rem; margin-bottom: 15px; color: var(--lux-text);
-    }
-    .card-desc {
-        font-family: var(--lux-font-sans);
-        font-size: 0.95rem; color: var(--lux-text);
-        opacity: 0.7; line-height: 1.6; margin-bottom: 25px;
-    }
-    .card-link {
-        font-size: 0.8rem; text-transform: uppercase;
-        letter-spacing: 1px; color: var(--lux-text);
-        text-decoration: none; border-bottom: 1px solid var(--lux-gold);
-        padding-bottom: 2px; transition: 0.2s;
-    }
-    .card-link:hover { opacity: 0.6; }
-
-    /* --- 4. SOBRE --- */
-    .about-luxury { padding: 0; overflow: hidden; }
-    .about-img-col {
-        min-height: 600px;
-        background-size: cover; background-position: center top;
-        position: relative;
-    }
-    .about-text-col {
-        background-color: var(--lux-dark);
-        color: #fff; padding: 80px;
-        display: flex; align-items: center;
-    }
-    .about-quote {
-        font-family: var(--lux-font-serif);
-        font-size: 1.8rem; margin-bottom: 30px;
-        border-left: 3px solid var(--lux-gold);
-        padding-left: 30px; line-height: 1.5;
-    }
-
-    @media (max-width: 991px) {
-        .about-text-col { padding: 50px 25px; }
-        .about-img-col { min-height: 300px; }
+    .card-lux:hover { transform: translateY(-10px); border-color: var(--lux-gold); }
+    
+    /* CTA */
+    .cta-wrapper {
+        background: linear-gradient(135deg, #0f172a, #1e293b);
+        border-radius: 16px; padding: 4rem; color: white;
     }
 </style>
 
 <div class="luxury-wrapper">
 
-    <section class="hero-luxury">
-        <video autoplay muted loop playsinline class="hero-video-bg" poster="{{ url_for('static', filename='images/banners/inner_bg_default.jpg') }}">
+    <section class="hero-section">
+        <video autoplay muted loop playsinline class="hero-video" poster="{{ url_for('static', filename='images/banners/inner_bg_default.jpg') }}">
             <source src="{{ url_for('static', filename='videos/maior-1.mp4') }}" type="video/mp4">
-            <source src="{{ url_for('static', filename='videos/maior-1.webm') }}" type="video/webm">
         </video>
-
-        <div class="hero-content">
-            <span class="hero-pre-title" data-aos="fade-down" data-aos-delay="200">Belarmino Monteiro</span>
-            <h1 class="hero-title" data-aos="fade-up" data-aos-delay="400">
-                A Arte de Advogar.
-            </h1>
-            <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="600">
-                Compromisso com a ética, excelência técnica e resultados que constroem legados.
-            </p>
-            <a href="#intro" class="btn-luxury" data-aos="fade-up" data-aos-delay="800">
-                Conheça Nossa Visão
-            </a>
+        <div class="hero-content" data-aos="fade-up">
+            <h1 class="display-3 fw-bold mb-4" style="font-family: 'Playfair Display', serif;">A Arte de Advogar</h1>
+            <p class="lead mb-5 opacity-90">Compromisso com a ética, excelência técnica e resultados.</p>
+            <a href="#services" class="btn btn-outline-light rounded-0 px-5 py-3 fw-bold text-uppercase">Conheça Nossa Visão</a>
         </div>
-
-        <a href="#intro" class="scroll-down text-white">
-            <i class="bi bi-arrow-down"></i>
-        </a>
     </section>
 
-    <section id="intro" class="intro-luxury">
+    <section class="py-5 my-5 text-center">
         <div class="container" data-aos="fade-up">
-            <p class="intro-text-large">
-                Acreditamos que cada caso é uma história única que merece ser ouvida e defendida com <span class="intro-highlight">rigor absoluto</span>. Nossa advocacia combina a tradição dos grandes juristas com a agilidade do mundo moderno.
-            </p>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <p class="display-6" style="font-family: 'Playfair Display', serif; color: #333;">
+                        "A justiça não é apenas um conceito abstrato, é o resultado de <span style="color: #b92027;">trabalho árduo</span>."
+                    </p>
+                </div>
+            </div>
         </div>
     </section>
 
-    <section class="services-luxury">
+    <section id="services" class="py-5 bg-light">
         <div class="container">
-            <div class="section-header-lux" data-aos="fade-up">
-                <span class="section-label">Áreas de Prática</span>
-                <h2 class="section-title">Expertise Jurídica</h2>
-            </div>
-
+            <h2 class="text-center mb-5 font-serif display-5">Expertise Jurídica</h2>
             <div class="row g-4">
                 {% for area in lista_areas_atuacao[:3] %}
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
                     <div class="card-lux">
-                        <i class="{{ area.icone if area.icone else 'bi bi-shield-check' }} card-icon"></i>
-                        <h3 class="card-title">{{ area.titulo }}</h3>
-                        <p class="card-desc">{{ area.descricao[:120] }}...</p>
-                        <a href="{{ url_for('main.pagina_dinamica', slug=area.slug) }}" class="card-link">Saiba Mais</a>
+                        <i class="{{ area.icone if area.icone else 'bi bi-shield-check' }} fs-1 d-block mb-4" style="color: #b92027;"></i>
+                        <h3 class="h4 fw-bold mb-3">{{ area.titulo }}</h3>
+                        <p class="text-muted mb-4 small">{{ area.descricao[:100] }}...</p>
+                        <a href="{{ url_for('main.pagina_dinamica', slug=area.slug) }}" class="text-danger fw-bold text-decoration-none small">SAIBA MAIS</a>
                     </div>
                 </div>
                 {% endfor %}
-                
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
-                    <div class="card-lux d-flex flex-column align-items-center justify-content-center text-center">
-                        <h3 class="card-title mb-3">Atuação Completa</h3>
-                        <p class="card-desc mb-4">Explore todas as nossas áreas de especialização.</p>
-                        <a href="{{ url_for('main.todas_areas_atuacao') }}" class="btn btn-outline-dark rounded-0 px-4">Ver Portfolio</a>
-                    </div>
-                </div>
+            </div>
+            <div class="text-center mt-5">
+                <a href="{{ url_for('main.todas_areas_atuacao') }}" class="btn btn-dark rounded-0 px-5 py-3 small fw-bold text-uppercase">Ver todas as áreas</a>
             </div>
         </div>
     </section>
 
-    <section class="about-luxury">
+    <section class="py-0">
         <div class="row g-0">
-            <div class="col-lg-6 about-img-col" 
-                 style="background-image: url('{{ url_for('static', filename='images/Belarmino.png') }}');">
-            </div>
-            <div class="col-lg-6 about-text-col">
-                <div data-aos="fade-left">
-                    <span class="section-label text-white-50">Sobre o Escritório</span>
-                    <h2 class="section-title text-white mb-4">Liderança & Estratégia</h2>
-                    <blockquote class="about-quote">
-                        "A justiça não é apenas um conceito abstrato, é o resultado de trabalho árduo, conhecimento profundo e estratégia impecável."
-                    </blockquote>
-                    <p class="opacity-75 mb-4">
-                        Fundado pelo Dr. Belarmino Monteiro, nosso escritório se consolidou como uma referência em advocacia estratégica, atendendo empresas e indivíduos que buscam segurança jurídica e resultados expressivos.
-                    </p>
-                    <a href="{{ url_for('main.pagina_dinamica', slug='sobre-nos') }}" class="text-white text-decoration-underline small text-uppercase ls-1">
-                        Ler História Completa
-                    </a>
+            <div class="col-lg-6" style="background: url('/static/images/Belarmino.png') top center/cover; min-height: 600px;"></div>
+            <div class="col-lg-6 bg-dark text-white p-5 d-flex align-items-center">
+                <div class="p-lg-4" data-aos="fade-left">
+                    <h6 class="text-danger text-uppercase mb-3 ls-2">Sobre o Escritório</h6>
+                    <h2 class="display-4 mb-4" style="font-family: 'Playfair Display', serif;">Liderança & Estratégia</h2>
+                    <p class="opacity-75 mb-4">Fundado pelo Dr. Belarmino Monteiro, nosso escritório é referência.</p>
+                    <a href="{{ url_for('main.pagina_dinamica', slug='sobre-nos') }}" class="text-white text-decoration-underline small text-uppercase">Ler Mais</a>
                 </div>
             </div>
         </div>
     </section>
 
-    {% include 'home/_team_section.html' ignore missing %}
-    {% include 'home/_map_section.html' ignore missing %}
+    <div class="py-5 bg-white">{% include 'home/_team_section.html' ignore missing %}</div>
+    <div class="py-5 bg-light">{% include 'home/_map_section.html' ignore missing %}</div>
 
-    <section class="cta-universal-wrapper py-5 my-3">
+    <section class="py-5 my-5">
         <div class="container">
-            <div class="cta-card" data-aos="fade-up">
-                <div class="cta-decor-circle circle-1"></div>
-                <div class="cta-decor-circle circle-2"></div>
-                <div class="row align-items-center position-relative z-2">
-                    <div class="col-lg-7 text-center text-lg-start mb-4 mb-lg-0">
-                        <h2 class="cta-title display-6">Precisa de Orientação Jurídica?</h2>
-                        <p class="cta-subtitle">Não deixe suas dúvidas para depois. Nossa equipe está pronta para analisar o seu caso com total sigilo.</p>
+            <div class="cta-wrapper shadow-lg" data-aos="fade-up">
+                <div class="row align-items-center">
+                    <div class="col-lg-7">
+                        <h2 class="fw-bold display-6 mb-2">Precisa de Orientação?</h2>
+                        <p class="lead opacity-75 mb-0">Fale com nossa equipe agora mesmo.</p>
                     </div>
-                    <div class="col-lg-5 text-center text-lg-end">
-                        <div class="d-flex flex-column flex-md-row gap-3 justify-content-center justify-content-lg-end">
-                            <a href="https://wa.me/558597698475" target="_blank" class="btn-cta-primary">
-                                <i class="bi bi-whatsapp"></i> WhatsApp
+                    <div class="col-lg-5 text-lg-end mt-4 mt-lg-0">
+                        <div class="d-flex flex-column gap-2 align-items-end">
+                            <a href="https://wa.me/558597698475" target="_blank" class="btn btn-success rounded-pill px-4 py-2 w-100 fw-bold">
+                                <i class="bi bi-whatsapp me-2"></i> WhatsApp
                             </a>
-                            <a href="{{ url_for('main.pagina_contato') }}" class="btn-cta-outline">
+                            <a href="{{ url_for('main.pagina_contato') }}" class="btn btn-outline-light rounded-pill px-4 py-2 w-100">
                                 Agendar Consulta
                             </a>
-                        </div>
-                        <div class="mt-3 text-white-50 small">
-                            <i class="bi bi-clock me-1"></i> Resposta rápida em horário comercial
                         </div>
                     </div>
                 </div>

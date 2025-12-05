@@ -1,10 +1,14 @@
 <section class="hero-universal-wrapper {{ theme }}" data-aos="fade">
     
-    {% if theme == 'option1' or theme == 'default' or not theme %}
+    {# LÓGICA UNIFICADA: Agrupa Option 1, Default e Options 5-8 (Cinemáticos) para evitar código duplicado #}
+    {% if theme == 'option1' or theme == 'default' or not theme or theme == 'option5' or theme == 'option6' or theme == 'option7' or theme == 'option8' %}
         
-        <div class="hero-video-container">
-            {# CORREÇÃO: Poster apontando para imagem existente e segura #}
-            <video autoplay muted loop playsinline class="hero-video" poster="{{ url_for('static', filename='images/banners/inner_bg_default.jpg') }}">
+        {# CORREÇÃO: style="background-color: #000" evita o flash branco enquanto o vídeo carrega #}
+        <div class="hero-video-container" style="background-color: #000;">
+            {# CORREÇÃO: Opacity 0 + Animation garante entrada suave do vídeo #}
+            <video autoplay muted loop playsinline class="hero-video" 
+                   poster="{{ url_for('static', filename='images/banners/inner_bg_default.jpg') }}"
+                   style="opacity: 0; animation: fadeInVideo 1.5s ease forwards 0.2s;">
                 <source src="{{ url_for('static', filename='videos/maior-1.webm') }}" type="video/webm">
                 <source src="{{ url_for('static', filename='videos/maior-1.mp4') }}" type="video/mp4">
             </video>
@@ -38,6 +42,7 @@
 
 
     {% elif theme == 'option3' %}
+        {# THEME BOUTIQUE #}
         
         <div class="boutique-circle"></div>
         <div class="boutique-texture"></div>
@@ -74,6 +79,7 @@
 
 
     {% elif theme == 'option4' %}
+        {# THEME TECH #}
         
         <div class="hero-grid-bg"></div>
         <div class="hero-glow-spot"></div>
@@ -121,48 +127,18 @@
             </div>
         </div>
 
-    {% elif theme == 'option5' or theme == 'option6' or theme == 'option7' or theme == 'option8' %}
-        {# TEMAS V2 (Options 5-8) - Usa o mesmo estilo do Option 1 (Cinematic) como base #}
-        
-        <div class="hero-video-container">
-            {# CORREÇÃO: Poster apontando para imagem existente e segura #}
-            <video autoplay muted loop playsinline class="hero-video" poster="{{ url_for('static', filename='images/banners/inner_bg_default.jpg') }}">
-                <source src="{{ url_for('static', filename='videos/maior-1.webm') }}" type="video/webm">
-                <source src="{{ url_for('static', filename='videos/maior-1.mp4') }}" type="video/mp4">
-            </video>
-            <div class="hero-overlay-cinema"></div>
-        </div>
-
-        <div class="container position-relative z-2 text-center">
-            <div class="row justify-content-center">
-                <div class="col-lg-10">
-                    <span class="hero-pre-tag" data-aos="fade-down">Sociedade de Advogados</span>
-                    
-                    <h1 class="hero-title-cinema" data-aos="zoom-in" data-aos-delay="200">
-                        {{ hero_section.title | default('Excelência e Tradição') }}
-                    </h1>
-                    
-                    <p class="hero-subtitle-cinema" data-aos="fade-up" data-aos-delay="400">
-                        {{ hero_section.subtitle | default('Compromisso absoluto com a ética e resultados que constroem legados.') }}
-                    </p>
-                    
-                    <div class="d-flex justify-content-center gap-3 mt-5" data-aos="fade-up" data-aos-delay="600">
-                        <a href="{{ url_for('main.pagina_dinamica', slug='sobre-nos') }}" class="btn-hero-cinema">Conheça o Escritório</a>
-                        <a href="{{ url_for('main.pagina_contato') }}" class="btn-hero-cinema-outline">Agendar Reunião</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <a href="#services" class="scroll-indicator">
-            <span class="mouse-wheel"></span>
-        </a>
-
     {% endif %}
+    {# Option 2 (Titan) não possui hero section neste arquivo no original, segue ausente #}
 
 </section>
 
 <style>
+    /* ANIMAÇÃO PARA O VÍDEO (Evita corte seco) */
+    @keyframes fadeInVideo {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
     /* --- ESTRUTURA GERAL --- */
     .hero-universal-wrapper {
         position: relative;
@@ -190,6 +166,7 @@
 
     .hero-video-container {
         position: absolute; inset: 0; z-index: 0;
+        background-color: #000; /* Fallback de segurança */
     }
     .hero-video {
         width: 100%; height: 100%; object-fit: cover;
@@ -198,6 +175,7 @@
         position: absolute; inset: 0;
         background: rgba(0,0,0,0.5); /* Escurece vídeo */
         background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7));
+        z-index: 1;
     }
 
     .hero-pre-tag {

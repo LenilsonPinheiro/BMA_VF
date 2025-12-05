@@ -1,380 +1,512 @@
-{% extends "base.html" %}
-{% set disable_scroll_snap = True %}
+{% extends "base_option1.html" %}
 
-{% block title %}Sobre Nós - Excelência Jurídica{% endblock %}
-{% block metadescription %}Conheça a trajetória, a missão e a equipe de elite do escritório Belarmino Monteiro.{% endblock %}
+{# Título e Meta #}
+{% block title %}Sobre Nós - Liderança e Excelência | Belarmino Monteiro{% endblock %}
+{% block metadescription %}Conheça os sócios fundadores Belarmino Monteiro e Taise Peixoto.{% endblock %}
 
-{% block preload_links %}
-    {{ super() }}
-    <link rel="preload" href="{{ configs.get('video_institucional', url_for('static', filename='videos/institucional.webm')) }}" as="video" type="video/webm">
+{% block head %}
     <link rel="preload" href="{{ url_for('static', filename='images/banners/inner_bg_default.jpg') }}" as="image">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
 {% endblock %}
 
 {% block content %}
 
 <style>
-    :root {
-        --hero-height: 60vh;
-        --hero-min-height: 550px;
-        --nav-offset: 100px;
+    /* --- ENGINE DE SCROLL --- */
+    /* Nota: Removemos o scroll hijacking global para garantir que o footer apareça naturalmente */
+    
+    /* --- ESTILOS GERAIS --- */
+    .about-wrapper {
+        --lux-gold: #b92027;
+        --lux-text: #333;
+        --lux-serif: 'Playfair Display', serif;
+        --lux-sans: 'Roboto', sans-serif;
+        font-family: var(--lux-sans);
     }
 
+    /* 1. HERO */
     .about-hero {
-        position: relative;
-        height: var(--hero-height);
-        min-height: var(--hero-min-height);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-attachment: fixed;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: cover;
-        margin-bottom: 0;
-        padding-top: var(--nav-offset);
+        position: relative; height: 75vh; min-height: 600px;
+        display: flex; align-items: center; justify-content: center;
+        overflow: hidden; margin-top: -80px; padding-top: 80px;
+        background: #000; color: white; text-align: center;
     }
-
-    @media (pointer: coarse) {
-        .about-hero { background-attachment: scroll; }
-    }
-
-    .about-overlay {
+    .hero-bg-anim {
         position: absolute; inset: 0;
-        background: linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.8));
-        z-index: 1;
+        background-image: url('{{ url_for("static", filename="images/banners/inner_bg_default.jpg") }}');
+        background-size: cover; background-position: center; z-index: 0;
+        animation: kenBurns 25s infinite alternate ease-in-out; opacity: 0.6;
     }
-    
-    .about-overlay::after {
-        content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 100px;
-        background: linear-gradient(to top, var(--prm-bg-surface, #fff), transparent);
-        z-index: 2;
+    @keyframes kenBurns { from { transform: scale(1); } to { transform: scale(1.15); } }
+    .hero-overlay {
+        position: absolute; inset: 0; background: radial-gradient(circle at center, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.95) 100%); z-index: 1;
     }
-
-    body.dark-mode .about-overlay::after,
-    [data-theme="dark"] .about-overlay::after {
-        background: linear-gradient(to top, #111, transparent) !important;
+    .hero-content { position: relative; z-index: 2; max-width: 1000px; padding: 0 20px; }
+    .hero-badge {
+        display: inline-block; padding: 10px 24px;
+        border: 1px solid rgba(255,255,255,0.3); color: #fff; border-radius: 50px;
+        font-size: 0.85rem; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 25px;
+        background: rgba(255,255,255,0.1); backdrop-filter: blur(5px);
     }
-
-    .about-hero-content {
-        position: relative; z-index: 3;
-        text-align: center; color: white;
-        max-width: 900px; padding: 0 20px;
-    }
-    
     .hero-title {
-        font-family: var(--font-primary, serif);
-        font-size: clamp(2.5rem, 5vw, 4rem);
-        font-weight: 800;
-        letter-spacing: -1px;
-        margin-bottom: 1.5rem;
+        font-family: var(--lux-serif); font-size: clamp(3.5rem, 8vw, 6rem);
+        font-weight: 700; margin-bottom: 1.5rem; line-height: 1.1;
         text-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        opacity: 0; animation: fadeUp 1s ease forwards 0.3s;
     }
+    .hero-desc {
+        font-size: 1.2rem; font-weight: 300; color: rgba(255,255,255,0.9);
+        max-width: 700px; margin: 0 auto 40px; line-height: 1.6;
+    }
+
+    /* 2. MISSÃO */
+    .section-block { padding: 100px 0; position: relative; background: #fff; }
+    .section-label {
+        font-size: 0.85rem; text-transform: uppercase; letter-spacing: 3px;
+        color: var(--lux-gold); font-weight: 700; margin-bottom: 1rem; display: block;
+    }
+    .section-heading {
+        font-family: var(--lux-serif); font-size: 2.8rem; margin-bottom: 1.5rem; color: var(--lux-text);
+    }
+    .lead-relaxed { font-size: 1.15rem; line-height: 1.6; color: #555; }
     
-    .hero-subtitle {
-        font-size: clamp(1rem, 2vw, 1.3rem);
-        font-weight: 300; opacity: 0;
-        animation: fadeUp 1s ease forwards 0.6s;
-        text-shadow: 0 2px 5px rgba(0,0,0,0.5);
-    }
-
-    @keyframes fadeUp {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    .section-adaptive {
-        background-color: #fff;
-        color: #333;
-        padding: 100px 0;
-        position: relative;
-        transition: background 0.3s ease, color 0.3s ease;
-    }
-    
-    .section-adaptive-alt {
-        background-color: #f8f9fa;
-        color: #333;
-        padding: 100px 0;
-    }
-
-    body.dark-mode .section-adaptive, [data-theme="dark"] .section-adaptive {
-        background-color: #111 !important; color: #eee !important;
-    }
-    body.dark-mode .section-adaptive-alt, [data-theme="dark"] .section-adaptive-alt {
-        background-color: #0a0a0a !important; color: #ddd !important;
-        background-image: none !important;
-    }
-
     .video-vertical-wrapper {
-        position: relative; width: 100%; max-width: 360px;
-        margin: 0 auto; border-radius: 24px; overflow: hidden;
+        position: relative; width: 100%; max-width: 320px;
+        border-radius: 20px; overflow: hidden;
         box-shadow: 0 25px 60px -10px rgba(0,0,0,0.3);
         aspect-ratio: 9 / 16; border: 4px solid #fff;
-        transform: rotate(-2deg);
-        transition: transform 0.4s ease;
+        transform: scale(1); transition: transform 0.4s ease;
+        background: #000; cursor: pointer;
+    }
+    .video-backdrop {
+        position: absolute; top: 20px; left: 20px; width: 100%; height: 100%;
+        border: 2px solid var(--lux-gold); border-radius: 20px;
+        z-index: 0; opacity: 0.3;
+    }
+    .video-vertical-wrapper:hover { transform: scale(1.03); z-index: 10; }
+    .video-element { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .video-controls-overlay {
+        position: absolute; bottom: 20px; left: 0; right: 0;
+        text-align: center; color: white; pointer-events: none;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.8); transition: opacity 0.3s;
+        font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;
+    }
+
+    /* 3. LEADERSHIP (SÓCIOS) - AJUSTE DE COR DE FUNDO */
+    .leadership-section { background: #f8f9fa; }
+    
+    .partner-img-wrapper {
+        position: relative; border-radius: 12px; overflow: hidden;
+        box-shadow: 0 20px 40px -10px rgba(0,0,0,0.2);
+        max-height: 65vh; width: auto; display: inline-block;
+        
+        /* FUNDO GRADIENTE SUAVE (BRANCO -> CINZA ESCURO) */
+        background: #fff; /* Cor inicial */
+        transition: background 0.8s ease; /* Transição suave */
+    }
+    
+    .partner-img-wrapper:hover {
+        /* Gradiente sutil ao passar o mouse */
+        background: linear-gradient(180deg, #ffffff 0%, #444444 100%);
+    }
+
+    .partner-img { 
+        width: 100%; height: 100%; object-fit: cover; display: block; 
+        transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.8s ease;
+    }
+    
+    .partner-img-wrapper:hover .partner-img { 
+        transform: scale(1.03); 
+        opacity: 0.95; /* Leve transparência para fundir com o fundo */
+    }
+
+    .partner-overlay-name {
+        position: absolute; bottom: 0; left: 0; width: 100%;
+        padding: 30px 25px;
+        background: linear-gradient(to top, rgba(0,0,0,0.95), transparent);
+        color: #fff; text-align: left;
+    }
+    .partner-name-overlay { font-family: var(--lux-serif); font-size: 1.8rem; margin: 0; line-height: 1.1; }
+    .partner-role-overlay { color: var(--lux-gold); text-transform: uppercase; letter-spacing: 2px; font-size: 0.7rem; font-weight: 700; display: block; margin-bottom: 5px;}
+    .stat-box {
+        padding: 12px 15px; border-left: 4px solid var(--lux-gold);
+        background: linear-gradient(90deg, rgba(185, 32, 39, 0.03) 0%, transparent 100%);
+    }
+    .counter-number { font-size: 2.2rem; font-weight: 800; color: var(--lux-text); font-family: var(--lux-serif); line-height: 1; }
+    .counter-label { text-transform: uppercase; letter-spacing: 1px; font-size: 0.7rem; color: #666; font-weight: 700; margin-top: 5px; }
+
+    /* 4. ÁREAS PARALLAX (COM ÍCONES PREMIUM) */
+    .areas-parallax {
+        position: relative; padding: 120px 0;
+        /* Fundo diferente do CTA: Deep Ocean com Textura */
+        background: linear-gradient(to bottom, #0f172a, #1e293b);
+        color: #fff;
+        overflow: hidden;
+    }
+    .areas-parallax::before {
+        content: ''; position: absolute; inset: 0;
+        background-image: url('data:image/svg+xml,%3Csvg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M1 1h2v2H1V1zm4 4h2v2H5V5zm-4 4h2v2H1V9zm4 4h2v2H5v-2z" fill="%23ffffff" fill-opacity="0.05" fill-rule="evenodd"/%3E%3C/svg%3E');
+        opacity: 0.3; z-index: 0;
+    }
+    .areas-container { position: relative; z-index: 2; }
+    
+    .area-swiper-card {
+        background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+        padding: 40px 20px; border-radius: 16px; text-align: center; transition: 0.3s;
+        height: 100%; min-height: 300px;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        backdrop-filter: blur(5px);
+    }
+    .area-swiper-card:hover {
+        background: rgba(255,255,255,0.08); border-color: var(--lux-gold); transform: translateY(-5px);
+    }
+    
+    /* Ícone Premium (Copiado e Adaptado) */
+    .area-icon-box {
+        width: 70px; height: 70px; margin: 0 auto 20px;
+        background: rgba(255,255,255,0.05); border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 2rem; color: var(--lux-gold);
+        border: 1px solid rgba(185, 32, 39, 0.3);
+        transition: 0.4s;
+        box-shadow: 0 0 15px rgba(185, 32, 39, 0.1);
+    }
+    .area-swiper-card:hover .area-icon-box {
+        background: var(--lux-gold); color: #fff;
+        transform: scale(1.1) rotate(5deg);
+        box-shadow: 0 0 30px rgba(185, 32, 39, 0.4);
+    }
+    
+    .area-title { font-family: var(--lux-serif); font-size: 1.4rem; margin-bottom: 10px; color: #fff; }
+    .swiper-button-next, .swiper-button-prev { color: var(--lux-gold); }
+    .swiper-pagination-bullet-active { background: var(--lux-gold); }
+
+    /* 5. VALORES (Dark Grid) */
+    .values-section { background: #0a0a0a; color: #fff; padding: 120px 0; }
+    .value-premium-card {
+        background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+        padding: 40px 30px; border-radius: 16px; text-align: center; transition: 0.4s;
+    }
+    .value-premium-card:hover {
+        background: rgba(255,255,255,0.06); transform: translateY(-10px); border-color: var(--lux-gold);
+    }
+    .value-icon-box {
+        width: 80px; height: 80px; margin: 0 auto 30px;
+        background: rgba(255,255,255,0.05); border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 2.5rem; color: var(--lux-gold); border: 1px solid rgba(185, 32, 39, 0.2); transition: 0.4s;
+    }
+    .value-premium-card:hover .value-icon-box {
+        background: var(--lux-gold); color: #fff;
+        box-shadow: 0 0 30px rgba(185, 32, 39, 0.4); transform: scale(1.1) rotate(5deg);
+    }
+
+    /* 6. CTA ULTIMATE (REDESIGN TOTAL - FUNDO DINÂMICO) */
+    .cta-section-ultimate {
+        position: relative; overflow: hidden; padding: 120px 0;
         background: #000;
-    }
-    .video-vertical-wrapper:hover { transform: rotate(0deg) scale(1.02); z-index: 5; }
-    
-    body.dark-mode .video-vertical-wrapper, [data-theme="dark"] .video-vertical-wrapper {
-        border-color: #333 !important;
-        box-shadow: 0 25px 60px -10px rgba(0,0,0,0.6);
-    }
-
-    .video-vertical-wrapper video { 
-        width: 100%; 
-        height: 100%; 
-        object-fit: cover; 
-        display: block;
-    }
-
-    .history-img-wrapper { position: relative; padding: 20px; }
-    .history-img-wrapper::before {
-        content: ''; position: absolute; top: 0; left: 0; width: 60%; height: 80%;
-        border: 2px solid var(--prm-accent-red, #b92027); z-index: 0;
-        opacity: 0.3; transition: 0.3s;
-    }
-    .history-img-wrapper:hover::before { top: 10px; left: 10px; opacity: 1; }
-    
-    .history-img {
-        position: relative; z-index: 1; border-radius: 4px;
-        box-shadow: 0 15px 40px rgba(0,0,0,0.15);
-    }
-
-    .values-section {
-        background-image: url('{{ url_for("static", filename="images/banners/texture_bg.png") }}');
-        background-repeat: repeat;
+        color: #fff;
     }
     
-    .card-glass {
-        background: rgba(255, 255, 255, 0.85);
-        backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 1);
-        padding: 3.5rem 2rem; height: 100%;
-        border-radius: 16px;
-        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    /* Fundo Aurora Animado */
+    .aurora-bg {
+        position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+        background: radial-gradient(circle, rgba(185, 32, 39, 0.2) 0%, transparent 50%),
+                    radial-gradient(circle, rgba(30, 41, 59, 0.4) 0%, transparent 50%);
+        background-size: 50% 50%, 60% 60%; animation: auroraMove 15s linear infinite alternate;
+        opacity: 0.6; z-index: 0;
     }
-    
-    .card-glass:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 20px 50px rgba(0,0,0,0.12);
-        background: #fff;
+    @keyframes auroraMove {
+        0% { transform: translate(0, 0) rotate(0deg); }
+        100% { transform: translate(-10%, -10%) rotate(5deg); }
     }
 
-    body.dark-mode .card-glass, [data-theme="dark"] .card-glass {
-        background: rgba(30, 30, 30, 0.6) !important;
-        border-color: rgba(255, 255, 255, 0.1) !important;
-        color: #eee !important;
+    .cta-glass-panel {
+        position: relative; z-index: 2;
+        background: rgba(255, 255, 255, 0.02);
+        backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 30px;
+        padding: 80px 60px; text-align: center;
+        box-shadow: 0 40px 80px -20px rgba(0,0,0,0.7);
     }
-    body.dark-mode .card-glass:hover, [data-theme="dark"] .card-glass:hover {
-        background: rgba(40, 40, 40, 0.9) !important;
+    /* Borda de Luz Animada */
+    .cta-glass-panel::before {
+        content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+        background: linear-gradient(90deg, transparent, var(--lux-gold), transparent);
+        animation: borderSlide 3s infinite linear;
     }
+    @keyframes borderSlide { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
 
-    .icon-premium {
-        font-size: 3rem; margin-bottom: 1.5rem;
-        background: -webkit-linear-gradient(45deg, var(--prm-navy, #333), var(--prm-accent-red, #b92027));
-        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        display: inline-block; transition: 0.3s;
-    }
-    .card-glass:hover .icon-premium { transform: scale(1.1); }
-
-    body.dark-mode .icon-premium, [data-theme="dark"] .icon-premium {
-        background: -webkit-linear-gradient(45deg, #fff, var(--prm-accent-red, #b92027));
+    .cta-title-display {
+        font-family: var(--lux-serif); font-size: clamp(3rem, 6vw, 4.5rem);
+        font-weight: 700; margin-bottom: 20px;
+        background: linear-gradient(to right, #fff, #ccc);
         -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
-
-    .section-title {
-        font-size: clamp(2rem, 4vw, 2.8rem);
-        font-weight: 800; margin-bottom: 1.5rem;
-        color: var(--prm-navy, #111);
-        position: relative; display: inline-block;
-    }
-    .section-title::after {
-        content: ''; display: block; width: 40%; height: 4px;
-        background: var(--prm-accent-red, #b92027);
-        margin-top: 10px; border-radius: 2px;
-    }
     
-    body.dark-mode .section-title, [data-theme="dark"] .section-title {
-        color: #fff !important;
+    .cta-action-btn {
+        display: inline-flex; align-items: center; gap: 15px;
+        background: var(--lux-gold); color: #fff;
+        padding: 22px 60px; border-radius: 100px;
+        font-weight: 700; text-transform: uppercase; letter-spacing: 3px;
+        text-decoration: none; transition: all 0.3s ease;
+        border: 1px solid var(--lux-gold);
+        box-shadow: 0 0 30px rgba(185, 32, 39, 0.4);
+        font-size: 1rem; margin-top: 20px;
+    }
+    .cta-action-btn:hover {
+        background: #fff; color: var(--lux-gold);
+        transform: translateY(-5px); box-shadow: 0 10px 50px rgba(185, 32, 39, 0.6);
     }
 
-    .lead-text { font-size: 1.1rem; line-height: 1.8; opacity: 0.85; }
 </style>
 
-<div class="about-page-wrapper">
+<div class="about-wrapper">
 
-    <section class="about-hero" style="background-image: url('{{ url_for('static', filename='images/banners/inner_bg_default.jpg') }}');">
-        <div class="about-overlay"></div>
-        <div class="about-hero-content">
-            <h1 class="hero-title">{{ titulo | default('Excelência e Tradição') }}</h1>
-            <p class="hero-subtitle">
-                {{ subtitulo | default('Mais do que advogados, somos parceiros estratégicos na defesa dos seus direitos e na construção do seu futuro.') }}
+    <section class="about-hero">
+        <div class="hero-bg-anim"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <span class="hero-badge" data-aos="fade-down">Fundado em 2005</span>
+            <h1 class="hero-title" data-aos="zoom-in" data-aos-duration="1200">
+                {{ configs.get('titulo_sobre', 'Excelência & Tradição') }}
+            </h1>
+            <p class="hero-desc" data-aos="fade-up" data-aos-delay="200">
+                {{ configs.get('subtitulo_sobre', 'Construindo legados através de uma advocacia estratégica, humana e focada em resultados.') }}
             </p>
+            <div data-aos="fade-up" data-aos-delay="400">
+                <a href="#leadership" class="btn btn-outline-light rounded-pill px-5 py-3 fw-bold" onclick="document.getElementById('leadership').scrollIntoView({behavior: 'smooth'}); return false;">
+                    CONHEÇA OS SÓCIOS
+                </a>
+            </div>
         </div>
     </section>
 
-    <section class="section-adaptive overflow-hidden">
+    <section id="mission" class="section-block mission-section">
         <div class="container">
             <div class="row align-items-center gy-5">
                 <div class="col-lg-7" data-aos="fade-right">
-                    <h2 class="section-title">{{ secao1_titulo | default('Nossa Missão') }}</h2>
-                    <div class="lead-text mt-4">
-                        {{ secao1_conteudo | default('<p>Nossa missão transcende a simples representação legal. Buscamos oferecer uma advocacia de excelência, pautada pela ética inegociável e por um rigor técnico absoluto.</p><p>Compreendemos que por trás de cada processo existe uma vida, uma empresa ou um sonho. Por isso, desenvolvemos soluções jurídicas artesanais, personalizadas para a realidade de cada cliente.</p>') | safe }}
+                    <span class="section-label">Nossa Filosofia</span>
+                    <h2 class="section-heading">{{ configs.get('secao1_titulo', 'Advocacia Artesanal') }}</h2>
+                    <div class="lead-relaxed">
+                        {{ configs.get('secao1_conteudo', '<p>Não acreditamos em fórmulas prontas. Cada cliente é um universo único que demanda uma estratégia exclusiva.</p>') | safe }}
                     </div>
                 </div>
-                
-                <div class="col-lg-5" data-aos="zoom-in" data-aos-delay="200">
-                    <div class="video-vertical-wrapper">
-                        <video id="institutionalVideo" 
-                               playsinline 
-                               loop 
-                               preload="auto" 
-                               controls 
-                               controlsList="nodownload"
-                               poster="{{ url_for('static', filename='images/vold/Escritório.png') }}"
-                               style="opacity: 0; transition: opacity 0.5s ease;">
+                <div class="col-lg-5 d-flex justify-content-center position-relative col-video" data-aos="fade-left" data-aos-delay="200">
+                    <div class="video-backdrop"></div>
+                    <div class="video-vertical-wrapper" id="videoContainer">
+                        <video id="smartVideo" playsinline loop preload="auto" class="video-element" poster="{{ url_for('static', filename='images/vold/Escritório.png') }}">
                             <source src="{{ configs.get('video_institucional', url_for('static', filename='videos/institucional.webm')) }}" type="video/webm">
-                            Seu navegador não suporta vídeos HTML5.
                         </video>
-                    </div>
-                    <div class="text-center mt-3 opacity-50 small fst-italic">
-                        <i class="bi bi-volume-up me-1"></i> Vídeo institucional com áudio
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="section-adaptive-alt">
-        <div class="container">
-            <div class="row align-items-center gy-5">
-                <div class="col-lg-6 order-2 order-lg-1" data-aos="fade-up">
-                    <div class="history-img-wrapper">
-                        <img src="{{ url_for('static', filename=secao2_media_image | default('images/Belarmino.png')) }}" 
-                             class="img-fluid history-img" 
-                             alt="Dr. Belarmino Monteiro">
-                    </div>
-                </div>
-                
-                <div class="col-lg-6 order-1 order-lg-2 ps-lg-5" data-aos="fade-left">
-                    <h2 class="section-title">{{ secao2_titulo | default('Nossa História') }}</h2>
-                    <div class="lead-text mt-4">
-                        {{ secao2_conteudo | default('<p>Fundado sobre os pilares da tradição jurídica e da inovação tecnológica, o escritório Belarmino Monteiro consolidou-se como referência.</p><p>Nossa trajetória não é medida apenas em anos, mas no sucesso dos casos que defendemos e na confiança duradoura que estabelecemos com nossos parceiros.</p>') | safe }}
-                    </div>
-                    
-                    <div class="mt-5 border-start border-4 border-danger ps-4">
-                        <p class="fs-5 fst-italic mb-0 opacity-75">
-                            "A justiça é o alicerce de uma sociedade livre e próspera."
-                        </p>
-                        <small class="text-uppercase fw-bold mt-2 d-block opacity-50">Belarmino Monteiro</small>
+                        <div class="video-controls-overlay video-status-overlay">
+                            <i class="bi bi-volume-up"></i> Áudio Automático
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="section-adaptive values-section">
+    <section id="leadership" class="section-block leadership-section">
         <div class="container">
-            <div class="text-center mb-5 mx-auto" style="max-width: 700px;" data-aos="fade-up">
-                <h2 class="display-6 fw-bold mb-3">Nossos Pilares</h2>
-                <p class="opacity-75">Os princípios inegociáveis que sustentam nossa reputação e garantem a sua segurança.</p>
+            <div class="text-center mb-5" data-aos="fade-up">
+                <span class="section-label">Liderança</span>
+                <h2 class="section-heading">Sócios Fundadores</h2>
             </div>
 
-            <div class="row g-4 justify-content-center">
+            <div class="row align-items-center gy-5 mb-5">
+                <div class="col-lg-5 text-center" data-aos="fade-right">
+                    <div class="partner-img-wrapper">
+                        <img src="{{ url_for('static', filename='images/Belarmino.png') }}" alt="Dr. Belarmino Monteiro" class="partner-img">
+                        <div class="partner-overlay-name">
+                            <span class="partner-role-overlay">Sócio Fundador</span>
+                            <h3 class="partner-name-overlay">Belarmino Monteiro</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 offset-lg-1" data-aos="fade-left">
+                    <h3 class="fw-bold mb-3 h2 font-serif">Visão Estratégica</h3>
+                    <p class="lead-relaxed mb-4">Especialista em Direito Civil e Contratual. Reconhecido pela atuação estratégica na defesa de interesses complexos.</p>
+                    <div class="d-flex gap-4 flex-wrap">
+                        <div class="stat-box"><div class="counter-number" data-target="15">0</div><div class="counter-label">Anos de Exp.</div></div>
+                        <div class="stat-box"><div class="counter-number" data-target="500">0</div><div class="counter-label">Casos Resolvidos</div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row align-items-center gy-5 mt-5">
+                <div class="col-lg-6 order-2 order-lg-1" data-aos="fade-right">
+                    <h3 class="fw-bold mb-3 h2 font-serif">Humanidade & Técnica</h3>
+                    <p class="lead-relaxed mb-4">Especialista em Família e Sucessões. Combina sensibilidade com rigor técnico para garantir segurança jurídica.</p>
+                    <div class="d-flex gap-4 flex-wrap">
+                        <div class="stat-box"><div class="counter-number" data-target="10">0</div><div class="counter-label">Anos de Atuação</div></div>
+                        <div class="stat-box"><div class="counter-number" data-target="98">0</div><div class="counter-label">% Êxito em Acordos</div></div>
+                    </div>
+                </div>
+                <div class="col-lg-5 offset-lg-1 order-1 order-lg-2 text-center" data-aos="fade-left">
+                    <div class="partner-img-wrapper">
+                        <img src="{{ url_for('static', filename='images/Taise.png') }}" alt="Dra. Taise Peixoto" class="partner-img">
+                        <div class="partner-overlay-name">
+                            <span class="partner-role-overlay">Sócia Fundadora</span>
+                            <h3 class="partner-name-overlay">Taise Peixoto</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="areas-parallax">
+        <div class="areas-overlay"></div>
+        <div class="areas-container container">
+            <div class="text-center mb-5">
+                <h2 class="section-heading text-white">Áreas de Atuação</h2>
+                <p class="text-white-50">Soluções completas para suas necessidades.</p>
+            </div>
+            <div class="swiper areasSwiper">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide"><div class="area-swiper-card"><div class="area-icon-box"><i class="bi bi-bank"></i></div><h4 class="area-title">Direito Civil</h4><p class="text-white-50 small">Contratos e Obrigações</p></div></div>
+                    <div class="swiper-slide"><div class="area-swiper-card"><div class="area-icon-box"><i class="bi bi-people"></i></div><h4 class="area-title">Família</h4><p class="text-white-50 small">Divórcios e Guarda</p></div></div>
+                    <div class="swiper-slide"><div class="area-swiper-card"><div class="area-icon-box"><i class="bi bi-briefcase"></i></div><h4 class="area-title">Consumidor</h4><p class="text-white-50 small">Defesa de Direitos</p></div></div>
+                    <div class="swiper-slide"><div class="area-swiper-card"><div class="area-icon-box"><i class="bi bi-building"></i></div><h4 class="area-title">Imobiliário</h4><p class="text-white-50 small">Posse e Propriedade</p></div></div>
+                    <div class="swiper-slide"><div class="area-swiper-card"><div class="area-icon-box"><i class="bi bi-shield-lock"></i></div><h4 class="area-title">Previdenciário</h4><p class="text-white-50 small">INSS e Aposentadorias</p></div></div>
+                </div>
+                <div class="swiper-pagination"></div>
+            </div>
+            <div class="text-center mt-5">
+                <a href="{{ url_for('main.todas_areas_atuacao') }}" class="btn btn-outline-light rounded-pill px-5">Ver Todas</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-block values-section">
+        <div class="values-bg-pattern"></div>
+        <div class="container values-container">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <span class="section-label text-white-50">Nossos Pilares</span>
+                <h2 class="section-heading text-white">O Que Nos Define</h2>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4" data-aos="fade-up">
+                    <div class="value-premium-card">
+                        <div class="value-icon-box"><i class="bi bi-shield-check"></i></div>
+                        <h4 class="value-title">Segurança Jurídica</h4>
+                        <p class="value-desc">Blindamos seu patrimônio e seus direitos com estratégias preventivas e contenciosas robustas.</p>
+                    </div>
+                </div>
                 <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
-                    <div class="card-glass text-center">
-                        <div class="icon-premium"><i class="bi bi-shield-check"></i></div>
-                        <h3 class="h4 fw-bold mb-3">Compromisso Total</h3>
-                        <p class="small opacity-75">Tratamos cada caso como se fosse único. Sua causa se torna nossa prioridade absoluta desde o primeiro atendimento.</p>
+                    <div class="value-premium-card">
+                        <div class="value-icon-box"><i class="bi bi-gem"></i></div>
+                        <h4 class="value-title">Transparência</h4>
+                        <p class="value-desc">Comunicação clara, sem "juridiquês". Você acompanha cada passo do seu processo com total clareza.</p>
                     </div>
                 </div>
                 <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
-                    <div class="card-glass text-center">
-                        <div class="icon-premium"><i class="bi bi-gem"></i></div>
-                        <h3 class="h4 fw-bold mb-3">Ética & Transparência</h3>
-                        <p class="small opacity-75">Atuação pautada na integridade. Você será informado de cada passo, risco e possibilidade com clareza cristalina.</p>
-                    </div>
-                </div>
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
-                    <div class="card-glass text-center">
-                        <div class="icon-premium"><i class="bi bi-trophy"></i></div>
-                        <h3 class="h4 fw-bold mb-3">Excelência Técnica</h3>
-                        <p class="small opacity-75">Estudo constante e atualização jurídica. Nosso conhecimento aprofundado é sua maior vantagem estratégica.</p>
+                    <div class="value-premium-card">
+                        <div class="value-icon-box"><i class="bi bi-trophy"></i></div>
+                        <h4 class="value-title">Excelência</h4>
+                        <p class="value-desc">Estudo constante e técnica apurada para garantir os melhores resultados possíveis para sua causa.</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    {% include '_cta_section.html' %}
-    
+    <section class="cta-section-ultimate">
+        <div class="aurora-bg"></div>
+        <div class="container">
+            <div class="cta-glass-panel" data-aos="zoom-in">
+                <h2 class="cta-title-display">Vamos Conversar?</h2>
+                <p class="lead mb-5 opacity-90" style="max-width: 700px; margin: 0 auto;">
+                    Sua história merece ser ouvida por quem entende. Agende uma consulta especializada agora mesmo.
+                </p>
+                <div class="d-flex justify-content-center gap-4 flex-wrap">
+                    <a href="https://wa.me/558597698475" target="_blank" class="cta-action-btn">
+                        <i class="bi bi-whatsapp fs-4"></i> Iniciar Atendimento
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    const video = document.getElementById('institutionalVideo');
-    if (!video) return;
-
-    const DELAY_BEFORE_PLAY = 1000;
-    const TARGET_VOLUME = 0.7;
-    const FADE_DURATION = 2000;
-    const FADE_STEPS = 50;
-
-    function fadeInVolume(targetVolume) {
-        const increment = targetVolume / FADE_STEPS;
-        let currentStep = 0;
-        video.volume = 0;
-        video.muted = false;
-
-        const fadeInterval = setInterval(() => {
-            currentStep++;
-            const newVolume = Math.min(increment * currentStep, targetVolume);
-            video.volume = newVolume;
-            console.log(`[Video Player] Fade in: ${Math.round(newVolume * 100)}%`);
-
-            if (currentStep >= FADE_STEPS || newVolume >= targetVolume) {
-                clearInterval(fadeInterval);
-                video.volume = targetVolume;
-                console.log(`[Video Player] Fade in completo: ${Math.round(targetVolume * 100)}%`);
-            }
-        }, FADE_DURATION / FADE_STEPS);
-    }
-
-    function startVideoWithFadeIn() {
-        console.log('[Video Player] Iniciando vídeo após 1 segundo...');
-        video.style.opacity = '1';
-
-        const playPromise = video.play();
-        if (playPromise !== undefined) {
-            playPromise.then(() => {
-                console.log('[Video Player] Reprodução iniciada com sucesso');
-                fadeInVolume(TARGET_VOLUME);
-            }).catch(error => {
-                console.warn('[Video Player] Autoplay bloqueado:', error);
-                video.style.opacity = '1';
-            });
-        } else {
-            fadeInVolume(TARGET_VOLUME);
-        }
-    }
-
-    video.addEventListener('canplay', () => {
-        console.log('[Video Player] Vídeo carregado e pronto');
-        setTimeout(() => startVideoWithFadeIn(), DELAY_BEFORE_PLAY);
-    }, { once: true });
-
-    if (video.readyState >= 3) {
-        console.log('[Video Player] Vídeo já carregado');
-        setTimeout(() => startVideoWithFadeIn(), DELAY_BEFORE_PLAY);
-    }
-
-    video.addEventListener('play', () => console.log('[Video Player] ️ Play'));
-    video.addEventListener('pause', () => console.log('[Video Player] ⏸️ Pause'));
-    video.addEventListener('volumechange', () => {
-        console.log(`[Video Player]  Volume: ${Math.round(video.volume * 100)}% | Muted: ${video.muted}`);
+    
+    // 1. CARROSSEL INFINITO
+    new Swiper(".areasSwiper", {
+        slidesPerView: 1, spaceBetween: 30, loop: true, speed: 1000,
+        autoplay: { delay: 2000, disableOnInteraction: false },
+        pagination: { el: ".swiper-pagination", clickable: true },
+        breakpoints: { 640: { slidesPerView: 2 }, 1024: { slidesPerView: 3 } },
     });
+
+    // 2. VÍDEO
+    const videoContainer = document.getElementById('videoContainer');
+    const video = document.getElementById('smartVideo');
+    const missionSection = document.getElementById('mission');
+    const overlay = document.querySelector('.video-status-overlay');
+
+    if (video && missionSection) {
+        video.volume = 0; video.muted = true;
+        let hasStarted = false;
+
+        const videoObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && entry.intersectionRatio > 0.6) {
+                    video.play().then(() => {
+                        if(!hasStarted) {
+                            setTimeout(() => {
+                                video.muted = false; video.volume = 0.7;
+                                if(overlay) overlay.style.opacity = '0';
+                                hasStarted = true;
+                            }, 1000);
+                        }
+                    }).catch(e => console.log('Autoplay block:', e));
+                } else {
+                    video.pause();
+                }
+            });
+        }, { threshold: 0.6 });
+        
+        videoObserver.observe(missionSection);
+
+        videoContainer.addEventListener('mouseenter', () => {
+            videoContainer.style.transform = 'scale(1.05)';
+            video.setAttribute('controls', 'controls');
+        });
+        videoContainer.addEventListener('mouseleave', () => {
+            videoContainer.style.transform = 'scale(1)';
+            video.removeAttribute('controls');
+        });
+    }
+
+    // 3. CONTADORES
+    const counters = document.querySelectorAll('.counter-number');
+    const counterObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const counter = entry.target;
+                const target = +counter.getAttribute('data-target');
+                const speed = 50; const inc = target / speed;
+                
+                const update = () => {
+                    const val = +counter.innerText;
+                    if (val < target) {
+                        counter.innerText = Math.ceil(val + inc);
+                        setTimeout(update, 20);
+                    } else {
+                        counter.innerText = target + "+";
+                    }
+                };
+                update();
+                observer.unobserve(counter);
+            }
+        });
+    }, { threshold: 0.5 });
+    
+    counters.forEach(c => counterObserver.observe(c));
 });
 </script>
 

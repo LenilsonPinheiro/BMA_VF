@@ -134,15 +134,20 @@
         border-radius: var(--tm-border-radius);
         overflow: hidden;
         box-shadow: var(--tm-shadow);
-        transition: transform 0.4s ease, box-shadow 0.4s ease;
+        transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); /* Curva mais suave */
         position: relative;
         height: 100%;
         border: 1px solid rgba(0,0,0,0.05);
+        
+        /* PERFORMANCE FIX: GPU Acceleration */
+        transform: translateZ(0); 
+        will-change: transform, box-shadow;
+        backface-visibility: hidden;
     }
     body.dark-mode .team-card { border-color: rgba(255,255,255,0.1); }
 
     .team-card:hover {
-        transform: translateY(-10px);
+        transform: translateY(-10px) translateZ(0); /* Mantém Z-axis */
         box-shadow: 0 20px 50px rgba(0,0,0,0.15);
     }
 
@@ -151,28 +156,36 @@
         position: relative;
         height: var(--tm-img-height);
         overflow: hidden;
-        background-color: #e9ecef; /* Placeholder color */
+        background-color: transparent; /* CORREÇÃO: Evita flicker de cor sólida atrás de PNG */
+        /* Opcional: Se precisar de fundo, use uma cor que combine com o card */
     }
     
     .team-img {
         width: 100%; height: 100%;
         object-fit: cover;
         object-position: top center;
-        transition: transform 0.6s ease, filter 0.6s ease;
+        transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); /* Remove filter da transição para performance */
+        
+        /* PERFORMANCE FIX: GPU Acceleration */
+        transform: translateZ(0);
+        will-change: transform;
+        backface-visibility: hidden;
     }
     
-    /* Efeito de Zoom e Filtro no Hover */
+    /* Efeito de Zoom */
     .team-card:hover .team-img {
-        transform: scale(1.05);
+        transform: scale(1.05) translateZ(0);
     }
     
     /* Overlay no Hover */
     .team-overlay {
         position: absolute; inset: 0;
         background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-        opacity: 0; transition: 0.4s;
+        opacity: 0; 
+        transition: opacity 0.4s ease; /* Apenas opacity é barato para renderizar */
         display: flex; align-items: flex-end; justify-content: center;
         padding-bottom: 30px;
+        pointer-events: none; /* Evita bloquear interações */
     }
     .team-card:hover .team-overlay { opacity: 1; }
 
@@ -180,7 +193,9 @@
         color: #fff; border: 1px solid #fff;
         padding: 8px 20px; border-radius: 50px;
         font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;
-        transform: translateY(20px); transition: 0.4s;
+        transform: translateY(20px); 
+        transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        pointer-events: auto; /* Reabilita cliques */
     }
     .team-card:hover .view-profile-btn { transform: translateY(0); }
 
@@ -191,7 +206,7 @@
         position: relative;
         z-index: 2;
         background: var(--tm-card-bg);
-        transition: 0.3s;
+        /* Removido transition desnecessário no container info */
     }
 
     .member-name {
@@ -212,6 +227,7 @@
         max-height: 0; opacity: 0;
         overflow: hidden;
         transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+        will-change: max-height, opacity; /* Aviso ao browser */
     }
     .team-card:hover .member-bio-reveal {
         max-height: 150px; opacity: 1;
@@ -232,8 +248,7 @@
         .team-universal-wrapper { padding: 60px 0; }
         .team-img-wrapper { height: 350px; }
         
-        /* No mobile, mostrar bio sempre ou adaptar UX? 
-           Vamos manter o reveal para não poluir, mas aumentar a area de toque */
-        .member-bio-reveal { max-height: 100px; opacity: 1; margin-top: 15px; } /* Mostra sempre no mobile para UX melhor */
+        /* Mobile Performance: Desativar alguns efeitos pesados se necessário */
+        .member-bio-reveal { max-height: 100px; opacity: 1; margin-top: 15px; } 
     }
 </style>
