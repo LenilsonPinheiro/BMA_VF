@@ -37,7 +37,21 @@
     </style>
     
     {% block head %}{% endblock %}
-</head>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                setTimeout(() => {
+                    navigator.serviceWorker.register('/static/service-worker.js')
+                        .then(registration => {
+                            console.log('[SW] Service Worker registrado com sucesso:', registration.scope);
+                        })
+                        .catch(error => {
+                            console.error('[SW] Erro ao registrar o Service Worker:', error);
+                        });
+                }, 5000); // Delay de 5 segundos
+            });
+        }
+    </script>
 <body>
 
     {# NAVBAR #}

@@ -29,20 +29,22 @@ const CRITICAL_ASSETS = [
 self.addEventListener('install', event => {
     console.log('[SW] Instalando Service Worker...');
     
-    event.waitUntil(
-        caches.open(CACHE_NAME)
-            .then(cache => {
-                console.log('[SW] Cacheando recursos críticos...');
-                return cache.addAll(CRITICAL_ASSETS);
-            })
-            .then(() => {
-                console.log('[SW] ✓ Recursos críticos cacheados');
-                return self.skipWaiting();
-            })
-            .catch(error => {
-                console.error('[SW] Erro ao cachear recursos:', error);
-            })
-    );
+    setTimeout(() => {
+        event.waitUntil(
+            caches.open(CACHE_NAME)
+                .then(cache => {
+                    console.log('[SW] Cacheando recursos críticos após 5 segundos...');
+                    return cache.addAll(CRITICAL_ASSETS);
+                })
+                .then(() => {
+                    console.log('[SW] ✓ Recursos críticos cacheados');
+                    return self.skipWaiting();
+                })
+                .catch(error => {
+                    console.error('[SW] Erro ao cachear recursos:', error);
+                })
+        );
+    }, 5000); // Delay de 5 segundos
 });
 
 // Ativação - Limpa caches antigos

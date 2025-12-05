@@ -68,21 +68,38 @@ DICAS:
   - Por padrão, o script agora APENAS cria o backup.
   - Use --delete-db com cautela, apenas quando um reset for necessário.
 """
+"""
+Autor: Lenilson Pinheiro
+Data: Janeiro 2025
+
+backup_db.py: Script para backup e limpeza do banco de dados SQLite.
+"""
 
 import os
 import shutil
 import datetime
 import sys
 
-# Define caminhos base do projeto
-BASE = os.path.abspath(os.path.dirname(__file__))
+# ==============================================================================
+# CONFIGURAÇÃO DE CAMINHOS (CORRIGIDA)
+# ==============================================================================
+# O script está em: BMA_VF/scripts/database/
+# Precisamos subir 2 níveis para chegar em: BMA_VF/
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE = os.path.abspath(os.path.join(CURRENT_DIR, '..', '..'))
+
+# Caminhos absolutos baseados na raiz do projeto
 DB_PATH = os.path.join(BASE, 'instance', 'site.db')
 BACKUP_DIR = os.path.join(BASE, 'instance', 'backups')
+MIGRATIONS_DIR = os.path.join(BASE, 'migrations')
 
 def main():
     """
     Função principal do script backup_db.py.
     """
+    print(f"[DEBUG] Raiz do projeto identificada como: {BASE}")
+    print(f"[DEBUG] Procurando banco de dados em: {DB_PATH}")
+
     # ========================================================================
     # PARSE DE ARGUMENTOS
     # ========================================================================
@@ -105,7 +122,7 @@ def main():
             bak_path = os.path.join(BACKUP_DIR, bak_name)
             
             shutil.copy2(DB_PATH, bak_path)
-            print('[INFO] Backup criado em', bak_path)
+            print('[INFO] Backup criado com SUCESSO em:', bak_path)
         except Exception as e:
             print(f'[ERROR] Falha ao criar o arquivo de backup: {e}')
             sys.exit(1)
@@ -118,6 +135,12 @@ def main():
                 print(f'[ERROR] Falha ao remover o banco de dados: {e}')
                 sys.exit(2)
     else:
+        # Tenta verificar se está na raiz (caso não esteja na instance)
+        alt_db_path = os.path.join(BASE, 'site.db')
+        if os.path.exists(alt_db_path):
+             print(f'[WARN] Banco não encontrado em instance/, mas encontrado na raiz: {alt_db_path}')
+             print('[WARN] Por favor, mova o banco para a pasta instance/ para seguir o padrão Flask.')
+        
         print(f'[ERROR] Backup falhou: O arquivo de banco de dados não foi encontrado em "{DB_PATH}"')
         sys.exit(1)
 
@@ -125,22 +148,21 @@ def main():
     # OPCIONALMENTE REMOVE MIGRAÇÕES (para reset completo)
     # ========================================================================
     if remove_migrations:
-        mig_path = os.path.join(BASE, 'migrations')
-        if os.path.isdir(mig_path):
+        if os.path.isdir(MIGRATIONS_DIR):
             try:
-                print(f'[INFO] Removendo a pasta de migrações em: {mig_path}')
-                shutil.rmtree(mig_path)
+                print(f'[INFO] Removendo a pasta de migrações em: {MIGRATIONS_DIR}')
+                shutil.rmtree(MIGRATIONS_DIR)
                 print('[INFO] Pasta de migrações removida.')
             except Exception as e:
                 print(f'[ERROR] Falha ao remover a pasta de migrações: {e}')
                 sys.exit(3)
         else:
-            print(f'[INFO] Pasta de migrações não encontrada em: {mig_path}')
+            print(f'[INFO] Pasta de migrações não encontrada em: {MIGRATIONS_DIR}')
 
     # ========================================================================
     # SUCESSO
     # ========================================================================
-    print('[INFO] backup_db.py completado com sucesso.')
+    print('[INFO] Processo de backup finalizado.')
     sys.exit(0)
 
 if __name__ == '__main__':

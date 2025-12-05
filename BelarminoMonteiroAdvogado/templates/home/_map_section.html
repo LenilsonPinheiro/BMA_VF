@@ -17,47 +17,7 @@
 
     <div class="container position-relative h-100 map-content-container">
         <div class="row h-100 align-items-center">
-            
-            <div class="col-lg-4 col-md-6" data-aos="fade-right" data-aos-delay="200">
-                <div class="location-card">
-                    <div class="card-header-loc">
-                        <span class="loc-badge">Nossa Sede</span>
-                        <h3 class="loc-title">Fortaleza, CE</h3>
-                    </div>
-                    
-                    <div class="loc-details">
-                        <div class="loc-item">
-                            <i class="bi bi-geo-alt-fill"></i>
-                            <div>
-                                <strong>Endereço</strong>
-                                <p>Av. Santos Dumont, 1234<br>Aldeota, Fortaleza - CE</p>
-                            </div>
-                        </div>
-                        
-                        <div class="loc-item">
-                            <i class="bi bi-clock-fill"></i>
-                            <div>
-                                <strong>Horário</strong>
-                                <p>Seg a Sex: 08h às 18h</p>
-                            </div>
-                        </div>
-                        
-                        <div class="loc-item">
-                            <i class="bi bi-envelope-fill"></i>
-                            <div>
-                                <strong>Contato</strong>
-                                <p>contato@belarminomonteiro.com.br</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <a href="https://maps.google.com" target="_blank" class="btn-loc-route">
-                        Traçar Rota <i class="bi bi-arrow-up-right"></i>
-                    </a>
-                </div>
             </div>
-
-        </div>
     </div>
 
 </section>
@@ -66,6 +26,8 @@
     /* --- VARIÁVEIS LOCAIS --- */
     .map-universal-wrapper {
         --map-height: 550px;
+        /* Variáveis do card removido mantidas apenas para evitar erros de CSS se referenciadas externamente, 
+           mas não são mais usadas aqui. */
         --loc-card-bg: rgba(255, 255, 255, 0.95);
         --loc-text: #333;
         --loc-accent: var(--prm-accent-red, #b92027);
@@ -73,8 +35,8 @@
     }
 
     /* Temas Específicos */
-    body.option2 .map-universal-wrapper { --loc-accent: #002F49; } /* Corporativo */
-    body.option3 .map-universal-wrapper { --loc-card-bg: #F9F7F2; --loc-accent: #D4AF37; } /* Boutique */
+    body.option2 .map-universal-wrapper { --loc-accent: #002F49; }
+    body.option3 .map-universal-wrapper { --loc-card-bg: #F9F7F2; --loc-accent: #D4AF37; }
     
     /* Dark Mode */
     body.dark-mode .map-universal-wrapper,
@@ -89,7 +51,6 @@
         position: relative;
         height: var(--map-height);
         overflow: hidden;
-        /* Não adicionamos padding aqui, o mapa ocupa tudo */
     }
 
     .map-frame {
@@ -110,85 +71,20 @@
     .map-scroll-guard {
         position: absolute; inset: 0;
         background: transparent; z-index: 1;
-        /* Impede zoom acidental ao rolar a página */
     }
 
     /* Container Flutuante */
     .map-content-container {
-        pointer-events: none; /* Permite clicar no mapa atrás */
+        pointer-events: none;
         z-index: 2;
     }
 
-    /* --- LOCATION CARD --- */
-    .location-card {
-        background: var(--loc-card-bg);
-        backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-        padding: 40px;
-        border-radius: 16px;
-        box-shadow: var(--loc-shadow);
-        pointer-events: auto; /* Reativa cliques no card */
-        border-left: 5px solid var(--loc-accent);
-        margin-top: 50px; /* Centralização visual */
-    }
-
-    .loc-badge {
-        font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px;
-        color: var(--loc-accent); font-weight: 700; display: block; margin-bottom: 5px;
-    }
+    /* CSS do Card removido foi suprimido ou mantido apenas o essencial para não quebrar estilos globais se houver compartilhamento */
     
-    .loc-title {
-        font-family: var(--font-primary, serif);
-        font-size: 2rem; color: var(--loc-text); margin-bottom: 30px;
-        font-weight: 700;
-    }
-
-    .loc-item {
-        display: flex; gap: 15px; margin-bottom: 20px;
-    }
-    
-    .loc-item i {
-        font-size: 1.5rem; color: var(--loc-accent);
-        opacity: 0.8; margin-top: 2px;
-    }
-    
-    .loc-item strong {
-        display: block; font-size: 0.9rem; color: var(--loc-text);
-        margin-bottom: 2px; text-transform: uppercase; font-weight: 700;
-    }
-    
-    .loc-item p {
-        font-size: 0.95rem; color: var(--loc-text); opacity: 0.8; margin: 0;
-        line-height: 1.4;
-    }
-
-    /* Botão Rota */
-    .btn-loc-route {
-        display: inline-block; width: 100%;
-        padding: 15px; text-align: center;
-        background-color: var(--loc-text); /* Botão Escuro */
-        color: #fff !important;
-        text-transform: uppercase; font-weight: 700; font-size: 0.85rem;
-        letter-spacing: 1px; border-radius: 8px;
-        text-decoration: none; margin-top: 10px;
-        transition: 0.3s;
-    }
-    .btn-loc-route:hover {
-        background-color: var(--loc-accent);
-        transform: translateY(-3px);
-    }
-    
-    /* Dark Mode Button invert */
-    body.dark-mode .btn-loc-route { background-color: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); }
-    body.dark-mode .btn-loc-route:hover { background-color: var(--loc-accent); border-color: var(--loc-accent); }
-
     /* RESPONSIVIDADE */
     @media (max-width: 991px) {
-        .map-universal-wrapper { height: auto; display: flex; flex-direction: column-reverse; }
-        .map-frame { position: relative; height: 300px; } /* Mapa menor embaixo */
-        .map-content-container { position: relative; height: auto; padding: 0; }
-        .location-card {
-            margin: 0; border-radius: 0; border-left: none; border-bottom: 5px solid var(--loc-accent);
-            padding: 40px 25px;
-        }
+        .map-universal-wrapper { height: auto; display: block; }
+        .map-frame { position: relative; height: 300px; width: 100%; }
+        .map-content-container { height: 0; padding: 0; }
     }
 </style>
